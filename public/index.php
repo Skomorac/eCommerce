@@ -1,9 +1,17 @@
 <?php
 
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 require_once __DIR__ . '/../vendor/autoload.php';
 
 $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
-    $r->post('/graphql', [App\Controller\GraphQL::class, 'handle']);
+    $r->get('/test', function() {
+        return "Route is working!";
+    }); // Closing brace for the '/test' route
+
+    $r->post('/graphql', 'App\Controller\GraphQL::handle');
 });
 
 $routeInfo = $dispatcher->dispatch(

@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/../../vendor/autoload.php';
 
 use Dotenv\Dotenv;
 
@@ -11,7 +11,7 @@ class Database {
     public $conn;
 
     public function __construct() {
-        $dotenv = Dotenv::createImmutable(__DIR__ . '/../');
+        $dotenv = Dotenv::createImmutable(__DIR__ . '/../../');
         $dotenv->load();
 
         $this->host = $_ENV['DB_HOST'];
