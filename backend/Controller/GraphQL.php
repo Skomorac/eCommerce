@@ -35,6 +35,13 @@ class GraphQL {
                 throw new RuntimeException('Connection failed: ' . $conn->connect_error);
             }
 
+            $categoryType = new ObjectType([
+                'name' => 'Category',
+                'fields' => [
+                    'name' => ['type' => Type::string()],
+                ],
+            ]);
+
             $queryType = new ObjectType([
                 'name' => 'Query',
                 'fields' => [
@@ -57,6 +64,20 @@ class GraphQL {
                                 $tables[] = $row[0];
                             }
                             return $tables;
+                        },
+                    ],
+                    'categories' => [
+                        'type' => Type::listOf($categoryType),
+                        'resolve' => function () use ($conn) {
+                            $categories = [];
+                            $result = $conn->query("SELECT name FROM categories");
+                            if (!$result) {
+                                throw new RuntimeException('Query failed: ' . $conn->error);
+                            }
+                            while ($row = $result->fetch_assoc()) {
+                                $categories[] = ['name' => $row['name']];
+                            }
+                            return $categories;
                         },
                     ],
                 ],
