@@ -15,7 +15,19 @@ class CategoryRepository implements RepositoryInterface {
         return $this->category->findAll();
     }
 
+    public function findOne($name) {
+        return $this->category->findOne($name);
+    }
+
     public function create($name) {
         return $this->category->create($name);
+    }
+
+    public function update($oldName, $newName) {
+        return $this->category->update($oldName, $newName);
+    }
+
+    public function delete($name) {
+        return $this->category->delete($name);
     }
 }

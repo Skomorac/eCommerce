@@ -35,6 +35,15 @@ class GraphQL {
                             return $categoryResolver->resolveCategories();
                         },
                     ],
+                    'category' => [
+                        'type' => $categoryType,
+                        'args' => [
+                            'name' => Type::nonNull(Type::string()),
+                        ],
+                        'resolve' => function($rootValue, $args) use ($categoryResolver) {
+                            return $categoryResolver->resolveCategory($rootValue, $args);
+                        },
+                    ],
                 ],
             ]);
 
@@ -48,6 +57,25 @@ class GraphQL {
                         ],
                         'resolve' => function($rootValue, $args) use ($categoryResolver) {
                             return $categoryResolver->createCategory($rootValue, $args);
+                        },
+                    ],
+                    'updateCategory' => [
+                        'type' => $categoryType,
+                        'args' => [
+                            'oldName' => Type::nonNull(Type::string()),
+                            'newName' => Type::nonNull(Type::string()),
+                        ],
+                        'resolve' => function($rootValue, $args) use ($categoryResolver) {
+                            return $categoryResolver->updateCategory($rootValue, $args);
+                        },
+                    ],
+                    'deleteCategory' => [
+                        'type' => Type::boolean(),
+                        'args' => [
+                            'name' => Type::nonNull(Type::string()),
+                        ],
+                        'resolve' => function($rootValue, $args) use ($categoryResolver) {
+                            return $categoryResolver->deleteCategory($rootValue, $args);
                         },
                     ],
                 ],
