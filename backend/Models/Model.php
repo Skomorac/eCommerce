@@ -25,5 +25,9 @@ abstract class Model {
         }
     }
 
+    public function getConnection() {
+        return $this->conn;
+    }
+
     abstract public function findAll();
 }

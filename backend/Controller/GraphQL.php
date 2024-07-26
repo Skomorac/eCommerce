@@ -7,8 +7,14 @@ use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
 use App\Resolvers\CategoryResolver;
+use App\Resolvers\ProductResolver;
+use App\Resolvers\AttributeResolver;
 use App\Repositories\CategoryRepository;
+use App\Repositories\ProductRepository;
+use App\Repositories\AttributeRepository;
 use App\Models\Category;
+use App\Models\Product;
+use App\Models\Attribute;
 use RuntimeException;
 use Throwable;
 
@@ -19,10 +25,46 @@ class GraphQL {
             $categoryRepository = new CategoryRepository($categoryModel);
             $categoryResolver = new CategoryResolver($categoryRepository);
 
+            $productModel = new \App\Models\ClothingProduct();
+            $productRepository = new ProductRepository($productModel);
+            $productResolver = new ProductResolver($productRepository);
+
+            $attributeModel = new \App\Models\TextAttribute();
+            $attributeRepository = new AttributeRepository($attributeModel);
+            $attributeResolver = new AttributeResolver($attributeRepository);
+
             $categoryType = new ObjectType([
                 'name' => 'Category',
                 'fields' => [
                     'name' => ['type' => Type::string()],
+                ],
+            ]);
+
+            $attributeType = new ObjectType([
+                'name' => 'Attribute',
+                'fields' => [
+                    'id' => ['type' => Type::string()],
+                    'name' => ['type' => Type::string()],
+                    'type' => ['type' => Type::string()],
+                ],
+            ]);
+
+            $productType = new ObjectType([
+                'name' => 'Product',
+                'fields' => [
+                    'id' => ['type' => Type::string()],
+                    'name' => ['type' => Type::string()],
+                    'inStock' => ['type' => Type::boolean()],
+                    'gallery' => ['type' => Type::listOf(Type::string())],
+                    'description' => ['type' => Type::string()],
+                    'category' => ['type' => Type::string()],
+                    'brand' => ['type' => Type::string()],
+                    'attributes' => [
+                        'type' => Type::listOf($attributeType),
+                        'resolve' => function($product) use ($attributeResolver) {
+                            return $attributeResolver->resolveProductAttributes($product['id']);
+                        },
+                    ],
                 ],
             ]);
 
@@ -42,6 +84,21 @@ class GraphQL {
                         ],
                         'resolve' => function($rootValue, $args) use ($categoryResolver) {
                             return $categoryResolver->resolveCategory($rootValue, $args);
+                        },
+                    ],
+                    'products' => [
+                        'type' => Type::listOf($productType),
+                        'resolve' => function() use ($productResolver) {
+                            return $productResolver->resolveProducts();
+                        },
+                    ],
+                    'product' => [
+                        'type' => $productType,
+                        'args' => [
+                            'id' => Type::nonNull(Type::string()),
+                        ],
+                        'resolve' => function($rootValue, $args) use ($productResolver) {
+                            return $productResolver->resolveProduct($rootValue, $args);
                         },
                     ],
                 ],
@@ -78,6 +135,7 @@ class GraphQL {
                             return $categoryResolver->deleteCategory($rootValue, $args);
                         },
                     ],
+                    // Add product and attribute mutations here
                 ],
             ]);
 
@@ -109,7 +167,7 @@ class GraphQL {
                                 'column' => 0
                             ]
                         ],
-                        'path' => ['createCategory'],
+                        'path' => ['error'],
                         'trace' => $e->getTraceAsString()
                     ]
                 ],
