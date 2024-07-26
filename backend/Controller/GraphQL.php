@@ -38,8 +38,24 @@ class GraphQL {
                 ],
             ]);
 
+            $mutationType = new ObjectType([
+                'name' => 'Mutation',
+                'fields' => [
+                    'createCategory' => [
+                        'type' => $categoryType,
+                        'args' => [
+                            'name' => Type::nonNull(Type::string()),
+                        ],
+                        'resolve' => function($rootValue, $args) use ($categoryResolver) {
+                            return $categoryResolver->createCategory($rootValue, $args);
+                        },
+                    ],
+                ],
+            ]);
+
             $schema = new Schema([
                 'query' => $queryType,
+                'mutation' => $mutationType,
             ]);
 
             $rawInput = file_get_contents('php://input');
@@ -53,11 +69,23 @@ class GraphQL {
 
             $result = GraphQLBase::executeQuery($schema, $query, null, null, $variableValues);
             $output = $result->toArray();
+
         } catch (Throwable $e) {
             $output = [
-                'error' => [
-                    'message' => $e->getMessage(),
+                'errors' => [
+                    [
+                        'message' => 'Internal server error: ' . $e->getMessage(),
+                        'locations' => [
+                            [
+                                'line' => $e->getLine(),
+                                'column' => 0
+                            ]
+                        ],
+                        'path' => ['createCategory'],
+                        'trace' => $e->getTraceAsString()
+                    ]
                 ],
+                'data' => null
             ];
         }
 

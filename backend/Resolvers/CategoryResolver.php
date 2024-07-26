@@ -14,4 +14,8 @@ class CategoryResolver extends Resolver {
     public function resolveCategories() {
         return $this->repository->findAll();
     }
+
+    public function createCategory($rootValue, array $args) {
+        return $this->repository->create($args['name']);
+    }
 }
