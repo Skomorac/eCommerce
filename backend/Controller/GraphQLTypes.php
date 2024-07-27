@@ -41,12 +41,12 @@ class GraphQLTypes
     {
         return new ObjectType([
             'name' => 'Product',
+            'interfaces' => [self::getProductInterface()], // Implement the ProductInterface
             'fields' => [
-                'id' => ['type' => Type::string()],
-                'name' => ['type' => Type::string()],
-                'type' => ['type' => Type::string()],
+                'id' => ['type' => Type::nonNull(Type::string())],
+                'name' => ['type' => Type::nonNull(Type::string())],
                 'inStock' => ['type' => Type::boolean()],
-                'gallery' => ['type' => Type::listOf(Type::string())],
+                'gallery' => ['type' => Type::string()],
                 'description' => ['type' => Type::string()],
                 'category' => ['type' => Type::string()],
                 'brand' => ['type' => Type::string()],
@@ -79,6 +79,7 @@ class GraphQLTypes
             ],
         ]);
     }
+
 
     public static function getAttributeType()
     {
@@ -127,13 +128,12 @@ class GraphQLTypes
                     'description' => ['type' => Type::string()],
                     'category' => ['type' => Type::string()],
                     'brand' => ['type' => Type::string()],
+                    'attributes' => ['type' => Type::listOf(self::getAttributeType())],
+                    'size' => ['type' => Type::string()],
+                    'warrantyPeriod' => ['type' => Type::string()],
                 ],
                 'resolveType' => function($value) {
-                    if ($value['type'] === 'clothing') {
-                        return self::getClothingProductType();
-                    } elseif ($value['type'] === 'electronics') {
-                        return self::getElectronicsProductType();
-                    }
+                    return self::getProductType(); // Always resolve to ProductType
                 }
             ]);
         }

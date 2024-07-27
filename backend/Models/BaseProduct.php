@@ -6,14 +6,33 @@ abstract class BaseProduct extends Model
 {
     abstract public function getType(): string;
 
+    // public function findAll()
+    // {
+    //     $query = "SELECT * FROM products WHERE type = :type";
+    //     $stmt = $this->conn->prepare($query);
+    //     $type = $this->getType();
+    //     $stmt->bindParam(':type', $type);
+    //     $stmt->execute();
+    //     return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    // }
+
     public function findAll()
     {
-        $query = "SELECT * FROM products WHERE type = :type";
-        $stmt = $this->conn->prepare($query);
-        $type = $this->getType();
-        $stmt->bindParam(':type', $type);
-        $stmt->execute();
-        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        try {
+            error_log("Entering BaseProduct::findAll()");
+            $query = "SELECT * FROM products";
+            $stmt = $this->conn->prepare($query);
+            $stmt->execute();
+            $results = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+            error_log("BaseProduct::findAll() result count: " . count($results));
+            return $results;
+        } catch (\PDOException $e) {
+            error_log("Database error in BaseProduct::findAll(): " . $e->getMessage());
+            throw $e;
+        } catch (\Exception $e) {
+            error_log("Unexpected error in BaseProduct::findAll(): " . $e->getMessage());
+            throw $e;
+        }
     }
 
     public function findOne($id)

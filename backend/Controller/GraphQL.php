@@ -54,11 +54,16 @@ class GraphQL {
             $result = GraphQLBase::executeQuery($schema, $query, null, null, $variableValues);
             $output = $result->toArray();
 
+            //debugging
+            $debug = true; // Set to false in production
+            $result = GraphQLBase::executeQuery($schema, $query, null, null, $variableValues);
+            $output = $result->toArray($debug);
+
         } catch (Throwable $e) {
             $output = [
                 'errors' => [
                     [
-                        'message' => 'Internal server error: ' . $e->getMessage(),
+                        'message' => 'An unexpected error occurred',
                         'locations' => [
                             [
                                 'line' => $e->getLine(),
@@ -66,7 +71,12 @@ class GraphQL {
                             ]
                         ],
                         'path' => ['error'],
-                        'trace' => $e->getTraceAsString()
+                        'extensions' => [
+                            'file' => $e->getFile(),
+                            'line' => $e->getLine(),
+                            'trace' => $debug ? $e->getTraceAsString() : null,
+                            'debugMessage' => $debug ? $e->getMessage() : null
+                        ]
                     ]
                 ],
                 'data' => null
