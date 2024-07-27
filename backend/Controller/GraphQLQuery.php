@@ -28,18 +28,29 @@ class GraphQLQuery
                     },
                 ],
                 'products' => [
-                    'type' => Type::listOf(GraphQLTypes::getProductType($attributeResolver)),
+                    'type' => Type::listOf(GraphQLTypes::getProductInterface()),
                     'resolve' => function() use ($productResolver) {
                         return $productResolver->resolveProducts();
                     },
                 ],
                 'product' => [
-                    'type' => GraphQLTypes::getProductType($attributeResolver),
-                    'args' => [
-                        'id' => Type::nonNull(Type::string()),
-                    ],
+                    'type' => GraphQLTypes::getProductInterface(),
+                    'args' => ['id' => Type::nonNull(Type::string())],
                     'resolve' => function($rootValue, $args) use ($productResolver) {
                         return $productResolver->resolveProduct($rootValue, $args);
+                    },
+                ],
+                'attributes' => [
+                    'type' => Type::listOf(GraphQLTypes::getAttributeInterface()),
+                    'resolve' => function() use ($attributeResolver) {
+                        return $attributeResolver->resolveAttributes();
+                    },
+                ],
+                'attribute' => [
+                    'type' => GraphQLTypes::getAttributeInterface(),
+                    'args' => ['id' => Type::nonNull(Type::string())],
+                    'resolve' => function($rootValue, $args) use ($attributeResolver) {
+                        return $attributeResolver->resolveAttribute($rootValue, $args);
                     },
                 ],
                 'tables' => [
@@ -52,3 +63,4 @@ class GraphQLQuery
         ]);
     }
 }
+

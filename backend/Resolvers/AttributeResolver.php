@@ -4,26 +4,62 @@ namespace App\Resolvers;
 
 use App\Repositories\AttributeRepository;
 
-class AttributeResolver extends Resolver {
+class AttributeResolver extends Resolver
+{
     protected $repository;
 
-    public function __construct(AttributeRepository $repository) {
+    public function __construct(AttributeRepository $repository)
+    {
         $this->repository = $repository;
     }
 
-    public function resolveProductAttributes($productId) {
+    public function resolveAttributes()
+    {
+        return $this->repository->findAll();
+    }
+
+    public function resolveAttribute($rootValue, array $args)
+    {
+        return $this->repository->findOne($args['id']);
+    }
+
+    public function resolveProductAttributes($productId)
+    {
         try {
-            $query = "SELECT DISTINCT a.id, a.name, a.type FROM attributes a
+            $query = "SELECT DISTINCT a.id, a.name, a.type, a.value FROM attributes a
                       JOIN product_attributes pa ON a.id = pa.attribute_id
                       WHERE pa.product_id = :productId";
             $stmt = $this->repository->getConnection()->prepare($query);
             $stmt->bindParam(':productId', $productId);
             $stmt->execute();
-            return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+            $attributes = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+            // Process attributes based on their type
+            return array_map(function($attribute) {
+                if ($attribute['type'] === 'color') {
+                    $attribute['hexValue'] = $this->repository->getHexValue($attribute['id']);
+                }
+                return $attribute;
+            }, $attributes);
+
         } catch (\Exception $e) {
-            // Log the error
             error_log('Error in resolveProductAttributes: ' . $e->getMessage());
-            return null; // or return an empty array []
+            return [];
         }
+    }
+
+    public function createAttribute($rootValue, array $args)
+    {
+        return $this->repository->create($args['input']);
+    }
+
+    public function updateAttribute($rootValue, array $args)
+    {
+        return $this->repository->update($args['id'], $args['input']);
+    }
+
+    public function deleteAttribute($rootValue, array $args)
+    {
+        return $this->repository->delete($args['id']);
     }
 }

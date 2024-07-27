@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
-class TextAttribute extends Attribute {
-    public function getType() {
+class TextAttribute extends BaseAttribute
+{
+    public function getType(): string
+    {
         return 'text';
     }
 
-    // Add any text attribute-specific methods here
+    // Add any text-specific methods here if needed
 }

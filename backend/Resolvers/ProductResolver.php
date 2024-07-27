@@ -4,20 +4,37 @@ namespace App\Resolvers;
 
 use App\Repositories\ProductRepository;
 
-class ProductResolver extends Resolver {
+class ProductResolver extends Resolver
+{
     protected $repository;
 
-    public function __construct(ProductRepository $repository) {
+    public function __construct(ProductRepository $repository)
+    {
         $this->repository = $repository;
     }
 
-    public function resolveProducts() {
+    public function resolveProducts()
+    {
         return $this->repository->findAll();
     }
 
-    public function resolveProduct($rootValue, array $args) {
+    public function resolveProduct($rootValue, array $args)
+    {
         return $this->repository->findOne($args['id']);
     }
 
-    // Implement create, update, and delete methods as needed
+    public function createProduct($rootValue, array $args)
+    {
+        return $this->repository->create($args['input']);
+    }
+
+    public function updateProduct($rootValue, array $args)
+    {
+        return $this->repository->update($args['id'], $args['input']);
+    }
+
+    public function deleteProduct($rootValue, array $args)
+    {
+        return $this->repository->delete($args['id']);
+    }
 }

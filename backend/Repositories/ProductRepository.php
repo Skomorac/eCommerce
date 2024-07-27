@@ -2,26 +2,85 @@
 
 namespace App\Repositories;
 
-use App\Models\Product;
+use App\Models\BaseProduct;
+use App\Models\ClothingProduct;
+use App\Models\ElectronicsProduct;
 
-class ProductRepository implements RepositoryInterface {
-    protected $product;
+class ProductRepository implements RepositoryInterface
+{
+    /**
+     * @var array<string, class-string<BaseProduct>>
+     */
+    private $productTypes = [
+        'clothing' => ClothingProduct::class,
+        'electronics' => ElectronicsProduct::class,
+    ];
 
-    public function __construct(Product $product) {
-        $this->product = $product;
+    /**
+     * @param string $type
+     * @return BaseProduct
+     * @throws \InvalidArgumentException
+     */
+    private function createProductInstance(string $type): BaseProduct
+    {
+        if (!isset($this->productTypes[$type])) {
+            throw new \InvalidArgumentException("Invalid product type: $type");
+        }
+        $class = $this->productTypes[$type];
+        return new $class();
     }
 
-    public function findAll() {
-        return $this->product->findAll();
+    public function findAll()
+    {
+        $allProducts = [];
+        foreach ($this->productTypes as $type => $class) {
+            $product = $this->createProductInstance($type);
+            $allProducts = array_merge($allProducts, $product->findAll());
+        }
+        return $allProducts;
     }
 
-    public function findOne($id) {
-        return $this->product->findOne($id);
+    public function findOne($id)
+    {
+        foreach ($this->productTypes as $type => $class) {
+            $product = $this->createProductInstance($type);
+            $result = $product->findOne($id);
+            if ($result) {
+                return $result;
+            }
+        }
+        return null;
     }
 
-    public function create(array $data) {
-        return $this->product->create($data);
+    public function create(array $data)
+    {
+        if (!isset($data['type']) || !isset($this->productTypes[$data['type']])) {
+            throw new \InvalidArgumentException("Invalid or missing product type");
+        }
+
+        $product = $this->createProductInstance($data['type']);
+        return $product->create($data);
     }
 
-    // Implement update and delete methods as needed
+    public function update($id, array $data)
+    {
+        $existingProduct = $this->findOne($id);
+        if (!$existingProduct) {
+            return null;
+        }
+
+        $product = $this->createProductInstance($existingProduct['type']);
+        return $product->update($id, $data);
+    }
+
+    public function delete($id)
+    {
+        $existingProduct = $this->findOne($id);
+        if (!$existingProduct) {
+            return false;
+        }
+
+        $product = $this->createProductInstance($existingProduct['type']);
+        return $product->delete($id);
+    }
 }

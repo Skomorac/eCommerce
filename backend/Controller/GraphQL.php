@@ -30,11 +30,12 @@ class GraphQL {
             GraphQLTypes::init($attributeResolver);
 
             $queryType = GraphQLQuery::getQueryType($categoryResolver, $productResolver, $attributeResolver, $tableResolver);
-            $mutationType = GraphQLMutation::getMutationType($categoryResolver);
+            $mutationType = GraphQLMutation::getMutationType($categoryResolver, $productResolver, $attributeResolver, $tableResolver);
 
             $schema = new Schema([
                 'query' => $queryType,
                 'mutation' => $mutationType,
+                'types' => GraphQLTypes::getTypes(),
             ]);
 
             $rawInput = file_get_contents('php://input');
@@ -56,8 +57,19 @@ class GraphQL {
         } catch (Throwable $e) {
             $output = [
                 'errors' => [
-                    FormattedError::createFromException($e)
+                    [
+                        'message' => 'Internal server error: ' . $e->getMessage(),
+                        'locations' => [
+                            [
+                                'line' => $e->getLine(),
+                                'column' => 0
+                            ]
+                        ],
+                        'path' => ['error'],
+                        'trace' => $e->getTraceAsString()
+                    ]
                 ],
+                'data' => null
             ];
         }
 
