@@ -3,141 +3,34 @@
 namespace App\Controller;
 
 use GraphQL\GraphQL as GraphQLBase;
-use GraphQL\Type\Definition\ObjectType;
-use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
-use App\Resolvers\CategoryResolver;
-use App\Resolvers\ProductResolver;
-use App\Resolvers\AttributeResolver;
-use App\Repositories\CategoryRepository;
-use App\Repositories\ProductRepository;
-use App\Repositories\AttributeRepository;
-use App\Models\Category;
-use App\Models\Product;
-use App\Models\Attribute;
+use GraphQL\Error\FormattedError;
 use RuntimeException;
 use Throwable;
 
 class GraphQL {
     static public function handle() {
         try {
-            $categoryModel = new Category();
-            $categoryRepository = new CategoryRepository($categoryModel);
-            $categoryResolver = new CategoryResolver($categoryRepository);
+            $categoryModel = new \App\Models\Category();
+            $categoryRepository = new \App\Repositories\CategoryRepository($categoryModel);
+            $categoryResolver = new \App\Resolvers\CategoryResolver($categoryRepository);
 
             $productModel = new \App\Models\ClothingProduct();
-            $productRepository = new ProductRepository($productModel);
-            $productResolver = new ProductResolver($productRepository);
+            $productRepository = new \App\Repositories\ProductRepository($productModel);
+            $productResolver = new \App\Resolvers\ProductResolver($productRepository);
 
             $attributeModel = new \App\Models\TextAttribute();
-            $attributeRepository = new AttributeRepository($attributeModel);
-            $attributeResolver = new AttributeResolver($attributeRepository);
+            $attributeRepository = new \App\Repositories\AttributeRepository($attributeModel);
+            $attributeResolver = new \App\Resolvers\AttributeResolver($attributeRepository);
 
-            $categoryType = new ObjectType([
-                'name' => 'Category',
-                'fields' => [
-                    'name' => ['type' => Type::string()],
-                ],
-            ]);
+            $pdo = $categoryModel->getConnection();
+            $tableRepository = new \App\Repositories\TableRepository($pdo);
+            $tableResolver = new \App\Resolvers\TableResolver($tableRepository);
 
-            $attributeType = new ObjectType([
-                'name' => 'Attribute',
-                'fields' => [
-                    'id' => ['type' => Type::string()],
-                    'name' => ['type' => Type::string()],
-                    'type' => ['type' => Type::string()],
-                ],
-            ]);
+            GraphQLTypes::init($attributeResolver);
 
-            $productType = new ObjectType([
-                'name' => 'Product',
-                'fields' => [
-                    'id' => ['type' => Type::string()],
-                    'name' => ['type' => Type::string()],
-                    'inStock' => ['type' => Type::boolean()],
-                    'gallery' => ['type' => Type::listOf(Type::string())],
-                    'description' => ['type' => Type::string()],
-                    'category' => ['type' => Type::string()],
-                    'brand' => ['type' => Type::string()],
-                    'attributes' => [
-                        'type' => Type::listOf($attributeType),
-                        'resolve' => function($product) use ($attributeResolver) {
-                            return $attributeResolver->resolveProductAttributes($product['id']);
-                        },
-                    ],
-                ],
-            ]);
-
-            $queryType = new ObjectType([
-                'name' => 'Query',
-                'fields' => [
-                    'categories' => [
-                        'type' => Type::listOf($categoryType),
-                        'resolve' => function() use ($categoryResolver) {
-                            return $categoryResolver->resolveCategories();
-                        },
-                    ],
-                    'category' => [
-                        'type' => $categoryType,
-                        'args' => [
-                            'name' => Type::nonNull(Type::string()),
-                        ],
-                        'resolve' => function($rootValue, $args) use ($categoryResolver) {
-                            return $categoryResolver->resolveCategory($rootValue, $args);
-                        },
-                    ],
-                    'products' => [
-                        'type' => Type::listOf($productType),
-                        'resolve' => function() use ($productResolver) {
-                            return $productResolver->resolveProducts();
-                        },
-                    ],
-                    'product' => [
-                        'type' => $productType,
-                        'args' => [
-                            'id' => Type::nonNull(Type::string()),
-                        ],
-                        'resolve' => function($rootValue, $args) use ($productResolver) {
-                            return $productResolver->resolveProduct($rootValue, $args);
-                        },
-                    ],
-                ],
-            ]);
-
-            $mutationType = new ObjectType([
-                'name' => 'Mutation',
-                'fields' => [
-                    'createCategory' => [
-                        'type' => $categoryType,
-                        'args' => [
-                            'name' => Type::nonNull(Type::string()),
-                        ],
-                        'resolve' => function($rootValue, $args) use ($categoryResolver) {
-                            return $categoryResolver->createCategory($rootValue, $args);
-                        },
-                    ],
-                    'updateCategory' => [
-                        'type' => $categoryType,
-                        'args' => [
-                            'oldName' => Type::nonNull(Type::string()),
-                            'newName' => Type::nonNull(Type::string()),
-                        ],
-                        'resolve' => function($rootValue, $args) use ($categoryResolver) {
-                            return $categoryResolver->updateCategory($rootValue, $args);
-                        },
-                    ],
-                    'deleteCategory' => [
-                        'type' => Type::boolean(),
-                        'args' => [
-                            'name' => Type::nonNull(Type::string()),
-                        ],
-                        'resolve' => function($rootValue, $args) use ($categoryResolver) {
-                            return $categoryResolver->deleteCategory($rootValue, $args);
-                        },
-                    ],
-                    // Add product and attribute mutations here
-                ],
-            ]);
+            $queryType = GraphQLQuery::getQueryType($categoryResolver, $productResolver, $attributeResolver, $tableResolver);
+            $mutationType = GraphQLMutation::getMutationType($categoryResolver);
 
             $schema = new Schema([
                 'query' => $queryType,
@@ -150,8 +43,12 @@ class GraphQL {
             }
 
             $input = json_decode($rawInput, true);
-            $query = $input['query'];
+            $query = $input['query'] ?? null;
             $variableValues = $input['variables'] ?? null;
+
+            if ($query === null) {
+                throw new RuntimeException('No GraphQL query provided');
+            }
 
             $result = GraphQLBase::executeQuery($schema, $query, null, null, $variableValues);
             $output = $result->toArray();
@@ -159,19 +56,8 @@ class GraphQL {
         } catch (Throwable $e) {
             $output = [
                 'errors' => [
-                    [
-                        'message' => 'Internal server error: ' . $e->getMessage(),
-                        'locations' => [
-                            [
-                                'line' => $e->getLine(),
-                                'column' => 0
-                            ]
-                        ],
-                        'path' => ['error'],
-                        'trace' => $e->getTraceAsString()
-                    ]
+                    FormattedError::createFromException($e)
                 ],
-                'data' => null
             ];
         }
 
