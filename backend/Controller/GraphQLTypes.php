@@ -46,7 +46,15 @@ class GraphQLTypes
                 'id' => ['type' => Type::nonNull(Type::string())],
                 'name' => ['type' => Type::nonNull(Type::string())],
                 'inStock' => ['type' => Type::boolean()],
-                'gallery' => ['type' => Type::string()],
+                'gallery' => [
+                    'type' => Type::listOf(Type::string()),
+                    'resolve' => function($product) {
+                        if (isset($product['gallery']) && is_string($product['gallery'])) {
+                            return json_decode($product['gallery'], true);
+                        }
+                        return null;
+                    }
+                ],
                 'description' => ['type' => Type::string()],
                 'category' => ['type' => Type::string()],
                 'brand' => ['type' => Type::string()],

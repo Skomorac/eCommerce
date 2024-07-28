@@ -18,6 +18,14 @@ class ProductResolver extends Resolver
         return $this->repository->findAll();
     }
 
+    public function resolveGallery($product)
+    {
+        if (isset($product['gallery']) && is_string($product['gallery'])) {
+            return json_decode($product['gallery'], true);
+        }
+        return null;
+    }
+
     public function resolveProduct($rootValue, array $args)
     {
         return $this->repository->findOne($args['id']);
