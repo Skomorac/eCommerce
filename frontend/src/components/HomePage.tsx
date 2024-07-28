@@ -1,6 +1,7 @@
 // src/components/HomePage.tsx
 
 import React from "react";
+import Title from "./Title";
 
 interface HomePageProps {
   activeCategory: string;
@@ -9,9 +10,7 @@ interface HomePageProps {
 const HomePage: React.FC<HomePageProps> = ({ activeCategory }) => {
   return (
     <div className="homepage">
-      <h1>
-        {activeCategory.charAt(0).toUpperCase() + activeCategory.slice(1)}
-      </h1>
+      <Title text={activeCategory} />
       {/* Add more content here */}
     </div>
   );

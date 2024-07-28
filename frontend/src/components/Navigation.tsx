@@ -1,3 +1,5 @@
+// src/components/Navigation.tsx
+
 import React from "react";
 
 interface NavigationProps {
@@ -56,7 +58,7 @@ class Navigation extends React.Component<NavigationProps, NavigationState> {
                   this.handleCategoryClick(category);
                 }}
                 className={`
-                  block px-4 py-2 text-sm lg:text-base 
+                  block px-4 py-2 text-sm lg:text-base uppercase
                   ${
                     category === activeCategory
                       ? "text-primary font-bold border-b-2 border-primary"

@@ -7,7 +7,7 @@ class App extends Component {
   render() {
     return (
       <Router>
-        <div className="App">
+        <div className="App p-4 md:p-8">
           <Header />
           <Routes>
             {/* The HomePage is already included within the Header component */}
