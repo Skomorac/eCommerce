@@ -1,73 +1,40 @@
-import React, { Component } from "react";
+import React from "react";
+import Logo from "./svg_components/Logo";
+import Cart from "./svg_components/Cart";
+import Navigation from "./Navigation";
 
-class Header extends Component {
+interface HeaderState {
+  activeCategory: string;
+}
+
+class Header extends React.Component<{}, HeaderState> {
+  state: HeaderState = {
+    activeCategory: "women",
+  };
+
+  handleCategoryChange = (category: string) => {
+    this.setState({ activeCategory: category });
+  };
+
   render() {
+    const categories = ["women", "men", "kids"];
+    const { activeCategory } = this.state;
+
     return (
-      <header className="bg-white p-4 shadow font-raleway">
-        <nav className="container mx-auto flex justify-between items-center">
-          <ul className="flex space-x-8">
-            <li>
-              <a
-                href="#women"
-                className="text-green-500 font-bold"
-                data-testid="category-link"
-              >
-                WOMEN
-              </a>
-            </li>
-            <li>
-              <a
-                href="#men"
-                className="text-black font-bold"
-                data-testid="category-link"
-              >
-                MEN
-              </a>
-            </li>
-            <li>
-              <a
-                href="#kids"
-                className="text-black font-bold"
-                data-testid="category-link"
-              >
-                KIDS
-              </a>
-            </li>
-          </ul>
-          <button data-testid="cart-btn" className="relative">
-            <svg
-              className="w-6 h-6 text-green-500"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-3.9-7H4m0 0l-1.1-2m5 2L7 13m0 0l1.4-7H20m-1.4 7h.6l1.1 2M4 7H2.4l1.1-2m17.5 11.2a1 1 0 01-.8.8H6.3a1 1 0 01-.8-.8L4 13h16l-1.6 3.2z"
-              ></path>
-            </svg>
-            <span className="absolute top-0 right-0 bg-red-500 text-white rounded-full text-xs px-1">
-              0
-            </span>
-          </button>
-          <svg
-            className="w-6 h-6"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-3.9-7H4m0 0l-1.1-2m5 2L7 13m0 0l1.4-7H20m-1.4 7h.6l1.1 2M4 7H2.4l1.1-2m17.5 11.2a1 1 0 01-.8.8H6.3a1 1 0 01-.8-.8L4 13h16l-1.6 3.2z"
-            ></path>
-          </svg>
-        </nav>
+      <header className="flex items-center justify-between px-4 py-4 bg-white relative">
+        <div className="flex-1">
+          <Navigation
+            categories={categories}
+            activeCategory={activeCategory}
+            onCategoryChange={this.handleCategoryChange}
+          />
+        </div>
+        <div className="absolute left-1/2 transform -translate-x-1/2">
+          <Logo className="w-12 h-12" />
+        </div>
+        <div className="flex-1 flex justify-end">
+          <Cart className="w-6 h-6 text-text hover:text-primary" />
+        </div>
       </header>
     );
   }
