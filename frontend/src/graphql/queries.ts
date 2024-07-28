@@ -9,3 +9,20 @@ export const GET_CATEGORIES = gql`
     }
   }
 `;
+
+export const GET_PRODUCTS = gql`
+  query GetProducts {
+    products {
+      id
+      name
+      gallery
+      prices {
+        amount
+        currency {
+          label
+          symbol
+        }
+      }
+    }
+  }
+`;
