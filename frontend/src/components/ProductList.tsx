@@ -1,6 +1,6 @@
 // src/components/ProductList.tsx
 
-import React from "react";
+import React, { useState } from "react";
 import { useQuery } from "@apollo/client";
 import { GET_PRODUCTS } from "../graphql/queries";
 import Cart from "./svg_components/Cart";
@@ -19,6 +19,7 @@ interface Product {
 
 const ProductList: React.FC<ProductListProps> = ({ category }) => {
   const { loading, error, data } = useQuery(GET_PRODUCTS);
+  const [hoveredProductId, setHoveredProductId] = useState<string | null>(null);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
@@ -39,6 +40,8 @@ const ProductList: React.FC<ProductListProps> = ({ category }) => {
           data-testid={`product-${product.name
             .replace(/\s+/g, "-")
             .toLowerCase()}`}
+          onMouseEnter={() => setHoveredProductId(product.id)}
+          onMouseLeave={() => setHoveredProductId(null)}
         >
           <img
             src={product.gallery[0]}
@@ -52,14 +55,16 @@ const ProductList: React.FC<ProductListProps> = ({ category }) => {
             {product.prices[0].currency.symbol}
             {product.prices[0].amount.toFixed(2)}
           </p>
-          <div className="absolute bottom-28 right-12 transform translate-x-1/2 translate-y-1/2">
-            <div
-              className="bg-primary rounded-full p-2 shadow-md transition-transform duration-200 transform hover:scale-110 hover:bg-accent"
-              style={{ boxShadow: "0px 4px 11px 0px #1D1F221A" }}
-            >
-              <Cart className="w-8 h-7 p-1" />
+          {hoveredProductId === product.id && (
+            <div className="absolute bottom-28 right-12 transform translate-x-1/2 translate-y-1/2">
+              <button
+                className="bg-primary text-white rounded-full p-2 shadow-md transition-transform duration-200 transform hover:scale-110 hover:bg-accent"
+                style={{ boxShadow: "0px 4px 11px 0px #1D1F221A" }}
+              >
+                <Cart className="w-8 h-7 p-1" />
+              </button>
             </div>
-          </div>
+          )}
         </div>
       ))}
     </div>
