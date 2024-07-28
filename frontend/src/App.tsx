@@ -8,9 +8,8 @@ class App extends Component {
     return (
       <Router>
         <div className="App p-4 md:p-8">
-          <Header />
           <Routes>
-            {/* The HomePage is already included within the Header component */}
+            <Route path="/" element={<Header />} />
             {/* Additional routes can be added here */}
           </Routes>
         </div>

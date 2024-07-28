@@ -57,12 +57,7 @@ const ProductList: React.FC<ProductListProps> = ({ category }) => {
           </p>
           {hoveredProductId === product.id && (
             <div className="absolute bottom-28 right-12 transform translate-x-1/2 translate-y-1/2">
-              <button
-                className="bg-primary text-white rounded-full p-2 shadow-md transition-transform duration-200 transform hover:scale-110 hover:bg-accent"
-                style={{ boxShadow: "0px 4px 11px 0px #1D1F221A" }}
-              >
-                <Cart className="w-8 h-7 p-1" />
-              </button>
+              <Cart className="bg-primary text-white rounded-full p-2 shadow-md transition-transform duration-200 transform hover:scale-110 hover:bg-accent" />
             </div>
           )}
         </div>
