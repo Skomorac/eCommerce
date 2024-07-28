@@ -20,6 +20,8 @@ class GraphQLTypes
     private static $textAttributeType;
     private static $colorAttributeType;
     private static $attributeInputType;
+    private static $priceType;
+    private static $currencyType;
 
     public static function init($attributeResolver)
     {
@@ -36,12 +38,33 @@ class GraphQLTypes
         ]));
     }
 
-    // Check later for this function is maybe redundant
+    public static function getPriceType()
+    {
+        return self::$priceType ?: (self::$priceType = new ObjectType([
+            'name' => 'Price',
+            'fields' => [
+                'amount' => ['type' => Type::float()],
+                'currency' => ['type' => self::getCurrencyType()],
+            ],
+        ]));
+    }
+
+    public static function getCurrencyType()
+    {
+        return self::$currencyType ?: (self::$currencyType = new ObjectType([
+            'name' => 'Currency',
+            'fields' => [
+                'label' => ['type' => Type::string()],
+                'symbol' => ['type' => Type::string()],
+            ],
+        ]));
+    }
+
     public static function getProductType($attributeResolver = null)
     {
         return new ObjectType([
             'name' => 'Product',
-            'interfaces' => [self::getProductInterface()], // Implement the ProductInterface
+            'interfaces' => [self::getProductInterface()],
             'fields' => [
                 'id' => ['type' => Type::nonNull(Type::string())],
                 'name' => ['type' => Type::nonNull(Type::string())],
@@ -64,22 +87,13 @@ class GraphQLTypes
                         return $attributeResolver->resolveProductAttributes($product['id']);
                     },
                 ],
+                'prices' => ['type' => Type::listOf(self::getPriceType())], // Add this line
                 'size' => [
                     'type' => Type::string(),
                     'resolve' => function($product) {
                         if ($product['type'] === 'clothing') {
                             $clothingProduct = new \App\Models\ClothingProduct();
                             return $clothingProduct->getSize($product['id']);
-                        }
-                        return null;
-                    },
-                ],
-                'warrantyPeriod' => [
-                    'type' => Type::string(),
-                    'resolve' => function($product) {
-                        if ($product['type'] === 'electronics') {
-                            $electronicsProduct = new \App\Models\ElectronicsProduct();
-                            return $electronicsProduct->getWarrantyPeriod($product['id']);
                         }
                         return null;
                     },
@@ -137,8 +151,8 @@ class GraphQLTypes
                     'category' => ['type' => Type::string()],
                     'brand' => ['type' => Type::string()],
                     'attributes' => ['type' => Type::listOf(self::getAttributeType())],
+                    'prices' => ['type' => Type::listOf(self::getPriceType())], // Add this line
                     'size' => ['type' => Type::string()],
-                    'warrantyPeriod' => ['type' => Type::string()],
                 ],
                 'resolveType' => function($value) {
                     return self::getProductType(); // Always resolve to ProductType
@@ -185,7 +199,6 @@ class GraphQLTypes
                     'category' => ['type' => Type::string()],
                     'brand' => ['type' => Type::string()],
                     'size' => ['type' => Type::string()], // for clothing products
-                    'warrantyPeriod' => ['type' => Type::string()], // for electronics products
                 ]
             ]);
         }
@@ -231,7 +244,6 @@ class GraphQLTypes
                 'interfaces' => [self::getProductInterface()],
                 'fields' => function() {
                     return array_merge(self::getProductInterface()->getFields(), [
-                        'warrantyPeriod' => ['type' => Type::string()],
                     ]);
                 }
             ]);

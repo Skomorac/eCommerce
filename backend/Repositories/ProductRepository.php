@@ -12,8 +12,8 @@ class ProductRepository implements RepositoryInterface
      * @var array<string, class-string<BaseProduct>>
      */
     private $productTypes = [
-        'clothing' => ClothingProduct::class,
-        'electronics' => ElectronicsProduct::class,
+        'clothes' => ClothingProduct::class,
+        'tech' => ElectronicsProduct::class,
     ];
 
     /**
@@ -54,11 +54,11 @@ class ProductRepository implements RepositoryInterface
 
     public function create(array $data)
     {
-        if (!isset($data['type']) || !isset($this->productTypes[$data['type']])) {
-            throw new \InvalidArgumentException("Invalid or missing product type");
+        if (!isset($data['category']) || !isset($this->productTypes[$data['category']])) {
+            throw new \InvalidArgumentException("Invalid or missing product category");
         }
 
-        $product = $this->createProductInstance($data['type']);
+        $product = $this->createProductInstance($data['category']);
         return $product->create($data);
     }
 
@@ -69,7 +69,7 @@ class ProductRepository implements RepositoryInterface
             return null;
         }
 
-        $product = $this->createProductInstance($existingProduct['type']);
+        $product = $this->createProductInstance($existingProduct['category']);
         return $product->update($id, $data);
     }
 
@@ -80,7 +80,7 @@ class ProductRepository implements RepositoryInterface
             return false;
         }
 
-        $product = $this->createProductInstance($existingProduct['type']);
+        $product = $this->createProductInstance($existingProduct['category']);
         return $product->delete($id);
     }
 }

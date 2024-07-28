@@ -6,26 +6,50 @@ abstract class BaseProduct extends Model
 {
     abstract public function getType(): string;
 
-    // public function findAll()
-    // {
-    //     $query = "SELECT * FROM products WHERE type = :type";
-    //     $stmt = $this->conn->prepare($query);
-    //     $type = $this->getType();
-    //     $stmt->bindParam(':type', $type);
-    //     $stmt->execute();
-    //     return $stmt->fetchAll(\PDO::FETCH_ASSOC);
-    // }
 
     public function findAll()
     {
         try {
-            error_log("Entering BaseProduct::findAll()");
-            $query = "SELECT * FROM products";
+            $query = "SELECT p.*, GROUP_CONCAT(DISTINCT pr.amount) as prices, GROUP_CONCAT(DISTINCT c.label) as currencies
+                      FROM products p
+                      LEFT JOIN prices pr ON p.id = pr.product_id
+                      LEFT JOIN currencies c ON pr.currency = c.label
+                      WHERE p.category = :category
+                      GROUP BY p.id";
             $stmt = $this->conn->prepare($query);
+            $category = $this->getType();
+            $stmt->bindParam(':category', $category);
             $stmt->execute();
-            $results = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-            error_log("BaseProduct::findAll() result count: " . count($results));
-            return $results;
+            $products = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+            // Fetch attributes for each product
+            foreach ($products as &$product) {
+                $attributesQuery = "SELECT a.name, a.type, pa.displayValue, pa.value
+                                    FROM product_attributes pa
+                                    JOIN attributes a ON pa.attribute_id = a.id
+                                    WHERE pa.product_id = :product_id";
+                $attributesStmt = $this->conn->prepare($attributesQuery);
+                $attributesStmt->bindParam(':product_id', $product['id']);
+                $attributesStmt->execute();
+                $product['attributes'] = $attributesStmt->fetchAll(\PDO::FETCH_ASSOC);
+
+                // Format prices
+                $priceAmounts = explode(',', $product['prices']);
+                $currencies = explode(',', $product['currencies']);
+                $product['prices'] = array_map(function($amount, $currency) {
+                    return [
+                        'amount' => floatval($amount),
+                        'currency' => [
+                            'label' => $currency,
+                            'symbol' => $currency === 'USD' ? '$' : '€'
+                        ]
+                    ];
+                }, $priceAmounts, $currencies);
+
+                unset($product['currencies']); // Remove the raw currencies data
+            }
+
+            return $products;
         } catch (\PDOException $e) {
             error_log("Database error in BaseProduct::findAll(): " . $e->getMessage());
             throw $e;
@@ -37,13 +61,47 @@ abstract class BaseProduct extends Model
 
     public function findOne($id)
     {
-        $query = "SELECT * FROM products WHERE id = :id AND type = :type";
+        $query = "SELECT p.*, GROUP_CONCAT(DISTINCT pr.amount) as prices, GROUP_CONCAT(DISTINCT c.label) as currencies
+                  FROM products p
+                  LEFT JOIN prices pr ON p.id = pr.product_id
+                  LEFT JOIN currencies c ON pr.currency = c.label
+                  WHERE p.id = :id AND p.category = :category
+                  GROUP BY p.id";
         $stmt = $this->conn->prepare($query);
-        $type = $this->getType();
+        $category = $this->getType();
         $stmt->bindParam(':id', $id);
-        $stmt->bindParam(':type', $type);
+        $stmt->bindParam(':category', $category);
         $stmt->execute();
-        return $stmt->fetch(\PDO::FETCH_ASSOC);
+        $product = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+        if ($product) {
+            // Fetch attributes
+            $attributesQuery = "SELECT a.name, a.type, pa.displayValue, pa.value
+                                FROM product_attributes pa
+                                JOIN attributes a ON pa.attribute_id = a.id
+                                WHERE pa.product_id = :product_id";
+            $attributesStmt = $this->conn->prepare($attributesQuery);
+            $attributesStmt->bindParam(':product_id', $product['id']);
+            $attributesStmt->execute();
+            $product['attributes'] = $attributesStmt->fetchAll(\PDO::FETCH_ASSOC);
+
+            // Format prices
+            $priceAmounts = explode(',', $product['prices']);
+            $currencies = explode(',', $product['currencies']);
+            $product['prices'] = array_map(function($amount, $currency) {
+                return [
+                    'amount' => floatval($amount),
+                    'currency' => [
+                        'label' => $currency,
+                        'symbol' => $currency === 'USD' ? '$' : '€'
+                    ]
+                ];
+            }, $priceAmounts, $currencies);
+
+            unset($product['currencies']); // Remove the raw currencies data
+        }
+
+        return $product;
     }
 
     public function create(array $data)

@@ -6,18 +6,39 @@ class ClothingProduct extends BaseProduct
 {
     public function getType(): string
     {
-        return 'clothing';
+        return 'clothes';  // Changed from 'clothing' to match the category in the database
     }
 
-    public function getSize($productId)
+    public function getSizes($productId)
     {
-        // Implement size retrieval logic
-        // This is just a placeholder, adjust according to your database structure
-        $query = "SELECT size FROM clothing_details WHERE product_id = :product_id";
+        // Retrieve size attributes for the product
+        $query = "SELECT pa.displayValue, pa.value
+                  FROM product_attributes pa
+                  JOIN attributes a ON pa.attribute_id = a.id
+                  WHERE pa.product_id = :product_id AND a.name = 'size'";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':product_id', $productId);
         $stmt->execute();
-        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
-        return $result ? $result['size'] : null;
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    // Override findOne to include sizes
+    public function findOne($id)
+    {
+        $product = parent::findOne($id);
+        if ($product) {
+            $product['sizes'] = $this->getSizes($id);
+        }
+        return $product;
+    }
+
+    // Override findAll to include sizes for each product
+    public function findAll()
+    {
+        $products = parent::findAll();
+        foreach ($products as &$product) {
+            $product['sizes'] = $this->getSizes($product['id']);
+        }
+        return $products;
     }
 }
