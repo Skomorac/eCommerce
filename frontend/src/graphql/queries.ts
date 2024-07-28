@@ -14,6 +14,7 @@ export const GET_PRODUCTS = gql`
   query GetProducts {
     products {
       id
+      category
       name
       gallery
       prices {

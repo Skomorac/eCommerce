@@ -11,8 +11,10 @@ interface HomePageProps {
 const HomePage: React.FC<HomePageProps> = ({ activeCategory }) => {
   return (
     <div className="homepage">
-      <Title text={activeCategory} />
-      <ProductList />
+      <Title
+        text={activeCategory === "all" ? "All Products" : activeCategory}
+      />
+      <ProductList category={activeCategory} />
     </div>
   );
 };
