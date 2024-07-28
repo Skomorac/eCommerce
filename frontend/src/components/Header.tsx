@@ -44,12 +44,10 @@ const Header: React.FC = () => {
             onCategoryChange={handleCategoryChange}
           />
         </div>
-        <div
-          className="absolute left-1/2 transform -translate-x-1/2 cursor-pointer"
+        <Logo
+          className="absolute left-1/2 transform -translate-x-1/2 w-12 h-12"
           onClick={handleLogoClick}
-        >
-          <Logo className="w-12 h-12" />
-        </div>
+        />
         <div className="flex-1 flex justify-end">
           <Cart className="w-6 h-6 text-text hover:text-primary" />
         </div>
