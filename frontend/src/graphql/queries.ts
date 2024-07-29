@@ -11,19 +11,27 @@ export const GET_CATEGORIES = gql`
 `;
 
 export const GET_PRODUCTS = gql`
-  query GetProducts {
-    products {
+  query GetProducts($category: String) {
+    products(category: $category) {
       id
-      inStock
-      category
       name
+      inStock
       gallery
+      description
+      category
+      brand
       prices {
         amount
         currency {
           label
           symbol
         }
+      }
+      attributes {
+        id
+        attribute_id
+        value
+        displayValue
       }
     }
   }
@@ -38,6 +46,7 @@ export const GET_PRODUCT = gql`
       gallery
       description
       category
+      brand
       prices {
         amount
         currency {
@@ -45,7 +54,53 @@ export const GET_PRODUCT = gql`
           symbol
         }
       }
-      brand
+      attributes {
+        id
+        attribute_id
+        value
+        displayValue
+      }
+    }
+  }
+`;
+
+export const GET_CURRENCIES = gql`
+  query GetCurrencies {
+    currencies {
+      label
+      symbol
+    }
+  }
+`;
+
+// If you have a mutation for placing an order, you might include it like this:
+export const PLACE_ORDER = gql`
+  mutation PlaceOrder($input: OrderInput!) {
+    placeOrder(OrderInput: $input) {
+      id
+      # Add other fields you expect to receive after placing an order
+    }
+  }
+`;
+
+// You might also want to add a query for fetching orders if that's part of your app:
+export const GET_ORDERS = gql`
+  query GetOrders {
+    orders {
+      id
+      total_amount
+      total_currency
+      status
+      created_at
+      updated_at
+      items {
+        id
+        product_id
+        product_name
+        quantity
+        paid_amount
+        paid_currency
+      }
     }
   }
 `;

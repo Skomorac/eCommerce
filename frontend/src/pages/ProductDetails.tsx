@@ -3,6 +3,20 @@ import { useParams } from "react-router-dom";
 import { useQuery } from "@apollo/client";
 import { GET_PRODUCT } from "../graphql/queries";
 
+const formatPrice = (amount: string): string => {
+  const parsedAmount = parseFloat(amount);
+  return isNaN(parsedAmount) ? amount : parsedAmount.toFixed(2);
+};
+
+interface Product {
+  name: string;
+  brand: string;
+  gallery: string[];
+  prices: { amount: string; currency: { symbol: string } }[];
+  inStock: boolean;
+  description: string;
+}
+
 const ProductDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const { loading, error, data } = useQuery(GET_PRODUCT, {
@@ -12,7 +26,7 @@ const ProductDetails: React.FC = () => {
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
 
-  const product = data.product;
+  const product: Product = data.product;
 
   return (
     <div className="container mx-auto px-4 py-8 flex">
@@ -43,7 +57,7 @@ const ProductDetails: React.FC = () => {
           <h2 className="text-lg font-semibold mb-2">PRICE:</h2>
           <p className="text-2xl font-bold">
             {product.prices[0].currency.symbol}
-            {product.prices[0].amount.toFixed(2)}
+            {formatPrice(product.prices[0].amount)}
           </p>
         </div>
 

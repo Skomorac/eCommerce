@@ -13,9 +13,14 @@ interface Product {
   name: string;
   category: string;
   gallery: string[];
-  prices: { amount: number; currency: { symbol: string } }[];
+  prices: { amount: string; currency: { symbol: string } }[];
   inStock: boolean;
 }
+
+const formatPrice = (amount: string): string => {
+  const parsedAmount = parseFloat(amount);
+  return isNaN(parsedAmount) ? amount : parsedAmount.toFixed(2);
+};
 
 const ProductList: React.FC<ProductListProps> = ({ category }) => {
   const { loading, error, data } = useQuery(GET_PRODUCTS);
@@ -74,7 +79,7 @@ const ProductList: React.FC<ProductListProps> = ({ category }) => {
           </h2>
           <p className="font-raleway text-[18px] font-normal leading-[28.8px] text-left mb-4">
             {product.prices[0].currency.symbol}
-            {product.prices[0].amount.toFixed(2)}
+            {formatPrice(product.prices[0].amount)}
           </p>
           {hoveredProductId === product.id && product.inStock && (
             <div
