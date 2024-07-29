@@ -67,7 +67,52 @@ const ProductDetails: React.FC = () => {
   return (
     <div className="container mx-auto px-4 py-8 flex flex-col md:flex-row">
       <div className="w-full md:w-2/3 pr-8" data-testid="product-gallery">
-        {/* Gallery code remains the same */}
+        <div className="w-full md:w-2/3 pr-8" data-testid="product-gallery">
+          <div className="flex mb-4">
+            <div className="w-1/5 mr-4">
+              {product.gallery.map((img, index) => (
+                <img
+                  key={index}
+                  src={img}
+                  alt={`${product.name} ${index + 1}`}
+                  className="w-full object-cover mb-2 cursor-pointer"
+                  onClick={() => setCurrentImageIndex(index)}
+                />
+              ))}
+            </div>
+            <div className="w-4/5 relative">
+              <img
+                src={product.gallery[currentImageIndex]}
+                alt={product.name}
+                className="w-full object-contain"
+              />
+              {product.gallery.length > 1 && (
+                <>
+                  <button
+                    className="absolute top-1/2 left-4 transform -translate-y-1/2 bg-white bg-opacity-50 p-2 rounded-full"
+                    onClick={() =>
+                      setCurrentImageIndex((prev) =>
+                        prev > 0 ? prev - 1 : product.gallery.length - 1
+                      )
+                    }
+                  >
+                    &#9664;
+                  </button>
+                  <button
+                    className="absolute top-1/2 right-4 transform -translate-y-1/2 bg-white bg-opacity-50 p-2 rounded-full"
+                    onClick={() =>
+                      setCurrentImageIndex((prev) =>
+                        prev < product.gallery.length - 1 ? prev + 1 : 0
+                      )
+                    }
+                  >
+                    &#9654;
+                  </button>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
       </div>
       <div className="w-full md:w-1/3">
         <h1 className="text-3xl font-semibold mb-2">{product.name}</h1>

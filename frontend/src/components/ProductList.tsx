@@ -60,11 +60,11 @@ const ProductList: React.FC<ProductListProps> = ({ category }) => {
           onMouseEnter={() => setHoveredProductId(product.id)}
           onMouseLeave={() => setHoveredProductId(null)}
         >
-          <div className="relative">
+          <div className="relative pt-[100%] mb-4">
             <img
               src={product.gallery[0]}
               alt={product.name}
-              className={`w-full h-48 object-cover rounded-lg mb-4 ${
+              className={`absolute top-0 left-0 w-full h-full object-contain rounded-lg ${
                 !product.inStock && "filter grayscale"
               }`}
             />
