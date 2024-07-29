@@ -3,8 +3,8 @@
 namespace App\GraphQL;
 
 use GraphQL\Type\Definition\Type;
-use App\GraphQL\Types\OrderInputType;
 use GraphQL\Type\Definition\ObjectType;
+use App\GraphQL\Types\OrderInputType;
 use App\GraphQL\Resolvers\OrdersResolver;
 
 class Mutation

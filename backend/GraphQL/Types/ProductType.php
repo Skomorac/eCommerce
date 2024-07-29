@@ -18,7 +18,7 @@ class ProductType extends ObjectType
                 'gallery' => Type::listOf(Type::string()),
                 'description' => Type::string(),
                 'category' => Type::string(),
-                'attributes' => Type::listOf(Type::string()), // Replace with correct type if necessary
+                'attributes' => Type::listOf(new AttributeType()),
                 'prices' => Type::listOf(new PriceType()),
                 'brand' => Type::string(),
             ],

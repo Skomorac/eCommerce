@@ -3,10 +3,10 @@
 namespace App\GraphQL;
 
 use GraphQL\Type\Definition\Type;
-use App\GraphQL\Types\ProductType;
-use App\GraphQL\Types\CategoryType;
 use GraphQL\Type\Definition\ObjectType;
+use App\GraphQL\Types\ProductType;
 use App\GraphQL\Resolvers\ProductsResolver;
+use App\GraphQL\Types\CategoryType;
 use App\GraphQL\Resolvers\CategoriesResolver;
 
 class Query

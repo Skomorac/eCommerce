@@ -12,7 +12,10 @@ class Attribute extends Model
     {
         $query = 
             'SELECT 
-                pa.*, 
+                pa.id, 
+                pa.attribute_id, 
+                pa.value, 
+                pa.displayValue,
                 a.name as attribute_name, 
                 a.type as attribute_type
             FROM 
@@ -28,28 +31,21 @@ class Attribute extends Model
         $stmt->execute(['productId' => $productId]);
         $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        $attributes = [];
-        foreach ($items as $item) {
-            $attributeId = $item['attribute_id'];
+        error_log('Fetched items for product ' . $productId . ': ' . print_r($items, true));
 
-            if (!isset($attributes[$attributeId])) {
-                $attributes[$attributeId] = [
-                    'id' => $item['id'],
-                    'attribute_id' => $attributeId,
-                    'name' => $item['attribute_name'],
-                    'type' => $item['attribute_type'],
-                    'items' => [],
-                ];
-            }
-
-            $attributes[$attributeId]['items'][] = [
+        $attributes = array_map(function($item) {
+            return [
                 'id' => $item['id'],
-                'attribute_id' => $attributeId,
+                'attribute_id' => $item['attribute_id'],
                 'value' => $item['value'],
                 'displayValue' => $item['displayValue'],
+                'name' => $item['attribute_name'],
+                'type' => $item['attribute_type'],
             ];
-        }
+        }, $items);
 
-        return array_values($attributes);
+        error_log('Processed attributes for product ' . $productId . ': ' . print_r($attributes, true));
+
+        return $attributes;
     }
 }

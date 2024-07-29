@@ -5,10 +5,10 @@ namespace App\GraphQL;
 use Throwable;
 use RuntimeException;
 use GraphQL\Type\Schema;
-use App\GraphQL\Query;
-use App\GraphQL\Mutation;
 use GraphQL\Type\SchemaConfig;
 use GraphQL\GraphQL as GraphQLBase;
+use App\GraphQL\Query;
+use App\GraphQL\Mutation;
 
 class Controller
 {
@@ -43,39 +43,6 @@ class Controller
         exit;
     }
 
-    // public static function handle()
-    // {
-    //     echo "Debug: Inside Controller::handle()\n";
-    //     try {
-    //         $queryType = Query::defineQueries();
-    //         echo "Debug: Queries defined\n";
-    //         $mutationType = Mutation::defineMutations();
-    //         echo "Debug: Mutations defined\n";
-
-    //         $schema = new Schema(
-    //             (new SchemaConfig())
-    //                 ->setQuery($queryType)
-    //                 ->setMutation($mutationType)
-    //         );
-    //         echo "Debug: Schema created\n";
-
-    //         $output = self::executeQuery($schema);
-    //         echo "Debug: Query executed\n";
-    //     } catch (Throwable $e) {
-    //         echo "Debug: Exception in Controller::handle(): " . $e->getMessage() . "\n";
-    //         echo "Debug: Stack trace: " . $e->getTraceAsString() . "\n";
-    //         $output = [
-    //             'errors' => [
-    //                 [
-    //                     'message' => 'Internal server error: ' . $e->getMessage(),
-    //                     'locations' => [['line' => 1, 'column' => 1]],
-    //                 ]
-    //             ]
-    //         ];
-    //     }
-
-    //     return $output;
-    // }
 
     private static function executeQuery(Schema $schema): array
     {

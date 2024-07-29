@@ -46,6 +46,16 @@ class Product extends Model
         $product['gallery'] = $gallery !== null && is_array($gallery) ? $gallery : [];
 
         $product['prices'] = Price::getByProductId($product['id']);
-        $product['attributes'] = Attribute::getByProductId($product['id']);
+        $attributes = Attribute::getByProductId($product['id']);
+        error_log('Fetched attributes for product ' . $product['id'] . ': ' . print_r($attributes, true));
+        
+        $product['attributes'] = array_map(function($attr) {
+            return [
+                'id' => $attr['id'],
+                'attribute_id' => $attr['attribute_id'],
+                'value' => $attr['value'] ?? null,
+                'displayValue' => $attr['displayValue'] ?? null
+            ];
+        }, $attributes);
     }
 }
