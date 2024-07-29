@@ -2,41 +2,54 @@
 
 namespace App\Models;
 
-abstract class Attribute extends Model {
-    protected $primaryKey = 'id';
-    public $incrementing = false;
-    protected $keyType = 'string';
+use PDO;
 
-    abstract public function getType();
+class Attribute extends Model
+{
+    protected static $table = 'attributes';
 
-    public function findAll() {
-        $query = "SELECT * FROM attributes";
-        $stmt = $this->conn->prepare($query);
-        $stmt->execute();
-        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
-    }
+    public static function getByProductId($productId): array
+    {
+        $query = 
+            'SELECT 
+                pa.*, 
+                a.name as attribute_name, 
+                a.type as attribute_type
+            FROM 
+                product_attributes pa
+            JOIN 
+                ' . static::getTable() . ' a
+            ON 
+                pa.attribute_id = a.id 
+            WHERE 
+                product_id = :productId';
 
-    public function findOne($id) {
-        $query = "SELECT * FROM attributes WHERE id = :id";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':id', $id);
-        $stmt->execute();
-        return $stmt->fetch(\PDO::FETCH_ASSOC);
-    }
+        $stmt = self::getDB()->prepare($query);
+        $stmt->execute(['productId' => $productId]);
+        $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    public function create(array $data) {
-        $query = "INSERT INTO attributes (id, name, type) VALUES (:id, :name, :type)";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':id', $data['id']);
-        $stmt->bindParam(':name', $data['name']);
-        $stmt->bindParam(':type', $data['type']);
+        $attributes = [];
+        foreach ($items as $item) {
+            $attributeId = $item['attribute_id'];
 
-        if ($stmt->execute()) {
-            return $this->findOne($data['id']);
-        } else {
-            throw new \Exception("Failed to create attribute");
+            if (!isset($attributes[$attributeId])) {
+                $attributes[$attributeId] = [
+                    'id' => $item['id'],
+                    'attribute_id' => $attributeId,
+                    'name' => $item['attribute_name'],
+                    'type' => $item['attribute_type'],
+                    'items' => [],
+                ];
+            }
+
+            $attributes[$attributeId]['items'][] = [
+                'id' => $item['id'],
+                'attribute_id' => $attributeId,
+                'value' => $item['value'],
+                'displayValue' => $item['displayValue'],
+            ];
         }
-    }
 
-    // Implement update and delete methods as needed
+        return array_values($attributes);
+    }
 }

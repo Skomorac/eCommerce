@@ -2,58 +2,50 @@
 
 namespace App\Models;
 
-abstract class Product extends Model {
-    protected $primaryKey = 'id';
-    public $incrementing = false;
-    protected $keyType = 'string';
+use PDO;
 
-    abstract public function getType();
+class Product extends Model
+{
+    protected static $table = 'products';
 
-    public function findAll() {
-        $query = "SELECT * FROM products";
-        $stmt = $this->conn->prepare($query);
-        $stmt->execute();
-        $results = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-        
-        foreach ($results as &$result) {
-            $result['gallery'] = json_decode($result['gallery'], true);
+    public static function all(?string $category = null): array
+    {
+        $query = 'SELECT * FROM ' . static::getTable();
+        $params = [];
+
+        if ($category && strtolower($category) !== 'all') {
+            $query .= ' WHERE category = :category';
+            $params['category'] = $category;
         }
-        
-        return $results;
+
+        $stmt = self::getDB()->prepare($query);
+        $stmt->execute($params);
+        $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        foreach ($products as &$product) {
+            self::fetchProductDetails($product);
+        }
+
+        return $products;
     }
 
-    public function findOne($id) {
-        $query = "SELECT * FROM products WHERE id = :id";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':id', $id);
-        $stmt->execute();
-        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
-        
-        if ($result) {
-            $result['gallery'] = json_decode($result['gallery'], true);
+    public static function find(string $value, ?string $column = 'id'): ?array
+    {
+        $product = parent::find($value, $column);
+
+        if ($product) {
+            self::fetchProductDetails($product);
         }
-        
-        return $result;
+
+        return $product;
     }
 
-    public function create(array $data) {
-        $query = "INSERT INTO products (id, name, inStock, gallery, description, category, brand) 
-                  VALUES (:id, :name, :inStock, :gallery, :description, :category, :brand)";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':id', $data['id']);
-        $stmt->bindParam(':name', $data['name']);
-        $stmt->bindParam(':inStock', $data['inStock'], \PDO::PARAM_BOOL);
-        $stmt->bindParam(':gallery', json_encode($data['gallery']));
-        $stmt->bindParam(':description', $data['description']);
-        $stmt->bindParam(':category', $data['category']);
-        $stmt->bindParam(':brand', $data['brand']);
+    private static function fetchProductDetails(&$product)
+    {
+        $gallery = json_decode($product['gallery'], true);
+        $product['gallery'] = $gallery !== null && is_array($gallery) ? $gallery : [];
 
-        if ($stmt->execute()) {
-            return $this->findOne($data['id']);
-        } else {
-            throw new \Exception("Failed to create product");
-        }
+        $product['prices'] = Price::getByProductId($product['id']);
+        $product['attributes'] = Attribute::getByProductId($product['id']);
     }
-
-    // Implement update and delete methods as needed
 }

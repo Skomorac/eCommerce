@@ -3,31 +3,43 @@
 namespace App\Models;
 
 use PDO;
-use Dotenv\Dotenv;
+use App\Config\Database;
+use ReflectionClass;
 
-abstract class Model {
-    protected $conn;
+abstract class Model
+{
+    protected static $db;
+    protected static $table;
 
-    public function __construct() {
-        $dotenv = Dotenv::createImmutable(__DIR__ . '/../../');
-        $dotenv->load();
-
-        $host = $_ENV['DB_HOST'];
-        $db_name = $_ENV['DB_NAME'];
-        $username = $_ENV['DB_USER'];
-        $password = $_ENV['DB_PASS'];
-
-        try {
-            $this->conn = new PDO("mysql:host=$host;dbname=$db_name", $username, $password);
-            $this->conn->exec("set names utf8");
-        } catch (\PDOException $exception) {
-            echo "Connection error: " . $exception->getMessage();
+    public static function getDB()
+    {
+        if (!isset(self::$db)) {
+            self::$db = Database::getInstance()->getConnection();
         }
+        return self::$db;
     }
 
-    public function getConnection() {
-        return $this->conn;
+    public static function getTable()
+    {
+        $calledClass = get_called_class();
+        if (!isset($calledClass::$table)) {
+            $calledClass::$table = strtolower((new ReflectionClass($calledClass))->getShortName()) . 's';
+        }
+        return $calledClass::$table;
     }
 
-    abstract public function findAll();
+    public static function all(): array
+    {
+        $stmt = self::getDB()->query('SELECT * FROM ' . static::getTable());
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public static function find(string $value, ?string $column = 'id'): ?array
+    {
+        $stmt = self::getDB()->prepare('SELECT * FROM ' . static::getTable() . ' WHERE ' . $column . ' = :value LIMIT 1');
+        $stmt->execute(['value' => $value]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $result ?: null;
+    }
 }
