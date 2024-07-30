@@ -9,6 +9,9 @@ const formatPrice = (amount: string): string => {
   return isNaN(parsedAmount) ? amount : parsedAmount.toFixed(2);
 };
 
+const isColorAttribute = (attributeId: string) =>
+  attributeId.toLowerCase() === "color";
+
 interface Attribute {
   id: string;
   attribute_id: string;
@@ -36,7 +39,7 @@ const ProductDetails: React.FC = () => {
   const [selectedAttributes, setSelectedAttributes] = useState<
     Record<string, string>
   >({});
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
@@ -67,50 +70,48 @@ const ProductDetails: React.FC = () => {
   return (
     <div className="container mx-auto px-4 py-8 flex flex-col md:flex-row">
       <div className="w-full md:w-2/3 pr-8" data-testid="product-gallery">
-        <div className="w-full md:w-2/3 pr-8" data-testid="product-gallery">
-          <div className="flex mb-4">
-            <div className="w-1/5 mr-4">
-              {product.gallery.map((img, index) => (
-                <img
-                  key={index}
-                  src={img}
-                  alt={`${product.name} ${index + 1}`}
-                  className="w-full object-cover mb-2 cursor-pointer"
-                  onClick={() => setCurrentImageIndex(index)}
-                />
-              ))}
-            </div>
-            <div className="w-4/5 relative">
+        <div className="flex mb-4">
+          <div className="w-1/5 mr-4">
+            {product.gallery.map((img, index) => (
               <img
-                src={product.gallery[currentImageIndex]}
-                alt={product.name}
-                className="w-full object-contain"
+                key={index}
+                src={img}
+                alt={`${product.name} ${index + 1}`}
+                className="w-full object-cover mb-2 cursor-pointer"
+                onClick={() => setCurrentImageIndex(index)}
               />
-              {product.gallery.length > 1 && (
-                <>
-                  <button
-                    className="absolute top-1/2 left-4 transform -translate-y-1/2 bg-white bg-opacity-50 p-2 rounded-full"
-                    onClick={() =>
-                      setCurrentImageIndex((prev) =>
-                        prev > 0 ? prev - 1 : product.gallery.length - 1
-                      )
-                    }
-                  >
-                    &#9664;
-                  </button>
-                  <button
-                    className="absolute top-1/2 right-4 transform -translate-y-1/2 bg-white bg-opacity-50 p-2 rounded-full"
-                    onClick={() =>
-                      setCurrentImageIndex((prev) =>
-                        prev < product.gallery.length - 1 ? prev + 1 : 0
-                      )
-                    }
-                  >
-                    &#9654;
-                  </button>
-                </>
-              )}
-            </div>
+            ))}
+          </div>
+          <div className="w-4/5 relative">
+            <img
+              src={product.gallery[currentImageIndex]}
+              alt={product.name}
+              className="w-full object-contain"
+            />
+            {product.gallery.length > 1 && (
+              <>
+                <button
+                  className="absolute top-1/2 left-4 transform -translate-y-1/2 bg-white bg-opacity-50 p-2 rounded-full"
+                  onClick={() =>
+                    setCurrentImageIndex((prev) =>
+                      prev > 0 ? prev - 1 : product.gallery.length - 1
+                    )
+                  }
+                >
+                  &#9664;
+                </button>
+                <button
+                  className="absolute top-1/2 right-4 transform -translate-y-1/2 bg-white bg-opacity-50 p-2 rounded-full"
+                  onClick={() =>
+                    setCurrentImageIndex((prev) =>
+                      prev < product.gallery.length - 1 ? prev + 1 : 0
+                    )
+                  }
+                >
+                  &#9654;
+                </button>
+              </>
+            )}
           </div>
         </div>
       </div>
@@ -129,19 +130,40 @@ const ProductDetails: React.FC = () => {
             <h2 className="text-lg font-semibold mb-2">{attributeId}:</h2>
             <div className="flex flex-wrap">
               {attributes.map((attr) => (
-                <button
-                  key={attr.id}
-                  onClick={() =>
-                    handleAttributeChange(attr.attribute_id, attr.value)
-                  }
-                  className={`mr-2 mb-2 px-4 py-2 border ${
-                    selectedAttributes[attr.attribute_id] === attr.value
-                      ? "border-black"
-                      : "border-gray-300"
-                  }`}
-                >
-                  {attr.displayValue}
-                </button>
+                <div key={attr.id} className="relative mr-2 mb-2 group">
+                  <button
+                    onClick={() =>
+                      handleAttributeChange(attr.attribute_id, attr.value)
+                    }
+                    className={`
+                      border rounded transition-all duration-200
+                      ${
+                        isColorAttribute(attributeId)
+                          ? "w-10 h-10"
+                          : "px-3 py-2 text-sm"
+                      }
+                      ${
+                        selectedAttributes[attr.attribute_id] === attr.value
+                          ? isColorAttribute(attributeId)
+                            ? "ring-2 ring-black ring-offset-2"
+                            : "bg-black text-white border-black"
+                          : "border-gray-300 bg-white text-black"
+                      }
+                    `}
+                    style={
+                      isColorAttribute(attributeId)
+                        ? { backgroundColor: attr.value }
+                        : {}
+                    }
+                  >
+                    {!isColorAttribute(attributeId) && attr.displayValue}
+                  </button>
+                  {isColorAttribute(attributeId) && (
+                    <span className="absolute bottom-full left-1/2 transform -translate-x-1/2 bg-black text-white text-xs py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                      {attr.displayValue}
+                    </span>
+                  )}
+                </div>
               ))}
             </div>
           </div>
