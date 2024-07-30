@@ -5,9 +5,22 @@ interface CartModalProps {
   onClose: () => void;
 }
 
+const toggleBodyScroll = (disable: boolean) => {
+  if (disable) {
+    document.body.classList.add("overflow-hidden");
+  } else {
+    document.body.classList.remove("overflow-hidden");
+  }
+};
+
 const CartModal: React.FC<CartModalProps> = ({ onClose }) => {
   const { cartItems, totalAmount, updateCartItem, removeCartItem } =
     useContext(CartContext);
+
+  React.useEffect(() => {
+    toggleBodyScroll(true);
+    return () => toggleBodyScroll(false);
+  }, []);
 
   const handleOverlayClick = (event: React.MouseEvent<HTMLDivElement>) => {
     event.stopPropagation();
@@ -21,7 +34,7 @@ const CartModal: React.FC<CartModalProps> = ({ onClose }) => {
         onClick={handleOverlayClick}
       ></div>
       <div
-        className="fixed right-10 top-28 h-1/2 bg-white w-full md:w-96 lg:w-2/5 z-50 p-6 shadow-lg overflow-auto"
+        className="fixed right-10 top-28 h-1/2 bg-white w-full md:w-96 lg:w-1/4 z-50 p-6 shadow-lg overflow-auto"
         onClick={(event) => event.stopPropagation()}
       >
         <button
@@ -54,9 +67,10 @@ const CartModal: React.FC<CartModalProps> = ({ onClose }) => {
             {cartItems.map((item) => (
               <li
                 key={`${item.id}-${JSON.stringify(item.attributes)}`}
-                className="flex justify-between items-start border border-gray-200 p-4 rounded-lg"
+                className="flex items-center border border-gray-200 p-4 rounded-lg"
               >
-                <div className="flex-grow">
+                {/* Left group: title, price, and attributes */}
+                <div className="flex flex-col w-1/2">
                   <h3 className="text-lg font-semibold">{item.name}</h3>
                   <p className="text-lg font-bold mt-2">
                     {item.currency}
@@ -79,45 +93,51 @@ const CartModal: React.FC<CartModalProps> = ({ onClose }) => {
                       </div>
                     </div>
                   ))}
-                  <div className="flex items-center mt-4">
-                    <button
-                      onClick={() => {
-                        if (item.quantity > 1) {
-                          updateCartItem(
-                            item.id,
-                            item.attributes,
-                            item.quantity - 1
-                          );
-                        } else {
-                          removeCartItem(item.id, item.attributes);
-                        }
-                      }}
-                      className="text-2xl font-bold w-8 h-8 flex items-center justify-center border border-black"
-                      aria-label="Decrease quantity"
-                    >
-                      -
-                    </button>
-                    <span className="mx-4 text-lg">{item.quantity}</span>
-                    <button
-                      onClick={() =>
+                </div>
+
+                {/* Middle group: count buttons */}
+                <div className="flex flex-col items-center justify-center w-1/6">
+                  <button
+                    onClick={() =>
+                      updateCartItem(
+                        item.id,
+                        item.attributes,
+                        item.quantity + 1
+                      )
+                    }
+                    className="text-2xl font-bold w-8 h-8 flex items-center justify-center border border-black"
+                    aria-label="Increase quantity"
+                  >
+                    +
+                  </button>
+                  <span className="my-2 text-lg">{item.quantity}</span>
+                  <button
+                    onClick={() => {
+                      if (item.quantity > 1) {
                         updateCartItem(
                           item.id,
                           item.attributes,
-                          item.quantity + 1
-                        )
+                          item.quantity - 1
+                        );
+                      } else {
+                        removeCartItem(item.id, item.attributes);
                       }
-                      className="text-2xl font-bold w-8 h-8 flex items-center justify-center border border-black"
-                      aria-label="Increase quantity"
-                    >
-                      +
-                    </button>
-                  </div>
+                    }}
+                    className="text-2xl font-bold w-8 h-8 flex items-center justify-center border border-black"
+                    aria-label="Decrease quantity"
+                  >
+                    -
+                  </button>
                 </div>
-                <img
-                  src={item.image}
-                  alt={item.name}
-                  className="w-32 h-32 object-cover ml-4"
-                />
+
+                {/* Right group: image */}
+                <div className="w-1/2 flex justify-end">
+                  <img
+                    src={item.image}
+                    alt={item.name}
+                    className="w-40 h-40 object-cover"
+                  />
+                </div>
               </li>
             ))}
           </ul>
