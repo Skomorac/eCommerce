@@ -91,24 +91,50 @@ const ProductDetails: React.FC = () => {
             {product.gallery.length > 1 && (
               <>
                 <button
-                  className="absolute top-1/2 left-4 transform -translate-y-1/2 bg-white bg-opacity-50 p-2 rounded-full"
+                  className="absolute top-1/2 left-4 transform -translate-y-1/2 bg-black bg-opacity-70 text-white p-2 rounded-full hover:bg-opacity-100 transition-all duration-200"
                   onClick={() =>
                     setCurrentImageIndex((prev) =>
                       prev > 0 ? prev - 1 : product.gallery.length - 1
                     )
                   }
                 >
-                  &#9664;
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    className="w-6 h-6"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M15 19l-7-7 7-7"
+                    />
+                  </svg>
                 </button>
                 <button
-                  className="absolute top-1/2 right-4 transform -translate-y-1/2 bg-white bg-opacity-50 p-2 rounded-full"
+                  className="absolute top-1/2 right-4 transform -translate-y-1/2 bg-black bg-opacity-70 text-white p-2 rounded-full hover:bg-opacity-100 transition-all duration-200"
                   onClick={() =>
                     setCurrentImageIndex((prev) =>
                       prev < product.gallery.length - 1 ? prev + 1 : 0
                     )
                   }
                 >
-                  &#9654;
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    className="w-6 h-6"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 5l7 7-7 7"
+                    />
+                  </svg>
                 </button>
               </>
             )}
