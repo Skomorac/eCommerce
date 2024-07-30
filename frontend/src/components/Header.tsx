@@ -1,21 +1,25 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import { useQuery } from "@apollo/client";
 import { useNavigate } from "react-router-dom";
 import Logo from "./svg_components/Logo";
 import Cart from "./svg_components/Cart";
 import Navigation from "./Navigation";
 import { GET_CATEGORIES } from "../graphql/queries";
+import { CartContext } from "../context/CartContext";
 
 const Header: React.FC = () => {
-  const { loading, error, data } = useQuery(GET_CATEGORIES);
   const [activeCategory, setActiveCategory] = useState<string>("all");
+  const { loading, error, data } = useQuery(GET_CATEGORIES);
   const navigate = useNavigate();
+  const { cartItemsCount } = useContext(CartContext);
 
-  useEffect(() => {
-    if (data && data.categories.length > 0) {
-      setActiveCategory("all");
-    }
-  }, [data]);
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error.message}</p>;
+
+  const categories = data.categories.map((cat: { name: string }) => cat.name);
+  if (!categories.includes("all")) {
+    categories.unshift("all");
+  }
 
   const handleCategoryChange = (category: string) => {
     setActiveCategory(category);
@@ -26,14 +30,6 @@ const Header: React.FC = () => {
     setActiveCategory("all");
     navigate("/");
   };
-
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error.message}</p>;
-
-  const categories = data.categories.map((cat: { name: string }) => cat.name);
-  if (!categories.includes("all")) {
-    categories.unshift("all");
-  }
 
   return (
     <header className="flex items-center justify-between px-4 py-4 bg-white relative">
@@ -49,7 +45,10 @@ const Header: React.FC = () => {
         onClick={handleLogoClick}
       />
       <div className="flex-1 flex justify-end">
-        <Cart className="w-6 h-6 text-text hover:text-primary" />
+        <Cart
+          className="w-6 h-6 text-text hover:text-primary"
+          itemsCount={cartItemsCount}
+        />
       </div>
     </header>
   );
