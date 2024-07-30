@@ -10,7 +10,6 @@ const CartModal: React.FC<CartModalProps> = ({ onClose }) => {
     useContext(CartContext);
 
   const handleOverlayClick = (event: React.MouseEvent<HTMLDivElement>) => {
-    // Prevent the click from propagating to the modal container
     event.stopPropagation();
     onClose();
   };
@@ -51,113 +50,102 @@ const CartModal: React.FC<CartModalProps> = ({ onClose }) => {
         {cartItems.length === 0 ? (
           <p>Your cart is empty</p>
         ) : (
-          <ul className="divide-y divide-gray-200">
+          <ul className="space-y-4">
             {cartItems.map((item) => (
               <li
                 key={`${item.id}-${JSON.stringify(item.attributes)}`}
-                className="py-4 flex justify-between items-start"
+                className="flex justify-between items-start border border-gray-200 p-4 rounded-lg"
               >
-                <div className="flex items-start">
-                  <img
-                    src={item.image}
-                    alt={item.name}
-                    className="w-16 h-16 object-cover mr-4"
-                  />
-                  <div>
-                    <h3 className="text-sm font-semibold">{item.name}</h3>
-                    <p className="text-sm text-gray-500">
-                      {Object.entries(item.attributes).map(([key, value]) => (
-                        <span key={key}>
-                          {key}: {value}{" "}
-                        </span>
-                      ))}
-                    </p>
-                    <p className="text-sm">
-                      {item.currency}
-                      {item.price.toFixed(2)}
-                    </p>
-                    <div className="flex items-center mt-2">
-                      <button
-                        onClick={() => {
-                          if (item.quantity > 1) {
-                            updateCartItem(
-                              item.id,
-                              item.attributes,
-                              item.quantity - 1
-                            );
-                          } else {
-                            removeCartItem(item.id, item.attributes);
-                          }
-                        }}
-                        className="text-gray-500 hover:text-gray-700"
-                        aria-label="Decrease quantity"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="h-6 w-6"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M20 12H4"
-                          />
-                        </svg>
-                      </button>
-                      <span className="mx-2">{item.quantity}</span>
-                      <button
-                        onClick={() =>
+                <div className="flex-grow">
+                  <h3 className="text-lg font-semibold">{item.name}</h3>
+                  <p className="text-lg font-bold mt-2">
+                    {item.currency}
+                    {item.price.toFixed(2)}
+                  </p>
+                  {Object.entries(item.attributes).map(([key, value]) => (
+                    <div key={key} className="mt-2">
+                      <h4 className="text-sm font-semibold">{key}:</h4>
+                      <div className="flex flex-wrap mt-1">
+                        {key.toLowerCase() === "color" ? (
+                          <div
+                            className="w-6 h-6 border border-gray-300"
+                            style={{ backgroundColor: value as string }}
+                          ></div>
+                        ) : (
+                          <span className="mr-2 mb-1 px-2 py-1 text-sm border rounded">
+                            {value as string}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                  <div className="flex items-center mt-4">
+                    <button
+                      onClick={() => {
+                        if (item.quantity > 1) {
                           updateCartItem(
                             item.id,
                             item.attributes,
-                            item.quantity + 1
-                          )
+                            item.quantity - 1
+                          );
+                        } else {
+                          removeCartItem(item.id, item.attributes);
                         }
-                        className="text-gray-500 hover:text-gray-700"
-                        aria-label="Increase quantity"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="h-6 w-6"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M12 4v16m8-8H4"
-                          />
-                        </svg>
-                      </button>
-                    </div>
+                      }}
+                      className="text-2xl font-bold w-8 h-8 flex items-center justify-center border border-black"
+                      aria-label="Decrease quantity"
+                    >
+                      -
+                    </button>
+                    <span className="mx-4 text-lg">{item.quantity}</span>
+                    <button
+                      onClick={() =>
+                        updateCartItem(
+                          item.id,
+                          item.attributes,
+                          item.quantity + 1
+                        )
+                      }
+                      className="text-2xl font-bold w-8 h-8 flex items-center justify-center border border-black"
+                      aria-label="Increase quantity"
+                    >
+                      +
+                    </button>
                   </div>
                 </div>
+                <img
+                  src={item.image}
+                  alt={item.name}
+                  className="w-32 h-32 object-cover ml-4"
+                />
               </li>
             ))}
           </ul>
         )}
-        <div className="mt-4">
-          <p className="text-lg font-semibold">
-            Total: {totalAmount.toFixed(2)}
-          </p>
+        <div className="mt-8">
+          <div className="flex justify-between items-center text-xl font-semibold mb-4">
+            <span>Total</span>
+            <span>
+              {cartItems[0]?.currency}
+              {totalAmount.toFixed(2)}
+            </span>
+          </div>
           <button
             onClick={() => {
               // Perform the GraphQL mutation here
               onClose();
             }}
-            className={`${
-              cartItems.length === 0
-                ? "bg-gray-400 cursor-not-allowed"
-                : "bg-green-500 hover:bg-green-600"
-            } text-white w-full py-2 rounded-lg mt-4`}
+            className={`
+              w-full py-3 text-lg font-semibold text-white
+              ${
+                cartItems.length === 0
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-green-500 hover:bg-green-600"
+              }
+            `}
             disabled={cartItems.length === 0}
           >
-            Place Order
+            PLACE ORDER
           </button>
         </div>
       </div>
