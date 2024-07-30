@@ -16,8 +16,12 @@ interface CartContextType {
   totalAmount: number;
   incrementCartCount: () => void;
   addToCart: (item: CartItem) => void;
-  updateCartItem: (id: string, quantity: number) => void;
-  removeCartItem: (id: string) => void;
+  updateCartItem: (
+    id: string,
+    attributes: Record<string, string>,
+    quantity: number
+  ) => void;
+  removeCartItem: (id: string, attributes: Record<string, string>) => void;
 }
 
 export const CartContext = React.createContext<CartContextType>({
@@ -70,14 +74,31 @@ export const CartProvider: FC<CartProviderProps> = ({ children }) => {
     });
   };
 
-  const updateCartItem = (id: string, quantity: number) => {
+  const updateCartItem = (
+    id: string,
+    attributes: Record<string, string>,
+    quantity: number
+  ) => {
     setCartItems((prevItems) =>
-      prevItems.map((item) => (item.id === id ? { ...item, quantity } : item))
+      prevItems.map((item) =>
+        item.id === id &&
+        JSON.stringify(item.attributes) === JSON.stringify(attributes)
+          ? { ...item, quantity }
+          : item
+      )
     );
   };
 
-  const removeCartItem = (id: string) => {
-    setCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
+  const removeCartItem = (id: string, attributes: Record<string, string>) => {
+    setCartItems((prevItems) =>
+      prevItems.filter(
+        (item) =>
+          !(
+            item.id === id &&
+            JSON.stringify(item.attributes) === JSON.stringify(attributes)
+          )
+      )
+    );
   };
 
   return (

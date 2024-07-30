@@ -22,7 +22,7 @@ const CartModal: React.FC<CartModalProps> = ({ onClose }) => {
         onClick={handleOverlayClick}
       ></div>
       <div
-        className="fixed right-10 top-28 h-1/2 bg-white w-full md:w-96 lg:w-1/5 z-50 p-6 shadow-lg overflow-auto"
+        className="fixed right-10 top-28 h-1/2 bg-white w-full md:w-96 lg:w-2/5 z-50 p-6 shadow-lg overflow-auto"
         onClick={(event) => event.stopPropagation()}
       >
         <button
@@ -54,7 +54,7 @@ const CartModal: React.FC<CartModalProps> = ({ onClose }) => {
           <ul className="divide-y divide-gray-200">
             {cartItems.map((item) => (
               <li
-                key={item.id}
+                key={`${item.id}-${JSON.stringify(item.attributes)}`}
                 className="py-4 flex justify-between items-start"
               >
                 <div className="flex items-start">
@@ -80,9 +80,13 @@ const CartModal: React.FC<CartModalProps> = ({ onClose }) => {
                       <button
                         onClick={() => {
                           if (item.quantity > 1) {
-                            updateCartItem(item.id, item.quantity - 1);
+                            updateCartItem(
+                              item.id,
+                              item.attributes,
+                              item.quantity - 1
+                            );
                           } else {
-                            removeCartItem(item.id);
+                            removeCartItem(item.id, item.attributes);
                           }
                         }}
                         className="text-gray-500 hover:text-gray-700"
@@ -106,7 +110,11 @@ const CartModal: React.FC<CartModalProps> = ({ onClose }) => {
                       <span className="mx-2">{item.quantity}</span>
                       <button
                         onClick={() =>
-                          updateCartItem(item.id, item.quantity + 1)
+                          updateCartItem(
+                            item.id,
+                            item.attributes,
+                            item.quantity + 1
+                          )
                         }
                         className="text-gray-500 hover:text-gray-700"
                         aria-label="Increase quantity"
