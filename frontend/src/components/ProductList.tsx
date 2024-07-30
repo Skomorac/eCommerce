@@ -12,12 +12,25 @@ interface ProductListProps {
 interface Product {
   id: string;
   name: string;
-  category: string;
-  gallery: string[];
-  prices: { amount: string; currency: { symbol: string } }[];
   inStock: boolean;
+  gallery: string[];
+  description: string;
+  category: string;
+  brand: string;
+  prices: {
+    amount: string;
+    currency: {
+      label: string;
+      symbol: string;
+    };
+  }[];
+  attributes: {
+    id: string;
+    attribute_id: string;
+    value: string;
+    displayValue: string;
+  }[];
 }
-
 interface ProductListState {
   hoveredProductId: string | null;
   message: string | null;

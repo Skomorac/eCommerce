@@ -6,7 +6,7 @@ interface CartItem {
   quantity: number;
   price: number;
   currency: string;
-  attributes: Record<string, string>; // Attribute selections
+  attributes: Record<string, string>;
   image: string;
 }
 
@@ -59,6 +59,7 @@ export const CartProvider: FC<CartProviderProps> = ({ children }) => {
   };
 
   const addToCart = (item: CartItem) => {
+    console.log("Adding item to cart:", item);
     setCartItems((prevItems) => {
       const existingItemIndex = prevItems.findIndex(
         (i) =>
@@ -66,10 +67,17 @@ export const CartProvider: FC<CartProviderProps> = ({ children }) => {
           JSON.stringify(i.attributes) === JSON.stringify(item.attributes)
       );
       if (existingItemIndex > -1) {
-        const updatedItems = [...prevItems];
-        updatedItems[existingItemIndex].quantity += item.quantity;
+        console.log("Updating existing item in cart");
+        const updatedItems = prevItems.map((cartItem, index) => {
+          if (index === existingItemIndex) {
+            return { ...cartItem, quantity: cartItem.quantity + item.quantity };
+          }
+          return cartItem;
+        });
+        console.log("Updated cart items:", updatedItems);
         return updatedItems;
       }
+      console.log("Adding new item to cart");
       return [...prevItems, item];
     });
   };
