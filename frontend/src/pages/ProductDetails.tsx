@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@apollo/client";
 import { GET_PRODUCT } from "../graphql/queries";
 import parse from "html-react-parser";
+import { CartContext } from "../context/CartContext";
 
 const formatPrice = (amount: string): string => {
   const parsedAmount = parseFloat(amount);
@@ -40,6 +41,7 @@ const ProductDetails: React.FC = () => {
     Record<string, string>
   >({});
   const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
+  const { addToCart } = useContext(CartContext);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
@@ -54,8 +56,19 @@ const ProductDetails: React.FC = () => {
     (attr) => selectedAttributes[attr.attribute_id]
   );
 
-  const addToCart = () => {
-    console.log("Added to cart:", { ...product, selectedAttributes });
+  const handleAddToCart = () => {
+    if (isProductConfigured && product.inStock) {
+      const cartItem = {
+        id: product.id,
+        name: product.name,
+        quantity: 1,
+        price: parseFloat(product.prices[0].amount),
+        currency: product.prices[0].currency.symbol,
+        attributes: selectedAttributes,
+        image: product.gallery[0],
+      };
+      addToCart(cartItem);
+    }
   };
 
   // Group attributes by attribute_id
@@ -210,7 +223,7 @@ const ProductDetails: React.FC = () => {
               : "bg-gray-400"
           }`}
           disabled={!isProductConfigured || !product.inStock}
-          onClick={addToCart}
+          onClick={handleAddToCart}
           data-testid="add-to-cart"
         >
           {product.inStock ? "ADD TO CART" : "OUT OF STOCK"}

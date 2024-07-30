@@ -6,9 +6,11 @@ import Cart from "./svg_components/Cart";
 import Navigation from "./Navigation";
 import { GET_CATEGORIES } from "../graphql/queries";
 import { CartContext } from "../context/CartContext";
+import CartModal from "./CartModal";
 
 const Header: React.FC = () => {
   const [activeCategory, setActiveCategory] = useState<string>("all");
+  const [isCartModalOpen, setCartModalOpen] = useState<boolean>(false);
   const { loading, error, data } = useQuery(GET_CATEGORIES);
   const navigate = useNavigate();
   const { cartItemsCount } = useContext(CartContext);
@@ -31,6 +33,10 @@ const Header: React.FC = () => {
     navigate("/");
   };
 
+  const toggleCartModal = () => {
+    setCartModalOpen(!isCartModalOpen);
+  };
+
   return (
     <header className="flex items-center justify-between px-4 py-4 bg-white relative">
       <div className="flex-1">
@@ -41,15 +47,19 @@ const Header: React.FC = () => {
         />
       </div>
       <Logo
-        className="absolute left-1/2 transform -translate-x-1/2 w-12 h-12"
+        className="absolute left-1/2 transform -translate-x-1/2 w-12 h-12 cursor-pointer"
         onClick={handleLogoClick}
+        aria-label="Go to homepage"
       />
       <div className="flex-1 flex justify-end">
         <Cart
-          className="w-6 h-6 text-text hover:text-primary"
+          className="w-6 h-6 text-text hover:text-primary cursor-pointer"
           itemsCount={cartItemsCount}
+          onClick={toggleCartModal}
+          aria-label="View cart"
         />
       </div>
+      {isCartModalOpen && <CartModal onClose={toggleCartModal} />}
     </header>
   );
 };

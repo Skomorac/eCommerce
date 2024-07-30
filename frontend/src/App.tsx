@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Header from "./components/Header";
 import HomePage from "./components/HomePage";
 import ProductDetails from "./pages/ProductDetails";
-import { CartContext } from "./context/CartContext";
+import { CartProvider } from "./context/CartContext";
 import "./App.css";
 
 interface AppState {
@@ -23,12 +23,7 @@ class App extends Component<{}, AppState> {
 
   render() {
     return (
-      <CartContext.Provider
-        value={{
-          cartItemsCount: this.state.cartItemsCount,
-          incrementCartCount: this.incrementCartCount,
-        }}
-      >
+      <CartProvider>
         <Router>
           <div className="App p-4 md:p-8">
             <Header />
@@ -39,7 +34,7 @@ class App extends Component<{}, AppState> {
             </Routes>
           </div>
         </Router>
-      </CartContext.Provider>
+      </CartProvider>
     );
   }
 }

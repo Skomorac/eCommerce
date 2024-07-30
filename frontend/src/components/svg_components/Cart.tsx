@@ -6,6 +6,7 @@ interface CartProps {
   buttonClassName?: string;
   imgClassName?: string;
   itemsCount: number;
+  onClick?: () => void; // Add onClick prop
 }
 
 class Cart extends React.Component<CartProps> {
@@ -15,12 +16,15 @@ class Cart extends React.Component<CartProps> {
       buttonClassName = "",
       imgClassName = "",
       itemsCount,
+      onClick, // Destructure onClick prop
     } = this.props;
 
     return (
       <button
         data-testid="cart-btn"
         className={`${className} ${buttonClassName} relative`}
+        onClick={onClick} // Use onClick prop
+        aria-label="View cart" // Add aria-label for accessibility
       >
         <img
           src={cartIcon}

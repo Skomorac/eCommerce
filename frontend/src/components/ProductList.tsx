@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useQuery } from "@apollo/client";
 import { GET_PRODUCTS } from "../graphql/queries";
 import QuickShop from "./svg_components/QuickShop";
@@ -51,7 +51,17 @@ class ProductListComponent extends React.Component<
   addToCart = (product: Product, e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     e.stopPropagation();
-    this.context.incrementCartCount();
+    const defaultAttributes = {}; // Set default attributes if needed
+    const cartItem = {
+      id: product.id,
+      name: product.name,
+      quantity: 1,
+      price: parseFloat(product.prices[0].amount),
+      currency: product.prices[0].currency.symbol,
+      attributes: defaultAttributes,
+      image: product.gallery[0],
+    };
+    this.context.addToCart(cartItem);
     this.setState({ message: `${product.name} added to cart` });
     setTimeout(() => this.setState({ message: null }), 3000);
   };
@@ -110,7 +120,7 @@ class ProductListComponent extends React.Component<
               <div className="absolute bottom-28 right-12 transform translate-x-1/2 translate-y-1/2">
                 <QuickShop
                   className="bg-primary text-white rounded-full p-2 shadow-md transition-transform duration-200 transform hover:scale-110 hover:bg-accent cursor-pointer"
-                  onClick={(e) => this.addToCart(product, e)}
+                  product={product} // Pass the product details to QuickShop
                 />
               </div>
             )}
