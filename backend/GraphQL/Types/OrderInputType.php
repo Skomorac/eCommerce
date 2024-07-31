@@ -25,6 +25,9 @@ class OrderInputType extends InputObjectType
                 'items' => [
                     'type' => Type::nonNull(Type::listOf(OrderItemInputType::getInstance()))
                 ],
+                'totalAmount' => [
+                    'type' => Type::nonNull(Type::float()),
+                ],
             ],
         ]);
     }

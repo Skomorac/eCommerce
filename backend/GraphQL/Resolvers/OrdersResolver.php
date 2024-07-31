@@ -25,17 +25,20 @@ class OrdersResolver
                 throw new Exception('Items are required');
             }
 
-            $totalAmount = 0;
+            if (!isset($args['totalAmount'])) {
+                throw new Exception('Total amount is required');
+            }
+
+            $totalAmount = $args['totalAmount'];
             $currency = null;
 
-            // Calculate total amount and prepare order items
+            // Prepare order items
             $orderItems = [];
             foreach ($args['items'] as $index => $item) {
                 error_log('Processing item ' . ($index + 1) . ': ' . json_encode($item));
                 self::validateAndMapItemAttributes($db, $item);
 
                 $productDetails = self::calculatePaidAmount($db, $item);
-                $totalAmount += $productDetails['paidAmount'];
                 $currency = $productDetails['paidCurrency'];
 
                 $orderItems[] = $productDetails;

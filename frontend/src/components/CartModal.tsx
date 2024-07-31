@@ -45,6 +45,7 @@ const CartModal: React.FC<CartModalProps> = ({ onClose }) => {
             })
           ),
         })),
+        totalAmount: totalAmount, // Include the total amount here
       };
 
       console.log(

@@ -8,14 +8,14 @@ class Order extends Model
 {
     protected static $table = 'orders';
 
-    public static function create(): array
+    public static function create(float $totalAmount, string $currency): array
     {
         $db = self::getDB();
         $query = 'INSERT INTO ' . static::getTable() . ' (total_amount, total_currency) VALUES (:amount, :currency)';
         $stmt = $db->prepare($query);
         $result = $stmt->execute([
-            ':amount' => 0,
-            ':currency' => 'USD'
+            ':amount' => $totalAmount,
+            ':currency' => $currency
         ]);
 
         if (!$result) {
