@@ -1,9 +1,9 @@
-// src/graphql/client.ts
-
 import { ApolloClient, InMemoryCache } from "@apollo/client";
 
+const isProd = process.env.NODE_ENV === "production";
+
 const client = new ApolloClient({
-  uri: "http://localhost/graphql", // Replace with your actual GraphQL endpoint
+  uri: isProd ? "https://shop.skomorac.in/graphql" : "http://localhost/graphql",
   cache: new InMemoryCache(),
 });
 
