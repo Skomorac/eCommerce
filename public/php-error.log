@@ -19792,3 +19792,1526 @@ Test log entry: 2024-07-31 13:32:15
 [31-Jul-2024 13:32:15 UTC] Order created with ID: 4
 [31-Jul-2024 13:32:15 UTC] Inserting order item
 [31-Jul-2024 13:32:15 UTC] Order placement completed successfully
+Test log entry: 2024-07-31 13:37:25
+Test log entry: 2024-07-31 13:37:25
+Test log entry: 2024-07-31 13:37:25
+[31-Jul-2024 13:37:25 UTC] Categories fetched successfully: 4
+[31-Jul-2024 13:37:25 UTC] Fetched items for product apple-airpods-pro: Array
+(
+)
+
+[31-Jul-2024 13:37:25 UTC] Processed attributes for product apple-airpods-pro: Array
+(
+)
+
+[31-Jul-2024 13:37:25 UTC] Fetched attributes for product apple-airpods-pro: Array
+(
+)
+
+[31-Jul-2024 13:37:25 UTC] Fetched items for product apple-airtag: Array
+(
+)
+
+[31-Jul-2024 13:37:25 UTC] Processed attributes for product apple-airtag: Array
+(
+)
+
+[31-Jul-2024 13:37:25 UTC] Fetched attributes for product apple-airtag: Array
+(
+)
+
+[31-Jul-2024 13:37:25 UTC] Fetched items for product apple-imac-2021: Array
+(
+    [0] => Array
+        (
+            [id] => apple-imac-2021-capacity-256GB
+            [attribute_id] => capacity
+            [value] => 256GB
+            [displayValue] => 256GB
+            [attribute_name] => capacity
+            [attribute_type] => text
+        )
+
+    [1] => Array
+        (
+            [id] => apple-imac-2021-capacity-512GB
+            [attribute_id] => capacity
+            [value] => 512GB
+            [displayValue] => 512GB
+            [attribute_name] => capacity
+            [attribute_type] => text
+        )
+
+    [2] => Array
+        (
+            [id] => apple-imac-2021-Touch ID in keyboard-No
+            [attribute_id] => Touch ID in keyboard
+            [value] => No
+            [displayValue] => No
+            [attribute_name] => Touch ID in keyboard
+            [attribute_type] => text
+        )
+
+    [3] => Array
+        (
+            [id] => apple-imac-2021-Touch ID in keyboard-Yes
+            [attribute_id] => Touch ID in keyboard
+            [value] => Yes
+            [displayValue] => Yes
+            [attribute_name] => Touch ID in keyboard
+            [attribute_type] => text
+        )
+
+    [4] => Array
+        (
+            [id] => apple-imac-2021-With USB 3 ports-No
+            [attribute_id] => With USB 3 ports
+            [value] => No
+            [displayValue] => No
+            [attribute_name] => With USB 3 ports
+            [attribute_type] => text
+        )
+
+    [5] => Array
+        (
+            [id] => apple-imac-2021-With USB 3 ports-Yes
+            [attribute_id] => With USB 3 ports
+            [value] => Yes
+            [displayValue] => Yes
+            [attribute_name] => With USB 3 ports
+            [attribute_type] => text
+        )
+
+)
+
+[31-Jul-2024 13:37:25 UTC] Processed attributes for product apple-imac-2021: Array
+(
+    [0] => Array
+        (
+            [id] => apple-imac-2021-capacity-256GB
+            [attribute_id] => capacity
+            [value] => 256GB
+            [displayValue] => 256GB
+            [name] => capacity
+            [type] => text
+        )
+
+    [1] => Array
+        (
+            [id] => apple-imac-2021-capacity-512GB
+            [attribute_id] => capacity
+            [value] => 512GB
+            [displayValue] => 512GB
+            [name] => capacity
+            [type] => text
+        )
+
+    [2] => Array
+        (
+            [id] => apple-imac-2021-Touch ID in keyboard-No
+            [attribute_id] => Touch ID in keyboard
+            [value] => No
+            [displayValue] => No
+            [name] => Touch ID in keyboard
+            [type] => text
+        )
+
+    [3] => Array
+        (
+            [id] => apple-imac-2021-Touch ID in keyboard-Yes
+            [attribute_id] => Touch ID in keyboard
+            [value] => Yes
+            [displayValue] => Yes
+            [name] => Touch ID in keyboard
+            [type] => text
+        )
+
+    [4] => Array
+        (
+            [id] => apple-imac-2021-With USB 3 ports-No
+            [attribute_id] => With USB 3 ports
+            [value] => No
+            [displayValue] => No
+            [name] => With USB 3 ports
+            [type] => text
+        )
+
+    [5] => Array
+        (
+            [id] => apple-imac-2021-With USB 3 ports-Yes
+            [attribute_id] => With USB 3 ports
+            [value] => Yes
+            [displayValue] => Yes
+            [name] => With USB 3 ports
+            [type] => text
+        )
+
+)
+
+[31-Jul-2024 13:37:25 UTC] Fetched attributes for product apple-imac-2021: Array
+(
+    [0] => Array
+        (
+            [id] => apple-imac-2021-capacity-256GB
+            [attribute_id] => capacity
+            [value] => 256GB
+            [displayValue] => 256GB
+            [name] => capacity
+            [type] => text
+        )
+
+    [1] => Array
+        (
+            [id] => apple-imac-2021-capacity-512GB
+            [attribute_id] => capacity
+            [value] => 512GB
+            [displayValue] => 512GB
+            [name] => capacity
+            [type] => text
+        )
+
+    [2] => Array
+        (
+            [id] => apple-imac-2021-Touch ID in keyboard-No
+            [attribute_id] => Touch ID in keyboard
+            [value] => No
+            [displayValue] => No
+            [name] => Touch ID in keyboard
+            [type] => text
+        )
+
+    [3] => Array
+        (
+            [id] => apple-imac-2021-Touch ID in keyboard-Yes
+            [attribute_id] => Touch ID in keyboard
+            [value] => Yes
+            [displayValue] => Yes
+            [name] => Touch ID in keyboard
+            [type] => text
+        )
+
+    [4] => Array
+        (
+            [id] => apple-imac-2021-With USB 3 ports-No
+            [attribute_id] => With USB 3 ports
+            [value] => No
+            [displayValue] => No
+            [name] => With USB 3 ports
+            [type] => text
+        )
+
+    [5] => Array
+        (
+            [id] => apple-imac-2021-With USB 3 ports-Yes
+            [attribute_id] => With USB 3 ports
+            [value] => Yes
+            [displayValue] => Yes
+            [name] => With USB 3 ports
+            [type] => text
+        )
+
+)
+
+[31-Jul-2024 13:37:25 UTC] Fetched items for product apple-iphone-12-pro: Array
+(
+    [0] => Array
+        (
+            [id] => apple-iphone-12-pro-capacity-1T
+            [attribute_id] => capacity
+            [value] => 1T
+            [displayValue] => 1T
+            [attribute_name] => capacity
+            [attribute_type] => text
+        )
+
+    [1] => Array
+        (
+            [id] => apple-iphone-12-pro-capacity-512G
+            [attribute_id] => capacity
+            [value] => 512G
+            [displayValue] => 512G
+            [attribute_name] => capacity
+            [attribute_type] => text
+        )
+
+    [2] => Array
+        (
+            [id] => apple-iphone-12-pro-color-Black
+            [attribute_id] => color
+            [value] => #000000
+            [displayValue] => Black
+            [attribute_name] => color
+            [attribute_type] => swatch
+        )
+
+    [3] => Array
+        (
+            [id] => apple-iphone-12-pro-color-Blue
+            [attribute_id] => color
+            [value] => #030BFF
+            [displayValue] => Blue
+            [attribute_name] => color
+            [attribute_type] => swatch
+        )
+
+    [4] => Array
+        (
+            [id] => apple-iphone-12-pro-color-Cyan
+            [attribute_id] => color
+            [value] => #03FFF7
+            [displayValue] => Cyan
+            [attribute_name] => color
+            [attribute_type] => swatch
+        )
+
+    [5] => Array
+        (
+            [id] => apple-iphone-12-pro-color-Green
+            [attribute_id] => color
+            [value] => #44FF03
+            [displayValue] => Green
+            [attribute_name] => color
+            [attribute_type] => swatch
+        )
+
+    [6] => Array
+        (
+            [id] => apple-iphone-12-pro-color-White
+            [attribute_id] => color
+            [value] => #FFFFFF
+            [displayValue] => White
+            [attribute_name] => color
+            [attribute_type] => swatch
+        )
+
+)
+
+[31-Jul-2024 13:37:25 UTC] Processed attributes for product apple-iphone-12-pro: Array
+(
+    [0] => Array
+        (
+            [id] => apple-iphone-12-pro-capacity-1T
+            [attribute_id] => capacity
+            [value] => 1T
+            [displayValue] => 1T
+            [name] => capacity
+            [type] => text
+        )
+
+    [1] => Array
+        (
+            [id] => apple-iphone-12-pro-capacity-512G
+            [attribute_id] => capacity
+            [value] => 512G
+            [displayValue] => 512G
+            [name] => capacity
+            [type] => text
+        )
+
+    [2] => Array
+        (
+            [id] => apple-iphone-12-pro-color-Black
+            [attribute_id] => color
+            [value] => #000000
+            [displayValue] => Black
+            [name] => color
+            [type] => swatch
+        )
+
+    [3] => Array
+        (
+            [id] => apple-iphone-12-pro-color-Blue
+            [attribute_id] => color
+            [value] => #030BFF
+            [displayValue] => Blue
+            [name] => color
+            [type] => swatch
+        )
+
+    [4] => Array
+        (
+            [id] => apple-iphone-12-pro-color-Cyan
+            [attribute_id] => color
+            [value] => #03FFF7
+            [displayValue] => Cyan
+            [name] => color
+            [type] => swatch
+        )
+
+    [5] => Array
+        (
+            [id] => apple-iphone-12-pro-color-Green
+            [attribute_id] => color
+            [value] => #44FF03
+            [displayValue] => Green
+            [name] => color
+            [type] => swatch
+        )
+
+    [6] => Array
+        (
+            [id] => apple-iphone-12-pro-color-White
+            [attribute_id] => color
+            [value] => #FFFFFF
+            [displayValue] => White
+            [name] => color
+            [type] => swatch
+        )
+
+)
+
+[31-Jul-2024 13:37:25 UTC] Fetched attributes for product apple-iphone-12-pro: Array
+(
+    [0] => Array
+        (
+            [id] => apple-iphone-12-pro-capacity-1T
+            [attribute_id] => capacity
+            [value] => 1T
+            [displayValue] => 1T
+            [name] => capacity
+            [type] => text
+        )
+
+    [1] => Array
+        (
+            [id] => apple-iphone-12-pro-capacity-512G
+            [attribute_id] => capacity
+            [value] => 512G
+            [displayValue] => 512G
+            [name] => capacity
+            [type] => text
+        )
+
+    [2] => Array
+        (
+            [id] => apple-iphone-12-pro-color-Black
+            [attribute_id] => color
+            [value] => #000000
+            [displayValue] => Black
+            [name] => color
+            [type] => swatch
+        )
+
+    [3] => Array
+        (
+            [id] => apple-iphone-12-pro-color-Blue
+            [attribute_id] => color
+            [value] => #030BFF
+            [displayValue] => Blue
+            [name] => color
+            [type] => swatch
+        )
+
+    [4] => Array
+        (
+            [id] => apple-iphone-12-pro-color-Cyan
+            [attribute_id] => color
+            [value] => #03FFF7
+            [displayValue] => Cyan
+            [name] => color
+            [type] => swatch
+        )
+
+    [5] => Array
+        (
+            [id] => apple-iphone-12-pro-color-Green
+            [attribute_id] => color
+            [value] => #44FF03
+            [displayValue] => Green
+            [name] => color
+            [type] => swatch
+        )
+
+    [6] => Array
+        (
+            [id] => apple-iphone-12-pro-color-White
+            [attribute_id] => color
+            [value] => #FFFFFF
+            [displayValue] => White
+            [name] => color
+            [type] => swatch
+        )
+
+)
+
+[31-Jul-2024 13:37:25 UTC] Fetched items for product huarache-x-stussy-le: Array
+(
+    [0] => Array
+        (
+            [id] => huarache-x-stussy-le-size-40
+            [attribute_id] => size
+            [value] => 40
+            [displayValue] => 40
+            [attribute_name] => size
+            [attribute_type] => text
+        )
+
+    [1] => Array
+        (
+            [id] => huarache-x-stussy-le-size-41
+            [attribute_id] => size
+            [value] => 41
+            [displayValue] => 41
+            [attribute_name] => size
+            [attribute_type] => text
+        )
+
+    [2] => Array
+        (
+            [id] => huarache-x-stussy-le-size-42
+            [attribute_id] => size
+            [value] => 42
+            [displayValue] => 42
+            [attribute_name] => size
+            [attribute_type] => text
+        )
+
+    [3] => Array
+        (
+            [id] => huarache-x-stussy-le-size-43
+            [attribute_id] => size
+            [value] => 43
+            [displayValue] => 43
+            [attribute_name] => size
+            [attribute_type] => text
+        )
+
+)
+
+[31-Jul-2024 13:37:25 UTC] Processed attributes for product huarache-x-stussy-le: Array
+(
+    [0] => Array
+        (
+            [id] => huarache-x-stussy-le-size-40
+            [attribute_id] => size
+            [value] => 40
+            [displayValue] => 40
+            [name] => size
+            [type] => text
+        )
+
+    [1] => Array
+        (
+            [id] => huarache-x-stussy-le-size-41
+            [attribute_id] => size
+            [value] => 41
+            [displayValue] => 41
+            [name] => size
+            [type] => text
+        )
+
+    [2] => Array
+        (
+            [id] => huarache-x-stussy-le-size-42
+            [attribute_id] => size
+            [value] => 42
+            [displayValue] => 42
+            [name] => size
+            [type] => text
+        )
+
+    [3] => Array
+        (
+            [id] => huarache-x-stussy-le-size-43
+            [attribute_id] => size
+            [value] => 43
+            [displayValue] => 43
+            [name] => size
+            [type] => text
+        )
+
+)
+
+[31-Jul-2024 13:37:25 UTC] Fetched attributes for product huarache-x-stussy-le: Array
+(
+    [0] => Array
+        (
+            [id] => huarache-x-stussy-le-size-40
+            [attribute_id] => size
+            [value] => 40
+            [displayValue] => 40
+            [name] => size
+            [type] => text
+        )
+
+    [1] => Array
+        (
+            [id] => huarache-x-stussy-le-size-41
+            [attribute_id] => size
+            [value] => 41
+            [displayValue] => 41
+            [name] => size
+            [type] => text
+        )
+
+    [2] => Array
+        (
+            [id] => huarache-x-stussy-le-size-42
+            [attribute_id] => size
+            [value] => 42
+            [displayValue] => 42
+            [name] => size
+            [type] => text
+        )
+
+    [3] => Array
+        (
+            [id] => huarache-x-stussy-le-size-43
+            [attribute_id] => size
+            [value] => 43
+            [displayValue] => 43
+            [name] => size
+            [type] => text
+        )
+
+)
+
+[31-Jul-2024 13:37:25 UTC] Fetched items for product jacket-canada-goosee: Array
+(
+    [0] => Array
+        (
+            [id] => jacket-canada-goosee-size-Large
+            [attribute_id] => size
+            [value] => L
+            [displayValue] => Large
+            [attribute_name] => size
+            [attribute_type] => text
+        )
+
+    [1] => Array
+        (
+            [id] => jacket-canada-goosee-size-Medium
+            [attribute_id] => size
+            [value] => M
+            [displayValue] => Medium
+            [attribute_name] => size
+            [attribute_type] => text
+        )
+
+    [2] => Array
+        (
+            [id] => jacket-canada-goosee-size-Small
+            [attribute_id] => size
+            [value] => S
+            [displayValue] => Small
+            [attribute_name] => size
+            [attribute_type] => text
+        )
+
+    [3] => Array
+        (
+            [id] => jacket-canada-goosee-size-Extra Large
+            [attribute_id] => size
+            [value] => XL
+            [displayValue] => Extra Large
+            [attribute_name] => size
+            [attribute_type] => text
+        )
+
+)
+
+[31-Jul-2024 13:37:25 UTC] Processed attributes for product jacket-canada-goosee: Array
+(
+    [0] => Array
+        (
+            [id] => jacket-canada-goosee-size-Large
+            [attribute_id] => size
+            [value] => L
+            [displayValue] => Large
+            [name] => size
+            [type] => text
+        )
+
+    [1] => Array
+        (
+            [id] => jacket-canada-goosee-size-Medium
+            [attribute_id] => size
+            [value] => M
+            [displayValue] => Medium
+            [name] => size
+            [type] => text
+        )
+
+    [2] => Array
+        (
+            [id] => jacket-canada-goosee-size-Small
+            [attribute_id] => size
+            [value] => S
+            [displayValue] => Small
+            [name] => size
+            [type] => text
+        )
+
+    [3] => Array
+        (
+            [id] => jacket-canada-goosee-size-Extra Large
+            [attribute_id] => size
+            [value] => XL
+            [displayValue] => Extra Large
+            [name] => size
+            [type] => text
+        )
+
+)
+
+[31-Jul-2024 13:37:25 UTC] Fetched attributes for product jacket-canada-goosee: Array
+(
+    [0] => Array
+        (
+            [id] => jacket-canada-goosee-size-Large
+            [attribute_id] => size
+            [value] => L
+            [displayValue] => Large
+            [name] => size
+            [type] => text
+        )
+
+    [1] => Array
+        (
+            [id] => jacket-canada-goosee-size-Medium
+            [attribute_id] => size
+            [value] => M
+            [displayValue] => Medium
+            [name] => size
+            [type] => text
+        )
+
+    [2] => Array
+        (
+            [id] => jacket-canada-goosee-size-Small
+            [attribute_id] => size
+            [value] => S
+            [displayValue] => Small
+            [name] => size
+            [type] => text
+        )
+
+    [3] => Array
+        (
+            [id] => jacket-canada-goosee-size-Extra Large
+            [attribute_id] => size
+            [value] => XL
+            [displayValue] => Extra Large
+            [name] => size
+            [type] => text
+        )
+
+)
+
+[31-Jul-2024 13:37:25 UTC] Fetched items for product ps-5: Array
+(
+    [0] => Array
+        (
+            [id] => ps-5-capacity-1T
+            [attribute_id] => capacity
+            [value] => 1T
+            [displayValue] => 1T
+            [attribute_name] => capacity
+            [attribute_type] => text
+        )
+
+    [1] => Array
+        (
+            [id] => ps-5-capacity-512G
+            [attribute_id] => capacity
+            [value] => 512G
+            [displayValue] => 512G
+            [attribute_name] => capacity
+            [attribute_type] => text
+        )
+
+    [2] => Array
+        (
+            [id] => ps-5-color-Black
+            [attribute_id] => color
+            [value] => #000000
+            [displayValue] => Black
+            [attribute_name] => color
+            [attribute_type] => swatch
+        )
+
+    [3] => Array
+        (
+            [id] => ps-5-color-Blue
+            [attribute_id] => color
+            [value] => #030BFF
+            [displayValue] => Blue
+            [attribute_name] => color
+            [attribute_type] => swatch
+        )
+
+    [4] => Array
+        (
+            [id] => ps-5-color-Cyan
+            [attribute_id] => color
+            [value] => #03FFF7
+            [displayValue] => Cyan
+            [attribute_name] => color
+            [attribute_type] => swatch
+        )
+
+    [5] => Array
+        (
+            [id] => ps-5-color-Green
+            [attribute_id] => color
+            [value] => #44FF03
+            [displayValue] => Green
+            [attribute_name] => color
+            [attribute_type] => swatch
+        )
+
+    [6] => Array
+        (
+            [id] => ps-5-color-White
+            [attribute_id] => color
+            [value] => #FFFFFF
+            [displayValue] => White
+            [attribute_name] => color
+            [attribute_type] => swatch
+        )
+
+)
+
+[31-Jul-2024 13:37:25 UTC] Processed attributes for product ps-5: Array
+(
+    [0] => Array
+        (
+            [id] => ps-5-capacity-1T
+            [attribute_id] => capacity
+            [value] => 1T
+            [displayValue] => 1T
+            [name] => capacity
+            [type] => text
+        )
+
+    [1] => Array
+        (
+            [id] => ps-5-capacity-512G
+            [attribute_id] => capacity
+            [value] => 512G
+            [displayValue] => 512G
+            [name] => capacity
+            [type] => text
+        )
+
+    [2] => Array
+        (
+            [id] => ps-5-color-Black
+            [attribute_id] => color
+            [value] => #000000
+            [displayValue] => Black
+            [name] => color
+            [type] => swatch
+        )
+
+    [3] => Array
+        (
+            [id] => ps-5-color-Blue
+            [attribute_id] => color
+            [value] => #030BFF
+            [displayValue] => Blue
+            [name] => color
+            [type] => swatch
+        )
+
+    [4] => Array
+        (
+            [id] => ps-5-color-Cyan
+            [attribute_id] => color
+            [value] => #03FFF7
+            [displayValue] => Cyan
+            [name] => color
+            [type] => swatch
+        )
+
+    [5] => Array
+        (
+            [id] => ps-5-color-Green
+            [attribute_id] => color
+            [value] => #44FF03
+            [displayValue] => Green
+            [name] => color
+            [type] => swatch
+        )
+
+    [6] => Array
+        (
+            [id] => ps-5-color-White
+            [attribute_id] => color
+            [value] => #FFFFFF
+            [displayValue] => White
+            [name] => color
+            [type] => swatch
+        )
+
+)
+
+[31-Jul-2024 13:37:25 UTC] Fetched attributes for product ps-5: Array
+(
+    [0] => Array
+        (
+            [id] => ps-5-capacity-1T
+            [attribute_id] => capacity
+            [value] => 1T
+            [displayValue] => 1T
+            [name] => capacity
+            [type] => text
+        )
+
+    [1] => Array
+        (
+            [id] => ps-5-capacity-512G
+            [attribute_id] => capacity
+            [value] => 512G
+            [displayValue] => 512G
+            [name] => capacity
+            [type] => text
+        )
+
+    [2] => Array
+        (
+            [id] => ps-5-color-Black
+            [attribute_id] => color
+            [value] => #000000
+            [displayValue] => Black
+            [name] => color
+            [type] => swatch
+        )
+
+    [3] => Array
+        (
+            [id] => ps-5-color-Blue
+            [attribute_id] => color
+            [value] => #030BFF
+            [displayValue] => Blue
+            [name] => color
+            [type] => swatch
+        )
+
+    [4] => Array
+        (
+            [id] => ps-5-color-Cyan
+            [attribute_id] => color
+            [value] => #03FFF7
+            [displayValue] => Cyan
+            [name] => color
+            [type] => swatch
+        )
+
+    [5] => Array
+        (
+            [id] => ps-5-color-Green
+            [attribute_id] => color
+            [value] => #44FF03
+            [displayValue] => Green
+            [name] => color
+            [type] => swatch
+        )
+
+    [6] => Array
+        (
+            [id] => ps-5-color-White
+            [attribute_id] => color
+            [value] => #FFFFFF
+            [displayValue] => White
+            [name] => color
+            [type] => swatch
+        )
+
+)
+
+[31-Jul-2024 13:37:25 UTC] Fetched items for product xbox-series-s: Array
+(
+    [0] => Array
+        (
+            [id] => xbox-series-s-capacity-1T
+            [attribute_id] => capacity
+            [value] => 1T
+            [displayValue] => 1T
+            [attribute_name] => capacity
+            [attribute_type] => text
+        )
+
+    [1] => Array
+        (
+            [id] => xbox-series-s-capacity-512G
+            [attribute_id] => capacity
+            [value] => 512G
+            [displayValue] => 512G
+            [attribute_name] => capacity
+            [attribute_type] => text
+        )
+
+    [2] => Array
+        (
+            [id] => xbox-series-s-color-Black
+            [attribute_id] => color
+            [value] => #000000
+            [displayValue] => Black
+            [attribute_name] => color
+            [attribute_type] => swatch
+        )
+
+    [3] => Array
+        (
+            [id] => xbox-series-s-color-Blue
+            [attribute_id] => color
+            [value] => #030BFF
+            [displayValue] => Blue
+            [attribute_name] => color
+            [attribute_type] => swatch
+        )
+
+    [4] => Array
+        (
+            [id] => xbox-series-s-color-Cyan
+            [attribute_id] => color
+            [value] => #03FFF7
+            [displayValue] => Cyan
+            [attribute_name] => color
+            [attribute_type] => swatch
+        )
+
+    [5] => Array
+        (
+            [id] => xbox-series-s-color-Green
+            [attribute_id] => color
+            [value] => #44FF03
+            [displayValue] => Green
+            [attribute_name] => color
+            [attribute_type] => swatch
+        )
+
+    [6] => Array
+        (
+            [id] => xbox-series-s-color-White
+            [attribute_id] => color
+            [value] => #FFFFFF
+            [displayValue] => White
+            [attribute_name] => color
+            [attribute_type] => swatch
+        )
+
+)
+
+[31-Jul-2024 13:37:25 UTC] Processed attributes for product xbox-series-s: Array
+(
+    [0] => Array
+        (
+            [id] => xbox-series-s-capacity-1T
+            [attribute_id] => capacity
+            [value] => 1T
+            [displayValue] => 1T
+            [name] => capacity
+            [type] => text
+        )
+
+    [1] => Array
+        (
+            [id] => xbox-series-s-capacity-512G
+            [attribute_id] => capacity
+            [value] => 512G
+            [displayValue] => 512G
+            [name] => capacity
+            [type] => text
+        )
+
+    [2] => Array
+        (
+            [id] => xbox-series-s-color-Black
+            [attribute_id] => color
+            [value] => #000000
+            [displayValue] => Black
+            [name] => color
+            [type] => swatch
+        )
+
+    [3] => Array
+        (
+            [id] => xbox-series-s-color-Blue
+            [attribute_id] => color
+            [value] => #030BFF
+            [displayValue] => Blue
+            [name] => color
+            [type] => swatch
+        )
+
+    [4] => Array
+        (
+            [id] => xbox-series-s-color-Cyan
+            [attribute_id] => color
+            [value] => #03FFF7
+            [displayValue] => Cyan
+            [name] => color
+            [type] => swatch
+        )
+
+    [5] => Array
+        (
+            [id] => xbox-series-s-color-Green
+            [attribute_id] => color
+            [value] => #44FF03
+            [displayValue] => Green
+            [name] => color
+            [type] => swatch
+        )
+
+    [6] => Array
+        (
+            [id] => xbox-series-s-color-White
+            [attribute_id] => color
+            [value] => #FFFFFF
+            [displayValue] => White
+            [name] => color
+            [type] => swatch
+        )
+
+)
+
+[31-Jul-2024 13:37:25 UTC] Fetched attributes for product xbox-series-s: Array
+(
+    [0] => Array
+        (
+            [id] => xbox-series-s-capacity-1T
+            [attribute_id] => capacity
+            [value] => 1T
+            [displayValue] => 1T
+            [name] => capacity
+            [type] => text
+        )
+
+    [1] => Array
+        (
+            [id] => xbox-series-s-capacity-512G
+            [attribute_id] => capacity
+            [value] => 512G
+            [displayValue] => 512G
+            [name] => capacity
+            [type] => text
+        )
+
+    [2] => Array
+        (
+            [id] => xbox-series-s-color-Black
+            [attribute_id] => color
+            [value] => #000000
+            [displayValue] => Black
+            [name] => color
+            [type] => swatch
+        )
+
+    [3] => Array
+        (
+            [id] => xbox-series-s-color-Blue
+            [attribute_id] => color
+            [value] => #030BFF
+            [displayValue] => Blue
+            [name] => color
+            [type] => swatch
+        )
+
+    [4] => Array
+        (
+            [id] => xbox-series-s-color-Cyan
+            [attribute_id] => color
+            [value] => #03FFF7
+            [displayValue] => Cyan
+            [name] => color
+            [type] => swatch
+        )
+
+    [5] => Array
+        (
+            [id] => xbox-series-s-color-Green
+            [attribute_id] => color
+            [value] => #44FF03
+            [displayValue] => Green
+            [name] => color
+            [type] => swatch
+        )
+
+    [6] => Array
+        (
+            [id] => xbox-series-s-color-White
+            [attribute_id] => color
+            [value] => #FFFFFF
+            [displayValue] => White
+            [name] => color
+            [type] => swatch
+        )
+
+)
+
+Test log entry: 2024-07-31 13:37:29
+[31-Jul-2024 13:37:29 UTC] Starting order placement with args: {"items":[{"productId":"apple-airtag","quantity":1,"attributeValues":[]}]}
+[31-Jul-2024 13:37:29 UTC] Processing item 1: {"productId":"apple-airtag","quantity":1,"attributeValues":[]}
+[31-Jul-2024 13:37:29 UTC] Creating order
+[31-Jul-2024 13:37:29 UTC] Order created with ID: 5
+[31-Jul-2024 13:37:29 UTC] Inserting order item
+[31-Jul-2024 13:37:29 UTC] Order placement completed successfully
+Test log entry: 2024-07-31 13:40:17
+Test log entry: 2024-07-31 13:40:17
+[31-Jul-2024 13:40:17 UTC] Fetched items for product huarache-x-stussy-le: Array
+(
+    [0] => Array
+        (
+            [id] => huarache-x-stussy-le-size-40
+            [attribute_id] => size
+            [value] => 40
+            [displayValue] => 40
+            [attribute_name] => size
+            [attribute_type] => text
+        )
+
+    [1] => Array
+        (
+            [id] => huarache-x-stussy-le-size-41
+            [attribute_id] => size
+            [value] => 41
+            [displayValue] => 41
+            [attribute_name] => size
+            [attribute_type] => text
+        )
+
+    [2] => Array
+        (
+            [id] => huarache-x-stussy-le-size-42
+            [attribute_id] => size
+            [value] => 42
+            [displayValue] => 42
+            [attribute_name] => size
+            [attribute_type] => text
+        )
+
+    [3] => Array
+        (
+            [id] => huarache-x-stussy-le-size-43
+            [attribute_id] => size
+            [value] => 43
+            [displayValue] => 43
+            [attribute_name] => size
+            [attribute_type] => text
+        )
+
+)
+
+[31-Jul-2024 13:40:17 UTC] Processed attributes for product huarache-x-stussy-le: Array
+(
+    [0] => Array
+        (
+            [id] => huarache-x-stussy-le-size-40
+            [attribute_id] => size
+            [value] => 40
+            [displayValue] => 40
+            [name] => size
+            [type] => text
+        )
+
+    [1] => Array
+        (
+            [id] => huarache-x-stussy-le-size-41
+            [attribute_id] => size
+            [value] => 41
+            [displayValue] => 41
+            [name] => size
+            [type] => text
+        )
+
+    [2] => Array
+        (
+            [id] => huarache-x-stussy-le-size-42
+            [attribute_id] => size
+            [value] => 42
+            [displayValue] => 42
+            [name] => size
+            [type] => text
+        )
+
+    [3] => Array
+        (
+            [id] => huarache-x-stussy-le-size-43
+            [attribute_id] => size
+            [value] => 43
+            [displayValue] => 43
+            [name] => size
+            [type] => text
+        )
+
+)
+
+[31-Jul-2024 13:40:17 UTC] Fetched attributes for product huarache-x-stussy-le: Array
+(
+    [0] => Array
+        (
+            [id] => huarache-x-stussy-le-size-40
+            [attribute_id] => size
+            [value] => 40
+            [displayValue] => 40
+            [name] => size
+            [type] => text
+        )
+
+    [1] => Array
+        (
+            [id] => huarache-x-stussy-le-size-41
+            [attribute_id] => size
+            [value] => 41
+            [displayValue] => 41
+            [name] => size
+            [type] => text
+        )
+
+    [2] => Array
+        (
+            [id] => huarache-x-stussy-le-size-42
+            [attribute_id] => size
+            [value] => 42
+            [displayValue] => 42
+            [name] => size
+            [type] => text
+        )
+
+    [3] => Array
+        (
+            [id] => huarache-x-stussy-le-size-43
+            [attribute_id] => size
+            [value] => 43
+            [displayValue] => 43
+            [name] => size
+            [type] => text
+        )
+
+)
+
+Test log entry: 2024-07-31 13:40:59
+Test log entry: 2024-07-31 13:40:59
+[31-Jul-2024 13:40:59 UTC] Fetched items for product ps-5: Array
+(
+    [0] => Array
+        (
+            [id] => ps-5-capacity-1T
+            [attribute_id] => capacity
+            [value] => 1T
+            [displayValue] => 1T
+            [attribute_name] => capacity
+            [attribute_type] => text
+        )
+
+    [1] => Array
+        (
+            [id] => ps-5-capacity-512G
+            [attribute_id] => capacity
+            [value] => 512G
+            [displayValue] => 512G
+            [attribute_name] => capacity
+            [attribute_type] => text
+        )
+
+    [2] => Array
+        (
+            [id] => ps-5-color-Black
+            [attribute_id] => color
+            [value] => #000000
+            [displayValue] => Black
+            [attribute_name] => color
+            [attribute_type] => swatch
+        )
+
+    [3] => Array
+        (
+            [id] => ps-5-color-Blue
+            [attribute_id] => color
+            [value] => #030BFF
+            [displayValue] => Blue
+            [attribute_name] => color
+            [attribute_type] => swatch
+        )
+
+    [4] => Array
+        (
+            [id] => ps-5-color-Cyan
+            [attribute_id] => color
+            [value] => #03FFF7
+            [displayValue] => Cyan
+            [attribute_name] => color
+            [attribute_type] => swatch
+        )
+
+    [5] => Array
+        (
+            [id] => ps-5-color-Green
+            [attribute_id] => color
+            [value] => #44FF03
+            [displayValue] => Green
+            [attribute_name] => color
+            [attribute_type] => swatch
+        )
+
+    [6] => Array
+        (
+            [id] => ps-5-color-White
+            [attribute_id] => color
+            [value] => #FFFFFF
+            [displayValue] => White
+            [attribute_name] => color
+            [attribute_type] => swatch
+        )
+
+)
+
+[31-Jul-2024 13:40:59 UTC] Processed attributes for product ps-5: Array
+(
+    [0] => Array
+        (
+            [id] => ps-5-capacity-1T
+            [attribute_id] => capacity
+            [value] => 1T
+            [displayValue] => 1T
+            [name] => capacity
+            [type] => text
+        )
+
+    [1] => Array
+        (
+            [id] => ps-5-capacity-512G
+            [attribute_id] => capacity
+            [value] => 512G
+            [displayValue] => 512G
+            [name] => capacity
+            [type] => text
+        )
+
+    [2] => Array
+        (
+            [id] => ps-5-color-Black
+            [attribute_id] => color
+            [value] => #000000
+            [displayValue] => Black
+            [name] => color
+            [type] => swatch
+        )
+
+    [3] => Array
+        (
+            [id] => ps-5-color-Blue
+            [attribute_id] => color
+            [value] => #030BFF
+            [displayValue] => Blue
+            [name] => color
+            [type] => swatch
+        )
+
+    [4] => Array
+        (
+            [id] => ps-5-color-Cyan
+            [attribute_id] => color
+            [value] => #03FFF7
+            [displayValue] => Cyan
+            [name] => color
+            [type] => swatch
+        )
+
+    [5] => Array
+        (
+            [id] => ps-5-color-Green
+            [attribute_id] => color
+            [value] => #44FF03
+            [displayValue] => Green
+            [name] => color
+            [type] => swatch
+        )
+
+    [6] => Array
+        (
+            [id] => ps-5-color-White
+            [attribute_id] => color
+            [value] => #FFFFFF
+            [displayValue] => White
+            [name] => color
+            [type] => swatch
+        )
+
+)
+
+[31-Jul-2024 13:40:59 UTC] Fetched attributes for product ps-5: Array
+(
+    [0] => Array
+        (
+            [id] => ps-5-capacity-1T
+            [attribute_id] => capacity
+            [value] => 1T
+            [displayValue] => 1T
+            [name] => capacity
+            [type] => text
+        )
+
+    [1] => Array
+        (
+            [id] => ps-5-capacity-512G
+            [attribute_id] => capacity
+            [value] => 512G
+            [displayValue] => 512G
+            [name] => capacity
+            [type] => text
+        )
+
+    [2] => Array
+        (
+            [id] => ps-5-color-Black
+            [attribute_id] => color
+            [value] => #000000
+            [displayValue] => Black
+            [name] => color
+            [type] => swatch
+        )
+
+    [3] => Array
+        (
+            [id] => ps-5-color-Blue
+            [attribute_id] => color
+            [value] => #030BFF
+            [displayValue] => Blue
+            [name] => color
+            [type] => swatch
+        )
+
+    [4] => Array
+        (
+            [id] => ps-5-color-Cyan
+            [attribute_id] => color
+            [value] => #03FFF7
+            [displayValue] => Cyan
+            [name] => color
+            [type] => swatch
+        )
+
+    [5] => Array
+        (
+            [id] => ps-5-color-Green
+            [attribute_id] => color
+            [value] => #44FF03
+            [displayValue] => Green
+            [name] => color
+            [type] => swatch
+        )
+
+    [6] => Array
+        (
+            [id] => ps-5-color-White
+            [attribute_id] => color
+            [value] => #FFFFFF
+            [displayValue] => White
+            [name] => color
+            [type] => swatch
+        )
+
+)
+
+Test log entry: 2024-07-31 13:41:04
+Test log entry: 2024-07-31 13:41:04
+[31-Jul-2024 13:41:04 UTC] Starting order placement with args: {"items":[{"productId":"ps-5","quantity":1,"attributeValues":[{"id":"capacity","value":"512G"},{"id":"color","value":"#000000"}]}]}
+[31-Jul-2024 13:41:04 UTC] Processing item 1: {"productId":"ps-5","quantity":1,"attributeValues":[{"id":"capacity","value":"512G"},{"id":"color","value":"#000000"}]}
+[31-Jul-2024 13:41:04 UTC] Creating order
+[31-Jul-2024 13:41:04 UTC] Order created with ID: 6
+[31-Jul-2024 13:41:04 UTC] Inserting order item
+[31-Jul-2024 13:41:04 UTC] Order placement completed successfully
