@@ -7,7 +7,17 @@ use GraphQL\Type\Definition\ObjectType;
 
 class ProductType extends ObjectType
 {
-    public function __construct()
+    private static $instance = null;
+
+    public static function getInstance()
+    {
+        if (self::$instance === null) {
+            self::$instance = new self();
+        }
+        return self::$instance;
+    }
+
+    private function __construct()
     {
         parent::__construct([
             'name' => 'Product',
@@ -18,8 +28,8 @@ class ProductType extends ObjectType
                 'gallery' => Type::listOf(Type::string()),
                 'description' => Type::string(),
                 'category' => Type::string(),
-                'attributes' => Type::listOf(new AttributeType()),
-                'prices' => Type::listOf(new PriceType()),
+                'attributes' => Type::listOf(AttributeType::getInstance()),
+                'prices' => Type::listOf(PriceType::getInstance()),
                 'brand' => Type::string(),
             ],
         ]);

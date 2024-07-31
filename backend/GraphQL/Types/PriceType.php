@@ -7,13 +7,23 @@ use GraphQL\Type\Definition\ObjectType;
 
 class PriceType extends ObjectType
 {
-    public function __construct()
+    private static $instance = null;
+
+    public static function getInstance()
+    {
+        if (self::$instance === null) {
+            self::$instance = new self();
+        }
+        return self::$instance;
+    }
+
+    private function __construct()
     {
         parent::__construct([
             'name' => 'Price',
             'fields' => [
                 'amount' => Type::string(),
-                'currency' => new CurrencyType(),
+                'currency' => CurrencyType::getInstance(),
             ],
         ]);
     }

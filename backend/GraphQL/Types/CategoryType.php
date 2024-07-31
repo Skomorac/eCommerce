@@ -7,13 +7,23 @@ use GraphQL\Type\Definition\ObjectType;
 
 class CategoryType extends ObjectType
 {
-    public function __construct()
+    private static $instance = null;
+
+    public static function getInstance()
+    {
+        if (self::$instance === null) {
+            self::$instance = new self();
+        }
+        return self::$instance;
+    }
+
+    private function __construct()
     {
         parent::__construct([
             'name' => 'Category',
             'fields' => [
                 'name' => Type::string(),
-                // Add other fields if necessary
+                // Add other fields as needed
             ],
         ]);
     }

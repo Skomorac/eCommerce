@@ -11,31 +11,37 @@ class OrdersResolver
 {
     public static function store(array $args): string
     {
-        if (empty($args['items'])) {
-            self::abort(400, 'Items are required');
-        }
-
+        error_log('Starting order placement with args: ' . json_encode($args));
         $db = new Database();
         $db->beginTransaction();
 
         try {
+            if (empty($args['items'])) {
+                throw new Exception('Items are required');
+            }
+
+            // Log each step
+            error_log('Creating order');
             $orderResult = Order::create($db);
             if (!$orderResult['success']) {
-                self::abort(500, $orderResult['error']);
+                throw new Exception($orderResult['error']);
             }
             $orderId = $orderResult['orderId'];
+            error_log('Order created with ID: ' . $orderId);
 
             $totalAmount = 0;
             $currency = null;
 
-            foreach ($args['items'] as $item) {
+            foreach ($args['items'] as $index => $item) {
+                error_log('Processing item ' . ($index + 1) . ': ' . json_encode($item));
                 self::validateItemAttributes($db, $item);
 
                 $productDetails = self::calculatePaidAmount($db, $item);
 
+                error_log('Inserting order item');
                 $insertItemResult = OrderItem::insertItem($db, $orderId, $productDetails);
                 if (!$insertItemResult['success']) {
-                    self::abort(500, $insertItemResult['error']);
+                    throw new Exception($insertItemResult['error']);
                 }
                 $totalAmount += $productDetails['paidAmount'];
                 if ($currency === null) {
@@ -43,16 +49,21 @@ class OrdersResolver
                 }
             }
 
+            error_log('Updating order');
             $updateOrderResult = Order::update($db, $orderId, $totalAmount, $currency);
             if (!$updateOrderResult['success']) {
-                self::abort(500, $updateOrderResult['error']);
+                throw new Exception($updateOrderResult['error']);
             }
 
             $db->commit();
+            error_log('Order placement completed successfully');
 
             return "Order placed successfully! Order ID: $orderId";
         } catch (Exception $e) {
             $db->rollback();
+            error_log('Error in OrdersResolver::store: ' . $e->getMessage());
+            error_log('Stack trace: ' . $e->getTraceAsString());
+            error_log('Args: ' . json_encode($args));
             throw $e;
         }
     }
@@ -62,17 +73,17 @@ class OrdersResolver
         $productId = $item['productId'];
 
         if (!isset($productId)) {
-            self::abort(400, 'Product ID is required');
+            throw new Exception('Product ID is required');
         }
 
         $product = $db->query('SELECT inStock, name FROM products WHERE id = ?', [$productId])->fetch();
 
         if (!$product) {
-            self::abort(400, 'Product not found');
+            throw new Exception('Product not found');
         }
 
         if (!$product['inStock']) {
-            self::abort(400, "Unfortunately, '{$product['name']}' is out of stock. Please check back later.");
+            throw new Exception("Unfortunately, '{$product['name']}' is out of stock. Please check back later.");
         }
 
         $attributeCount = $db->query(
@@ -81,17 +92,17 @@ class OrdersResolver
         )->fetchColumn();
 
         if (!isset($item['attributeValues']) || $attributeCount !== count($item['attributeValues'])) {
-            self::abort(400, 'Attribute values are required');
+            throw new Exception('Attribute values are required');
         }
 
         foreach ($item['attributeValues'] as $attribute) {
             $result = $db->query(
-                'SELECT COUNT(*) FROM product_attributes WHERE id = ? AND value = ? LIMIT 1',
-                [$attribute['id'], $attribute['value']]
+                'SELECT COUNT(*) FROM product_attributes WHERE product_id = ? AND attribute_id = ? AND value = ? LIMIT 1',
+                [$productId, $attribute['id'], $attribute['value']]
             );
 
             if ($result->fetchColumn() == 0) {
-                self::abort(400, "Oops! '{$product['name']}' with '{$attribute['value']}' attribute does not exist or is invalid. Please check and try again.");
+                throw new Exception("Oops! '{$product['name']}' with '{$attribute['value']}' attribute does not exist or is invalid. Please check and try again.");
             }
         }
     }
@@ -105,14 +116,14 @@ class OrdersResolver
         $product = $productQuery->fetch();
 
         if (!$product) {
-            self::abort(400, 'Product not found');
+            throw new Exception('Product not found');
         }
 
         $priceQuery = $db->query('SELECT amount, currency FROM prices WHERE product_id = ?', [$productId]);
         $price = $priceQuery->fetch();
 
         if (!$price) {
-            self::abort(500, 'Price not found for product');
+            throw new Exception('Price not found for product');
         }
 
         $paidAmount = $price['amount'] * $quantity;
@@ -122,7 +133,7 @@ class OrdersResolver
         foreach ($item['attributeValues'] as $attribute) {
             $formattedAttributeValues[strtolower($attribute['id'])] = $attribute['value'];
         }
-        $attributeValuesJson = json_encode([$formattedAttributeValues]);
+        $attributeValuesJson = json_encode($formattedAttributeValues);
 
         return [
             'productId' => $productId,
@@ -132,12 +143,5 @@ class OrdersResolver
             'paidAmount' => $paidAmount,
             'paidCurrency' => $paidCurrency,
         ];
-    }
-
-    private static function abort(int $statusCode, string $message): void
-    {
-        http_response_code($statusCode);
-        echo json_encode(['error' => $message]);
-        exit;
     }
 }

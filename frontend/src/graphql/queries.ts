@@ -75,11 +75,8 @@ export const GET_CURRENCIES = gql`
 
 // If you have a mutation for placing an order, you might include it like this:
 export const PLACE_ORDER = gql`
-  mutation PlaceOrder($input: OrderInput!) {
-    placeOrder(OrderInput: $input) {
-      id
-      # Add other fields you expect to receive after placing an order
-    }
+  mutation placeOrder($OrderInput: OrderInput!) {
+    placeOrder(OrderInput: $OrderInput)
   }
 `;
 

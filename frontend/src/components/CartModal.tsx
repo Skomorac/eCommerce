@@ -1,5 +1,8 @@
 import React, { useContext } from "react";
 import { CartContext } from "../context/CartContext";
+import { useMutation } from "@apollo/client";
+import { PLACE_ORDER } from "../graphql/queries";
+import { ApolloError } from "@apollo/client";
 
 interface CartModalProps {
   onClose: () => void;
@@ -14,8 +17,10 @@ const toggleBodyScroll = (disable: boolean) => {
 };
 
 const CartModal: React.FC<CartModalProps> = ({ onClose }) => {
-  const { cartItems, totalAmount, updateCartItem, removeCartItem } =
+  const { cartItems, totalAmount, updateCartItem, removeCartItem, clearCart } =
     useContext(CartContext);
+
+  const [placeOrder, { loading, error }] = useMutation(PLACE_ORDER);
 
   React.useEffect(() => {
     toggleBodyScroll(true);
@@ -27,11 +32,72 @@ const CartModal: React.FC<CartModalProps> = ({ onClose }) => {
     onClose();
   };
 
+  const handlePlaceOrder = async () => {
+    try {
+      const orderInput = {
+        items: cartItems.map((item) => ({
+          productId: item.id,
+          quantity: item.quantity,
+          attributeValues: Object.entries(item.attributes).map(
+            ([id, value]) => ({
+              id,
+              value,
+            })
+          ),
+        })),
+      };
+
+      console.log(
+        "Placing order with input:",
+        JSON.stringify(orderInput, null, 2)
+      );
+      console.log("Cart items:", JSON.stringify(cartItems, null, 2));
+
+      const { data } = await placeOrder({
+        variables: { OrderInput: orderInput },
+      });
+
+      console.log("GraphQL response:", JSON.stringify(data, null, 2));
+
+      if (data && data.placeOrder) {
+        console.log("Order placed successfully. Order ID:", data.placeOrder);
+        clearCart();
+        onClose();
+        alert("Order placed successfully!");
+      } else {
+        console.log("Unexpected response structure:", data);
+      }
+    } catch (error: unknown) {
+      console.error("Error placing order:", error);
+      if (error instanceof ApolloError) {
+        console.error(
+          "GraphQL errors:",
+          JSON.stringify(error.graphQLErrors, null, 2)
+        );
+        console.error("Network error:", error.networkError);
+        if (error.graphQLErrors) {
+          error.graphQLErrors.forEach((graphQLError, index) => {
+            console.error(
+              `GraphQL Error ${index + 1}:`,
+              JSON.stringify(graphQLError, null, 2)
+            );
+          });
+        }
+      } else if (error instanceof Error) {
+        console.error("Error message:", error.message);
+      }
+      alert(
+        "Failed to place order. Please check the console for more details."
+      );
+    }
+  };
+
   return (
     <>
       <div
         className="fixed inset-0 top-28 bg-gray-800 bg-opacity-50 z-40"
         onClick={handleOverlayClick}
+        data-testid="cart-overlay"
       ></div>
       <div
         className="fixed right-10 top-28 h-1/2 bg-white w-full md:w-96 lg:w-1/4 z-50 p-6 shadow-lg overflow-auto"
@@ -77,16 +143,34 @@ const CartModal: React.FC<CartModalProps> = ({ onClose }) => {
                     {item.price.toFixed(2)}
                   </p>
                   {Object.entries(item.attributes).map(([key, value]) => (
-                    <div key={key} className="mt-2">
+                    <div
+                      key={key}
+                      className="mt-2"
+                      data-testid={`cart-item-attribute-${key
+                        .toLowerCase()
+                        .replace(/\s+/g, "-")}`}
+                    >
                       <h4 className="text-sm font-semibold">{key}:</h4>
                       <div className="flex flex-wrap mt-1">
                         {key.toLowerCase() === "color" ? (
                           <div
                             className="w-6 h-6 border border-gray-300"
                             style={{ backgroundColor: value as string }}
+                            data-testid={`cart-item-attribute-${key
+                              .toLowerCase()
+                              .replace(/\s+/g, "-")}-${(value as string)
+                              .toLowerCase()
+                              .replace(/\s+/g, "-")}-selected`}
                           ></div>
                         ) : (
-                          <span className="mr-2 mb-1 px-2 py-1 text-sm border rounded">
+                          <span
+                            className="mr-2 mb-1 px-2 py-1 text-sm border rounded"
+                            data-testid={`cart-item-attribute-${key
+                              .toLowerCase()
+                              .replace(/\s+/g, "-")}-${(value as string)
+                              .toLowerCase()
+                              .replace(/\s+/g, "-")}-selected`}
+                          >
                             {value as string}
                           </span>
                         )}
@@ -107,10 +191,13 @@ const CartModal: React.FC<CartModalProps> = ({ onClose }) => {
                     }
                     className="text-2xl font-bold w-8 h-8 flex items-center justify-center border border-black"
                     aria-label="Increase quantity"
+                    data-testid="cart-item-amount-increase"
                   >
                     +
                   </button>
-                  <span className="my-2 text-lg">{item.quantity}</span>
+                  <span className="my-2 text-lg" data-testid="cart-item-amount">
+                    {item.quantity}
+                  </span>
                   <button
                     onClick={() => {
                       if (item.quantity > 1) {
@@ -125,6 +212,7 @@ const CartModal: React.FC<CartModalProps> = ({ onClose }) => {
                     }}
                     className="text-2xl font-bold w-8 h-8 flex items-center justify-center border border-black"
                     aria-label="Decrease quantity"
+                    data-testid="cart-item-amount-decrease"
                   >
                     -
                   </button>
@@ -145,28 +233,30 @@ const CartModal: React.FC<CartModalProps> = ({ onClose }) => {
         <div className="mt-8">
           <div className="flex justify-between items-center text-xl font-semibold mb-4">
             <span>Total</span>
-            <span>
+            <span data-testid="cart-total">
               {cartItems[0]?.currency}
               {totalAmount.toFixed(2)}
             </span>
           </div>
           <button
-            onClick={() => {
-              // Perform the GraphQL mutation here
-              onClose();
-            }}
+            onClick={handlePlaceOrder}
             className={`
               w-full py-3 text-lg font-semibold text-white
               ${
-                cartItems.length === 0
+                cartItems.length === 0 || loading
                   ? "bg-gray-400 cursor-not-allowed"
                   : "bg-green-500 hover:bg-green-600"
               }
             `}
-            disabled={cartItems.length === 0}
+            disabled={cartItems.length === 0 || loading}
           >
-            PLACE ORDER
+            {loading ? "PLACING ORDER..." : "PLACE ORDER"}
           </button>
+          {error && (
+            <p className="text-red-500 mt-2">
+              Error placing order. Please try again.
+            </p>
+          )}
         </div>
       </div>
     </>
