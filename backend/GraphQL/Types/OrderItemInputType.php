@@ -22,11 +22,9 @@ class OrderItemInputType extends InputObjectType
         parent::__construct([
             'name' => 'OrderItemInput',
             'fields' => [
-                'productId' => ['type' => Type::nonNull(Type::string())],
-                'quantity' => ['type' => Type::nonNull(Type::int())],
-                'attributeValues' => [
-                    'type' => Type::listOf(AttributeValueInputType::getInstance())
-                ],
+                'productId' => Type::nonNull(Type::string()),
+                'quantity' => Type::nonNull(Type::int()),
+                'attributeValues' => Type::nonNull(Type::listOf(AttributeValueInputType::getInstance()))
             ],
         ]);
     }

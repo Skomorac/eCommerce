@@ -23,7 +23,7 @@ class OrderInputType extends InputObjectType
             'name' => 'OrderInput',
             'fields' => [
                 'items' => [
-                    'type' => Type::listOf(OrderItemInputType::getInstance())
+                    'type' => Type::nonNull(Type::listOf(OrderItemInputType::getInstance()))
                 ],
             ],
         ]);

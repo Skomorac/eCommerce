@@ -22,8 +22,8 @@ class AttributeValueInputType extends InputObjectType
         parent::__construct([
             'name' => 'AttributeValueInput',
             'fields' => [
-                'id' => ['type' => Type::nonNull(Type::string())],
-                'value' => ['type' => Type::nonNull(Type::string())],
+                'id' => Type::nonNull(Type::string()),
+                'value' => Type::nonNull(Type::string())
             ],
         ]);
     }

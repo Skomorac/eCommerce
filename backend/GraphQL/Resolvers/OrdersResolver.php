@@ -20,39 +20,38 @@ class OrdersResolver
                 throw new Exception('Items are required');
             }
 
-            // Log each step
+            $totalAmount = 0;
+            $currency = null;
+
+            // Calculate total amount and prepare order items
+            $orderItems = [];
+            foreach ($args['items'] as $index => $item) {
+                error_log('Processing item ' . ($index + 1) . ': ' . json_encode($item));
+                self::validateItemAttributes($db, $item);
+
+                $productDetails = self::calculatePaidAmount($db, $item);
+                $totalAmount += $productDetails['paidAmount'];
+                $currency = $productDetails['paidCurrency'];
+
+                $orderItems[] = $productDetails;
+            }
+
+            // Create order
             error_log('Creating order');
-            $orderResult = Order::create($db);
+            $orderResult = Order::create($db, $totalAmount, $currency);
             if (!$orderResult['success']) {
                 throw new Exception($orderResult['error']);
             }
             $orderId = $orderResult['orderId'];
             error_log('Order created with ID: ' . $orderId);
 
-            $totalAmount = 0;
-            $currency = null;
-
-            foreach ($args['items'] as $index => $item) {
-                error_log('Processing item ' . ($index + 1) . ': ' . json_encode($item));
-                self::validateItemAttributes($db, $item);
-
-                $productDetails = self::calculatePaidAmount($db, $item);
-
+            // Insert order items
+            foreach ($orderItems as $item) {
                 error_log('Inserting order item');
-                $insertItemResult = OrderItem::insertItem($db, $orderId, $productDetails);
+                $insertItemResult = OrderItem::insertItem($db, $orderId, $item);
                 if (!$insertItemResult['success']) {
                     throw new Exception($insertItemResult['error']);
                 }
-                $totalAmount += $productDetails['paidAmount'];
-                if ($currency === null) {
-                    $currency = $productDetails['paidCurrency'];
-                }
-            }
-
-            error_log('Updating order');
-            $updateOrderResult = Order::update($db, $orderId, $totalAmount, $currency);
-            if (!$updateOrderResult['success']) {
-                throw new Exception($updateOrderResult['error']);
             }
 
             $db->commit();
