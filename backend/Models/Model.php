@@ -11,7 +11,7 @@ abstract class Model
     protected static $db;
     protected static $table;
 
-    public static function getDB()
+    public static function getDB(): PDO
     {
         if (!isset(self::$db)) {
             self::$db = Database::getInstance()->getConnection();
@@ -19,7 +19,7 @@ abstract class Model
         return self::$db;
     }
 
-    public static function getTable()
+    public static function getTable(): string
     {
         $calledClass = get_called_class();
         if (!isset($calledClass::$table)) {

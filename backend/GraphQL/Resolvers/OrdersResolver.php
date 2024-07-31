@@ -6,13 +6,18 @@ use App\Models\Order;
 use App\Config\Database;
 use App\Models\OrderItem;
 use Exception;
+use PDO;
 
 class OrdersResolver
 {
     public static function store(array $args): string
     {
         error_log('Starting order placement with args: ' . json_encode($args));
-        $db = new Database();
+        $db = Database::getInstance()->getConnection();
+        if (!($db instanceof PDO)) {
+            error_log('Database connection is not an instance of PDO');
+            throw new Exception('Database connection error');
+        }
         $db->beginTransaction();
 
         try {
@@ -38,7 +43,7 @@ class OrdersResolver
 
             // Create order
             error_log('Creating order');
-            $orderResult = Order::create($db, $totalAmount, $currency);
+            $orderResult = Order::create($totalAmount, $currency);
             if (!$orderResult['success']) {
                 throw new Exception($orderResult['error']);
             }
@@ -48,7 +53,7 @@ class OrdersResolver
             // Insert order items
             foreach ($orderItems as $item) {
                 error_log('Inserting order item');
-                $insertItemResult = OrderItem::insertItem($db, $orderId, $item);
+                $insertItemResult = OrderItem::insertItem($orderId, $item);
                 if (!$insertItemResult['success']) {
                     throw new Exception($insertItemResult['error']);
                 }
@@ -67,7 +72,7 @@ class OrdersResolver
         }
     }
 
-    private static function validateItemAttributes(Database $db, array $item): void
+    private static function validateItemAttributes(PDO $db, array $item): void
     {
         $productId = $item['productId'];
 
@@ -75,7 +80,9 @@ class OrdersResolver
             throw new Exception('Product ID is required');
         }
 
-        $product = $db->query('SELECT inStock, name FROM products WHERE id = ?', [$productId])->fetch();
+        $stmt = $db->prepare('SELECT inStock, name FROM products WHERE id = ?');
+        $stmt->execute([$productId]);
+        $product = $stmt->fetch();
 
         if (!$product) {
             throw new Exception('Product not found');
@@ -85,41 +92,43 @@ class OrdersResolver
             throw new Exception("Unfortunately, '{$product['name']}' is out of stock. Please check back later.");
         }
 
-        $attributeCount = $db->query(
-            'SELECT COUNT(DISTINCT attribute_id) FROM product_attributes WHERE product_id = ?',
-            [$productId]
-        )->fetchColumn();
+        $stmt = $db->prepare(
+            'SELECT COUNT(DISTINCT attribute_id) FROM product_attributes WHERE product_id = ?'
+        );
+        $stmt->execute([$productId]);
+        $attributeCount = $stmt->fetchColumn();
 
         if (!isset($item['attributeValues']) || $attributeCount !== count($item['attributeValues'])) {
             throw new Exception('Attribute values are required');
         }
 
         foreach ($item['attributeValues'] as $attribute) {
-            $result = $db->query(
-                'SELECT COUNT(*) FROM product_attributes WHERE product_id = ? AND attribute_id = ? AND value = ? LIMIT 1',
-                [$productId, $attribute['id'], $attribute['value']]
+            $stmt = $db->prepare(
+                'SELECT COUNT(*) FROM product_attributes WHERE product_id = ? AND attribute_id = ? AND value = ? LIMIT 1'
             );
-
-            if ($result->fetchColumn() == 0) {
+            $stmt->execute([$productId, $attribute['id'], $attribute['value']]);
+            if ($stmt->fetchColumn() == 0) {
                 throw new Exception("Oops! '{$product['name']}' with '{$attribute['value']}' attribute does not exist or is invalid. Please check and try again.");
             }
         }
     }
 
-    private static function calculatePaidAmount(Database $db, array $item): array
+    private static function calculatePaidAmount(PDO $db, array $item): array
     {
         $productId = $item['productId'];
         $quantity = $item['quantity'] ?? 1;
 
-        $productQuery = $db->query('SELECT name FROM products WHERE id = ?', [$productId]);
-        $product = $productQuery->fetch();
+        $stmt = $db->prepare('SELECT name FROM products WHERE id = ?');
+        $stmt->execute([$productId]);
+        $product = $stmt->fetch();
 
         if (!$product) {
             throw new Exception('Product not found');
         }
 
-        $priceQuery = $db->query('SELECT amount, currency FROM prices WHERE product_id = ?', [$productId]);
-        $price = $priceQuery->fetch();
+        $stmt = $db->prepare('SELECT amount, currency FROM prices WHERE product_id = ?');
+        $stmt->execute([$productId]);
+        $price = $stmt->fetch();
 
         if (!$price) {
             throw new Exception('Price not found for product');
