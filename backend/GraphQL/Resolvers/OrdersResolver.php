@@ -32,7 +32,7 @@ class OrdersResolver
             $orderItems = [];
             foreach ($args['items'] as $index => $item) {
                 error_log('Processing item ' . ($index + 1) . ': ' . json_encode($item));
-                self::validateItemAttributes($db, $item);
+                self::validateAndMapItemAttributes($db, $item);
 
                 $productDetails = self::calculatePaidAmount($db, $item);
                 $totalAmount += $productDetails['paidAmount'];
@@ -72,7 +72,7 @@ class OrdersResolver
         }
     }
 
-    private static function validateItemAttributes(PDO $db, array $item): void
+    private static function validateAndMapItemAttributes(PDO $db, array &$item): void
     {
         $productId = $item['productId'];
 
@@ -102,14 +102,18 @@ class OrdersResolver
             throw new Exception('Attribute values are required');
         }
 
-        foreach ($item['attributeValues'] as $attribute) {
+        foreach ($item['attributeValues'] as &$attribute) {
             $stmt = $db->prepare(
-                'SELECT COUNT(*) FROM product_attributes WHERE product_id = ? AND attribute_id = ? AND value = ? LIMIT 1'
+                'SELECT displayValue FROM product_attributes WHERE product_id = ? AND attribute_id = ? AND value = ? LIMIT 1'
             );
             $stmt->execute([$productId, $attribute['id'], $attribute['value']]);
-            if ($stmt->fetchColumn() == 0) {
+            $displayValue = $stmt->fetchColumn();
+
+            if (!$displayValue) {
                 throw new Exception("Oops! '{$product['name']}' with '{$attribute['value']}' attribute does not exist or is invalid. Please check and try again.");
             }
+
+            $attribute['value'] = $displayValue; // Map to displayValue
         }
     }
 
