@@ -13,20 +13,18 @@ const Header: React.FC = () => {
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error loading categories</div>;
 
-  // Ensure 'all' is included and categories are unique
   const categories = [
     "all",
     ...(data?.categories?.map((cat) => cat.name) || []),
   ];
   const uniqueCategories = Array.from(new Set(categories));
 
-  // Determine the active category
   const activeCategory =
     location.pathname === "/" ? "all" : location.pathname.slice(1);
 
   return (
-    <header className="flex justify-between items-center p-4">
-      <nav>
+    <header className="flex justify-between items-center p-4 font-raleway text-text">
+      <nav className="flex items-center">
         {uniqueCategories.map((category) => (
           <Link
             key={category}
@@ -36,13 +34,17 @@ const Header: React.FC = () => {
                 ? "active-category-link"
                 : "category-link"
             }
-            className="mr-4"
+            className={`mr-6 uppercase text-base font-semibold leading-[19.2px] text-center ${
+              category === activeCategory
+                ? "text-primary border-b-2 border-primary"
+                : "text-text"
+            }`}
           >
-            {category.charAt(0).toUpperCase() + category.slice(1)}
+            {category}
           </Link>
         ))}
       </nav>
-      <Link to="/">
+      <Link to="/" className="absolute left-1/2 transform -translate-x-1/2">
         <img src={logoIcon} alt="Logo" className="w-8 h-8" />
       </Link>
       <button data-testid="cart-btn" className="relative">
