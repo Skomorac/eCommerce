@@ -21,7 +21,7 @@ const AddToCartButton: React.FC<AddToCartButtonProps> = ({
       disabled={disabled}
       onClick={onClick}
     >
-      Add to Cart
+      ADD TO CART
     </button>
   );
 };

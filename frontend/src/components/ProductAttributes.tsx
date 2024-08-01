@@ -33,31 +33,32 @@ const ProductAttributes: React.FC<ProductAttributesProps> = ({
 
   return (
     <div>
-      {Object.values(groupedAttributes).map((attribute) => (
+      {Object.entries(groupedAttributes).map(([attributeId, attribute]) => (
         <div
-          key={attribute.id}
-          data-testid={`product-attribute-${attribute.id
-            .toLowerCase()
-            .replace(/\s+/g, "-")}`}
+          key={attributeId}
+          data-testid={`product-attribute-${attributeId.toLowerCase()}`}
         >
-          <h3 className="text-lg font-semibold mb-2">{attribute.id}:</h3>
+          <h3 className="text-lg font-semibold mb-2">{attributeId}:</h3>
           <div className="flex flex-wrap">
             {attribute.items.map((item) => (
               <button
                 key={item.id}
+                data-testid={`product-attribute-${attributeId.toLowerCase()}-${
+                  item.value
+                }`}
                 className={`mr-2 mb-2 p-2 border ${
-                  selectedAttributes[attribute.id] === item.value
-                    ? "border-primary"
+                  selectedAttributes[attributeId] === item.value
+                    ? "border-primary bg-primary text-white"
                     : "border-gray-300"
-                } ${attribute.id.toLowerCase() === "color" ? "w-10 h-10" : ""}`}
+                } ${attributeId.toLowerCase() === "color" ? "w-10 h-10" : ""}`}
                 style={
-                  attribute.id.toLowerCase() === "color"
+                  attributeId.toLowerCase() === "color"
                     ? { backgroundColor: item.value }
                     : {}
                 }
-                onClick={() => onSelect(attribute.id, item.value)}
+                onClick={() => onSelect(attributeId, item.value)}
               >
-                {attribute.id.toLowerCase() !== "color" && item.displayValue}
+                {attributeId.toLowerCase() !== "color" && item.displayValue}
               </button>
             ))}
           </div>

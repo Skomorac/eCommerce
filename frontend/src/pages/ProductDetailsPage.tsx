@@ -1,5 +1,5 @@
 // src/pages/ProductDetailsPage.tsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@apollo/client";
 import { GET_PRODUCT } from "../graphql/queries";
@@ -8,31 +8,7 @@ import ProductAttributes from "../components/ProductAttributes";
 import AddToCartButton from "../components/AddToCartButton";
 import { parseHtml } from "../utils/htmlParser";
 
-interface ProductDetails {
-  id: string;
-  name: string;
-  inStock: boolean;
-  gallery: string[];
-  description: string;
-  category: string;
-  prices: {
-    amount: string;
-    currency: {
-      label: string;
-      symbol: string;
-    };
-  }[];
-  attributes: {
-    id: string;
-    name: string;
-    type: string;
-    items: {
-      displayValue: string;
-      value: string;
-      id: string;
-    }[];
-  }[];
-}
+// ... (interfaces remain the same)
 
 const ProductDetailsPage: React.FC = () => {
   const { productId } = useParams<{ productId: string }>();
@@ -43,17 +19,30 @@ const ProductDetailsPage: React.FC = () => {
     Record<string, string>
   >({});
 
+  useEffect(() => {
+    if (data?.product) {
+      const initialAttributes: Record<string, string> = {};
+      const uniqueAttributeIds = new Set(
+        data.product.attributes.map((attr: Attribute) => attr.attribute_id)
+      );
+      uniqueAttributeIds.forEach((id) => {
+        initialAttributes[id] = "";
+      });
+      setSelectedAttributes(initialAttributes);
+    }
+  }, [data]);
+
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
 
   const product: ProductDetails = data.product;
 
-  const handleAttributeSelect = (attributeId: string, itemId: string) => {
-    setSelectedAttributes((prev) => ({ ...prev, [attributeId]: itemId }));
+  const handleAttributeSelect = (attributeId: string, value: string) => {
+    setSelectedAttributes((prev) => ({ ...prev, [attributeId]: value }));
   };
 
-  const isAllAttributesSelected = product.attributes.every(
-    (attr) => selectedAttributes[attr.id]
+  const isAllAttributesSelected = Object.values(selectedAttributes).every(
+    (value) => value !== ""
   );
 
   const formatPrice = (amount: string, symbol: string) => {
