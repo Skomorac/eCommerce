@@ -47,20 +47,14 @@ const HomePage: React.FC = () => {
   if (loading) return <div>Loading products...</div>;
   if (error) return <div>Error loading products: {error.message}</div>;
 
+  const handleQuickShop = (productId: string) => {
+    // Implement quick shop logic here
+    console.log(`Quick shop for product ${productId}`);
+  };
+
   return (
-    <>
-      <h1
-        className="
-        font-raleway
-        text-[42px]
-        font-normal
-        leading-[67.2px]
-        text-left
-        text-text
-        mt-8
-        mb-6
-      "
-      >
+    <div className="container mx-auto px-4">
+      <h1 className="font-raleway text-[42px] font-normal leading-[67.2px] text-left text-text mt-8 mb-6">
         {title}
       </h1>
       <div className="grid grid-cols-auto-fill-350 gap-8">
@@ -68,7 +62,7 @@ const HomePage: React.FC = () => {
           <ProductCard key={product.id} product={product} />
         ))}
       </div>
-    </>
+    </div>
   );
 };
 
