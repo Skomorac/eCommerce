@@ -15,7 +15,6 @@ interface ProductDetails {
   gallery: string[];
   description: string;
   category: string;
-  brand: string;
   prices: {
     amount: string;
     currency: {
@@ -25,9 +24,13 @@ interface ProductDetails {
   }[];
   attributes: {
     id: string;
-    attribute_id: string;
-    value: string;
-    displayValue: string;
+    name: string;
+    type: string;
+    items: {
+      displayValue: string;
+      value: string;
+      id: string;
+    }[];
   }[];
 }
 
@@ -45,8 +48,8 @@ const ProductDetailsPage: React.FC = () => {
 
   const product: ProductDetails = data.product;
 
-  const handleAttributeSelect = (attributeId: string, value: string) => {
-    setSelectedAttributes((prev) => ({ ...prev, [attributeId]: value }));
+  const handleAttributeSelect = (attributeId: string, itemId: string) => {
+    setSelectedAttributes((prev) => ({ ...prev, [attributeId]: itemId }));
   };
 
   const isAllAttributesSelected = product.attributes.every(
@@ -60,10 +63,11 @@ const ProductDetailsPage: React.FC = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex flex-col md:flex-row">
-        <ProductGallery gallery={product.gallery} />
-        <div className="md:w-1/2 md:pl-8">
-          <h1 className="text-3xl font-bold mb-2">{product.brand}</h1>
-          <h2 className="text-2xl mb-4">{product.name}</h2>
+        <div className="md:w-2/3">
+          <ProductGallery gallery={product.gallery} />
+        </div>
+        <div className="md:w-1/3 md:pl-8">
+          <h1 className="text-3xl font-semibold mb-4">{product.name}</h1>
 
           <ProductAttributes
             attributes={product.attributes}
@@ -71,7 +75,9 @@ const ProductDetailsPage: React.FC = () => {
             onSelect={handleAttributeSelect}
           />
 
-          <p className="text-xl font-bold my-4">
+          <p className="text-2xl font-bold my-6">
+            PRICE:
+            <br />
             {formatPrice(
               product.prices[0].amount,
               product.prices[0].currency.symbol
@@ -79,7 +85,7 @@ const ProductDetailsPage: React.FC = () => {
           </p>
 
           <AddToCartButton
-            disabled={!isAllAttributesSelected || !product.inStock}
+            disabled={!isAllAttributesSelected}
             onClick={() => {
               /* Add to cart logic */
             }}
