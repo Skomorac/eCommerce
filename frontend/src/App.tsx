@@ -1,27 +1,22 @@
 // src/App.tsx
 import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import { ApolloProvider } from "@apollo/client";
-import client from "./graphql/client";
 import Header from "./components/Header";
-
-const CategoryPage: React.FC = () => {
-  return <div>Category Page Placeholder</div>;
-};
+import HomePage from "./pages/HomePage";
 
 const App: React.FC = () => {
   return (
-    <ApolloProvider client={client}>
-      <Router>
-        <div className="App">
-          <Header />
+    <Router>
+      <div className="App">
+        <Header />
+        <main className="container mx-auto px-4">
           <Routes>
-            <Route path="/" element={<CategoryPage />} />
-            <Route path="/:category" element={<CategoryPage />} />
+            <Route path="/" element={<HomePage />} />
+            <Route path="/:category" element={<HomePage />} />
           </Routes>
-        </div>
-      </Router>
-    </ApolloProvider>
+        </main>
+      </div>
+    </Router>
   );
 };
 
