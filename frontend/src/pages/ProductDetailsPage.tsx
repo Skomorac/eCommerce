@@ -32,7 +32,6 @@ interface ProductDetails {
   gallery: string[];
   description: string;
   category: string;
-  brand: string;
   prices: Price[];
   attributes: Attribute[];
 }
@@ -96,7 +95,6 @@ const ProductDetailsPage: React.FC = () => {
         </div>
         <div className="md:w-1/3 md:pl-8">
           <h1 className="text-3xl font-semibold mb-4">{product.name}</h1>
-          <h2 className="text-xl mb-4">{product.brand}</h2>
 
           <ProductAttributes
             attributes={product.attributes}
