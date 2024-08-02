@@ -46,9 +46,16 @@ const HomePage: React.FC = () => {
   if (loading) return <div>Loading products...</div>;
   if (error) return <div>Error loading products: {error.message}</div>;
 
-  const handleQuickShop = (productId: string) => {
-    // Implement quick shop logic here
-    console.log(`Quick shop for product ${productId}`);
+  const handleQuickShop = (
+    productId: string,
+    defaultAttributes: Record<string, string>
+  ) => {
+    console.log(
+      `Quick shop for product ${productId} with attributes:`,
+      defaultAttributes
+    );
+    // Here you would typically dispatch an action to add the item to the cart
+    // For now, we're just logging to the console
   };
 
   return (

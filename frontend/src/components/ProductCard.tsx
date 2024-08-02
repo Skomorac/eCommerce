@@ -2,6 +2,14 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import cartIcon from "../assets/images/cart.svg";
+
+interface Attribute {
+  id: string;
+  attribute_id: string;
+  value: string;
+  displayValue: string;
+}
+
 interface Product {
   id: string;
   name: string;
@@ -13,11 +21,15 @@ interface Product {
       symbol: string;
     };
   }[];
+  attributes?: Attribute[];
 }
 
 interface ProductCardProps {
   product: Product;
-  onQuickShop: (productId: string) => void;
+  onQuickShop: (
+    productId: string,
+    defaultAttributes: Record<string, string>
+  ) => void;
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ product, onQuickShop }) => {
@@ -31,6 +43,24 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onQuickShop }) => {
     return isNaN(numericAmount)
       ? "N/A"
       : `${symbol}${numericAmount.toFixed(2)}`;
+  };
+
+  const getDefaultAttributes = (): Record<string, string> => {
+    const defaultAttrs: Record<string, string> = {};
+    if (product.attributes) {
+      product.attributes.forEach((attr) => {
+        if (!defaultAttrs[attr.attribute_id]) {
+          defaultAttrs[attr.attribute_id] = attr.value;
+        }
+      });
+    }
+    return defaultAttrs;
+  };
+
+  const handleQuickShop = (e: React.MouseEvent) => {
+    e.preventDefault();
+    const defaultAttributes = getDefaultAttributes();
+    onQuickShop(product.id, defaultAttributes);
   };
 
   return (
@@ -73,10 +103,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onQuickShop }) => {
           className="absolute bottom-28 right-4 bg-primary text-white p-2 rounded-full 
                      shadow-lg hover:bg-primary-dark transition-colors duration-200
                      w-12 h-12 flex items-center justify-center"
-          onClick={(e) => {
-            e.preventDefault();
-            onQuickShop(product.id);
-          }}
+          onClick={handleQuickShop}
           aria-label="Quick Shop"
         >
           <img src={cartIcon} alt="Cart" className="w-6 h-6" />
