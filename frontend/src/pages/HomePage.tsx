@@ -10,17 +10,16 @@ interface Product {
   name: string;
   inStock: boolean;
   gallery: string[];
-  description: string;
-  category: string;
-  brand: string;
   prices: {
-    amount: number;
+    amount: number | string; // Allow both number and string
     currency: {
-      label: string;
       symbol: string;
     };
   }[];
-  attributes: {
+  description?: string;
+  category?: string;
+  brand?: string;
+  attributes?: {
     id: string;
     attribute_id: string;
     value: string;
@@ -59,7 +58,17 @@ const HomePage: React.FC = () => {
       </h1>
       <div className="grid grid-cols-auto-fill-350 gap-8">
         {data?.products.map((product) => (
-          <ProductCard key={product.id} product={product} />
+          <ProductCard
+            key={product.id}
+            product={{
+              ...product,
+              prices: product.prices.map((price) => ({
+                ...price,
+                amount: price.amount.toString(), // Convert to string
+              })),
+            }}
+            onQuickShop={handleQuickShop}
+          />
         ))}
       </div>
     </div>
