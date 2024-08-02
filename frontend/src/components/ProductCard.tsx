@@ -1,7 +1,7 @@
 // src/components/ProductCard.tsx
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-
+import cartIcon from "../assets/images/cart.svg";
 interface Product {
   id: string;
   name: string;
@@ -70,14 +70,16 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onQuickShop }) => {
       </Link>
       {product.inStock && isHovered && (
         <button
-          className="absolute bottom-4 right-4 bg-primary text-white p-2 rounded-full 
-                     shadow-lg hover:bg-primary-dark transition-colors duration-200"
+          className="absolute bottom-28 right-4 bg-primary text-white p-2 rounded-full 
+                     shadow-lg hover:bg-primary-dark transition-colors duration-200
+                     w-12 h-12 flex items-center justify-center"
           onClick={(e) => {
             e.preventDefault();
             onQuickShop(product.id);
           }}
+          aria-label="Quick Shop"
         >
-          Quick Shop
+          <img src={cartIcon} alt="Cart" className="w-6 h-6" />
         </button>
       )}
     </div>
