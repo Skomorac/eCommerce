@@ -38,11 +38,45 @@ const CartOverlay: React.FC<CartOverlayProps> = ({ onClose }) => {
     }
   };
 
-  // Calculate the total number of items in the cart
   const totalItemsCount = cartItems.reduce(
     (total, item) => total + item.quantity,
     0
   );
+
+  const renderAttributes = (attributes: Record<string, string>) => {
+    return Object.entries(attributes).map(([attributeId, value]) => (
+      <div
+        key={attributeId}
+        className="mt-2 flex flex-col"
+        data-testid={`cart-item-attribute-${attributeId.toLowerCase()}`}
+      >
+        <span className="font-semibold mb-1">{attributeId}:</span>
+        <div className="flex items-center">
+          {attributeId.toLowerCase() === "color" ? (
+            <div
+              className="w-6 h-6 rounded-full border-2 border-gray-300"
+              style={{ backgroundColor: value }}
+              data-testid={`cart-item-attribute-${attributeId.toLowerCase()}-${value}-selected`}
+            >
+              <div className="w-full h-full rounded-full border-2 border-white"></div>
+            </div>
+          ) : (
+            <div
+              className="inline-block px-2 py-1 text-sm text-white bg-black"
+              data-testid={`cart-item-attribute-${attributeId.toLowerCase()}-${value}-selected`}
+            >
+              {value}
+            </div>
+          )}
+        </div>
+      </div>
+    ));
+  };
+
+  // Helper function to create a unique key for each cart item
+  const createItemKey = (item: any) => {
+    return `${item.id}-${JSON.stringify(item.attributes)}`;
+  };
 
   return (
     <section
@@ -63,37 +97,17 @@ const CartOverlay: React.FC<CartOverlayProps> = ({ onClose }) => {
         {cartItems.length === 0 ? (
           <p>Your cart is empty</p>
         ) : (
-          <div className="space-y-8">
+          <div className="space-y-4">
             {cartItems.map((item) => (
               <div
-                key={item.id}
-                className="flex justify-between"
+                key={createItemKey(item)}
+                className="flex justify-between p-4 border border-gray-200 rounded-lg shadow-sm"
                 data-testid="cart-item"
               >
                 <div className="w-3/6">
                   <h2 className="capitalize font-light text-lg">{item.name}</h2>
                   <div className="my-2 font-bold">${item.price.toFixed(2)}</div>
-                  {/* Render attributes */}
-                  {Object.entries(item.attributes).map(
-                    ([attrName, attrValue]) => (
-                      <div
-                        key={attrName}
-                        className="mt-2"
-                        data-testid={`cart-item-attribute-${attrName}`}
-                      >
-                        <span className="font-semibold">{attrName}: </span>
-                        <span
-                          data-testid={`cart-item-attribute-${attrName}-${attrValue}${
-                            attrValue === item.attributes[attrName]
-                              ? "-selected"
-                              : ""
-                          }`}
-                        >
-                          {attrValue}
-                        </span>
-                      </div>
-                    )
-                  )}
+                  {renderAttributes(item.attributes)}
                 </div>
                 <div className="flex flex-col items-center justify-between w-1/6">
                   <button
