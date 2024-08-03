@@ -81,19 +81,6 @@ const ProductDetailsPage: React.FC = () => {
     return `${symbol}${parseFloat(amount).toFixed(2)}`;
   };
 
-  const handleAddToCart = () => {
-    if (isAllAttributesSelected && product.inStock) {
-      addToCart({
-        id: product.id,
-        name: product.name,
-        price: parseFloat(product.prices[0].amount),
-        quantity: 1,
-        attributes: selectedAttributes,
-        image: product.gallery[0],
-      });
-    }
-  };
-
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex flex-col md:flex-row">
@@ -101,7 +88,12 @@ const ProductDetailsPage: React.FC = () => {
           <ProductGallery gallery={product.gallery} />
         </div>
         <div className="md:w-1/3 md:pl-8">
-          <h1 className="text-3xl font-semibold mb-4">{product.name}</h1>
+          <h1
+            className="text-3xl font-semibold mb-4"
+            data-testid="product-name"
+          >
+            {product.name}
+          </h1>
 
           <ProductAttributes
             attributes={product.attributes}
@@ -109,7 +101,7 @@ const ProductDetailsPage: React.FC = () => {
             onSelect={handleAttributeSelect}
           />
 
-          <p className="text-2xl font-bold my-6">
+          <p className="text-2xl font-bold my-6" data-testid="product-price">
             PRICE:
             <br />
             {formatPrice(
