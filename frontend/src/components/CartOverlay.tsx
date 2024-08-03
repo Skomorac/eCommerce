@@ -15,32 +15,25 @@ const CartOverlay: React.FC<CartOverlayProps> = ({ onClose }) => {
   } = useCart();
 
   const handlePlaceOrder = () => {
-    // Implement order placement logic here
     console.log("Placing order");
     clearCart();
     onClose();
   };
 
   return (
-    <div
+    <section
       data-testid="cart-overlay"
-      className="fixed right-0 mr-28 w-96 bg-white shadow-lg z-50 overflow-y-auto"
+      className="fixed z-50 bg-white shadow-lg top-0 right-0 w-full sm:w-96 sm:right-4 md:right-8 lg:right-12 py-6 px-4 overflow-y-auto"
       style={{
-        top: "var(--header-height, 60px)",
-        height: "calc(60vh - var(--header-height, 60px))",
-        overflowY: "auto",
+        top: "var(--header-height, 58px)",
+        height: "calc100vh - var(--header-height, 60px))",
+        maxHeight: "calc(100vh - var(--header-height, 60px))",
       }}
     >
-      <div className="p-6">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-bold">Your Cart</h2>
-          <button
-            onClick={onClose}
-            className="text-gray-500 hover:text-gray-700"
-          >
-            &times;
-          </button>
-        </div>
+      <h2 className="mb-6">
+        <span className="font-bold">My Bag</span>, {cartItems.length} items
+      </h2>
+      <div className="py-4 space-y-8 overflow-y-auto max-h-80">
         {cartItems.length === 0 ? (
           <p>Your cart is empty</p>
         ) : (
@@ -48,61 +41,69 @@ const CartOverlay: React.FC<CartOverlayProps> = ({ onClose }) => {
             {cartItems.map((item) => (
               <div
                 key={item.id}
-                className="cart-item mb-4 flex items-center"
+                className="flex justify-between"
                 data-testid="cart-item"
               >
-                <img
-                  src={item.image}
-                  alt={item.name}
-                  className="w-16 h-16 object-cover mr-4"
-                />
-                <div className="flex-grow">
-                  <h3 className="font-semibold">{item.name}</h3>
-                  <p>Price: ${item.price.toFixed(2)}</p>
-                  <div className="flex items-center mt-2">
-                    <button
-                      onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                      className="px-2 py-1 bg-gray-200 hover:bg-gray-300"
-                      data-testid="cart-item-amount-decrease"
-                    >
-                      -
-                    </button>
-                    <span className="mx-2" data-testid="cart-item-amount">
-                      {item.quantity}
-                    </span>
-                    <button
-                      onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                      className="px-2 py-1 bg-gray-200 hover:bg-gray-300"
-                      data-testid="cart-item-amount-increase"
-                    >
-                      +
-                    </button>
+                <div className="w-3/6">
+                  <h2 className="capitalize font-light text-lg">{item.name}</h2>
+                  <div className="my-2 font-bold">${item.price.toFixed(2)}</div>
+                  {/* Placeholder for attributes */}
+                  <div
+                    className="mt-4"
+                    data-testid={`cart-item-attribute-${item.id}`}
+                  >
+                    {/* Add attribute rendering here */}
                   </div>
                 </div>
-                <button
-                  onClick={() => removeFromCart(item.id)}
-                  className="ml-4 text-red-500 hover:text-red-700"
-                >
-                  Remove
-                </button>
+                <div className="flex flex-col items-center justify-between w-1/6">
+                  <button
+                    type="button"
+                    className="flex items-center justify-center w-6 h-6 transition-colors border border-text hover:bg-text hover:text-white"
+                    data-testid="cart-item-amount-increase"
+                    onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                  >
+                    +
+                  </button>
+                  <span data-testid="cart-item-amount">{item.quantity}</span>
+                  <button
+                    type="button"
+                    className="flex items-center justify-center w-6 h-6 transition-colors border border-text hover:bg-text hover:text-white"
+                    data-testid="cart-item-amount-decrease"
+                    onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                  >
+                    -
+                  </button>
+                </div>
+                <div className="w-2/6">
+                  <img
+                    src={item.image}
+                    alt={item.name}
+                    className="object-contain w-full h-full"
+                  />
+                </div>
               </div>
             ))}
-            <div className="mt-6">
-              <p className="font-bold text-xl" data-testid="cart-total">
-                Total: ${getTotalPrice().toFixed(2)}
-              </p>
-              <button
-                onClick={handlePlaceOrder}
-                className="mt-4 w-full bg-primary text-white py-2 px-4 rounded hover:bg-primary-dark transition-colors duration-200"
-                disabled={cartItems.length === 0}
-              >
-                Place Order
-              </button>
-            </div>
           </>
         )}
       </div>
-    </div>
+      <div className="pt-4 mt-4">
+        <div className="flex items-center justify-between">
+          <h3 className="font-semibold font-roboto">Total</h3>
+          <div className="font-bold" data-testid="cart-total">
+            ${getTotalPrice().toFixed(2)}
+          </div>
+        </div>
+        <button
+          type="button"
+          className="btn-cta flex items-center justify-center disabled:opacity-70 w-full mt-8"
+          data-testid="place-order-btn"
+          onClick={handlePlaceOrder}
+          disabled={cartItems.length === 0}
+        >
+          Place Order
+        </button>
+      </div>
+    </section>
   );
 };
 
