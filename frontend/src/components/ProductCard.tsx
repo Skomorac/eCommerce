@@ -1,7 +1,7 @@
-// src/components/ProductCard.tsx
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import cartIcon from "../assets/images/cart.svg";
+import { useCart } from "../context/CartContext";
 
 interface Attribute {
   id: string;
@@ -26,14 +26,11 @@ interface Product {
 
 interface ProductCardProps {
   product: Product;
-  onQuickShop: (
-    productId: string,
-    defaultAttributes: Record<string, string>
-  ) => void;
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({ product, onQuickShop }) => {
+const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const [isHovered, setIsHovered] = useState(false);
+  const { addToCart } = useCart();
 
   const mainImage = product.gallery[0] || "";
   const price = product.prices[0];
@@ -59,8 +56,23 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onQuickShop }) => {
 
   const handleQuickShop = (e: React.MouseEvent) => {
     e.preventDefault();
-    const defaultAttributes = getDefaultAttributes();
-    onQuickShop(product.id, defaultAttributes);
+    if (product.inStock) {
+      const defaultAttributes = getDefaultAttributes();
+      addToCart({
+        id: product.id,
+        name: product.name,
+        price: parseFloat(product.prices[0].amount),
+        quantity: 1,
+        attributes: defaultAttributes,
+        image: product.gallery[0],
+      });
+      console.log(
+        `Quick shop: Added ${product.name} to cart with attributes:`,
+        defaultAttributes
+      );
+    } else {
+      console.log(`Product ${product.name} is out of stock`);
+    }
   };
 
   return (

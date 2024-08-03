@@ -7,6 +7,7 @@ import ProductGallery from "../components/ProductGallery";
 import ProductAttributes from "../components/ProductAttributes";
 import AddToCartButton from "../components/AddToCartButton";
 import { parseHtml } from "../utils/htmlParser";
+import { useCart } from "../context/CartContext";
 
 interface Currency {
   label: string;
@@ -44,10 +45,10 @@ const ProductDetailsPage: React.FC = () => {
   const { data, loading, error } = useQuery<ProductData>(GET_PRODUCT, {
     variables: { id: productId },
   });
-
   const [selectedAttributes, setSelectedAttributes] = useState<
     Record<string, string>
   >({});
+  const { addToCart } = useCart();
 
   useEffect(() => {
     if (data?.product) {
@@ -82,8 +83,14 @@ const ProductDetailsPage: React.FC = () => {
 
   const handleAddToCart = () => {
     if (isAllAttributesSelected && product.inStock) {
-      console.log("Adding to cart:", product.id, selectedAttributes);
-      // Implement your add to cart logic here
+      addToCart({
+        id: product.id,
+        name: product.name,
+        price: parseFloat(product.prices[0].amount),
+        quantity: 1,
+        attributes: selectedAttributes,
+        image: product.gallery[0],
+      });
     }
   };
 
@@ -112,9 +119,15 @@ const ProductDetailsPage: React.FC = () => {
           </p>
 
           <AddToCartButton
+            product={{
+              id: product.id,
+              name: product.name,
+              price: parseFloat(product.prices[0].amount),
+              gallery: product.gallery,
+            }}
+            selectedAttributes={selectedAttributes}
             inStock={product.inStock}
             allAttributesSelected={isAllAttributesSelected}
-            onClick={handleAddToCart}
           />
 
           {product.inStock && !isAllAttributesSelected && (

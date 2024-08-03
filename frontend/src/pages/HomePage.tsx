@@ -1,9 +1,15 @@
-// src/pages/HomePage.tsx
 import React from "react";
 import { useParams, useLocation } from "react-router-dom";
 import { useQuery } from "@apollo/client";
 import { GET_PRODUCTS } from "../graphql/queries";
 import ProductCard from "../components/ProductCard";
+
+interface Attribute {
+  id: string;
+  attribute_id: string;
+  value: string;
+  displayValue: string;
+}
 
 interface Product {
   id: string;
@@ -11,7 +17,7 @@ interface Product {
   inStock: boolean;
   gallery: string[];
   prices: {
-    amount: number | string; // Allow both number and string
+    amount: number | string;
     currency: {
       symbol: string;
     };
@@ -19,12 +25,7 @@ interface Product {
   description?: string;
   category?: string;
   brand?: string;
-  attributes?: {
-    id: string;
-    attribute_id: string;
-    value: string;
-    displayValue: string;
-  }[];
+  attributes?: Attribute[];
 }
 
 interface ProductsData {
@@ -46,18 +47,6 @@ const HomePage: React.FC = () => {
   if (loading) return <div>Loading products...</div>;
   if (error) return <div>Error loading products: {error.message}</div>;
 
-  const handleQuickShop = (
-    productId: string,
-    defaultAttributes: Record<string, string>
-  ) => {
-    console.log(
-      `Quick shop for product ${productId} with attributes:`,
-      defaultAttributes
-    );
-    // Here you would typically dispatch an action to add the item to the cart
-    // For now, we're just logging to the console
-  };
-
   return (
     <div className="container mx-auto px-4">
       <h1 className="font-raleway text-[42px] font-normal leading-[67.2px] text-left text-text mt-8 mb-6">
@@ -71,10 +60,9 @@ const HomePage: React.FC = () => {
               ...product,
               prices: product.prices.map((price) => ({
                 ...price,
-                amount: price.amount.toString(), // Convert to string
+                amount: price.amount.toString(),
               })),
             }}
-            onQuickShop={handleQuickShop}
           />
         ))}
       </div>

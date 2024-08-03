@@ -1,19 +1,41 @@
-// src/components/AddToCartButton.tsx
 import React from "react";
+import { useCart } from "../context/CartContext";
 
 interface AddToCartButtonProps {
+  product: {
+    id: string;
+    name: string;
+    price: number;
+    gallery: string[];
+  };
+  selectedAttributes: Record<string, string>;
   inStock: boolean;
   allAttributesSelected: boolean;
-  onClick: () => void;
 }
 
 const AddToCartButton: React.FC<AddToCartButtonProps> = ({
+  product,
+  selectedAttributes,
   inStock,
   allAttributesSelected,
-  onClick,
 }) => {
+  const { addToCart } = useCart();
+
   const isDisabled = !inStock || !allAttributesSelected;
   const buttonText = inStock ? "ADD TO CART" : "OUT OF STOCK";
+
+  const handleAddToCart = () => {
+    if (!isDisabled) {
+      addToCart({
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        quantity: 1,
+        attributes: selectedAttributes,
+        image: product.gallery[0],
+      });
+    }
+  };
 
   return (
     <button
@@ -24,7 +46,7 @@ const AddToCartButton: React.FC<AddToCartButtonProps> = ({
           : "bg-primary hover:bg-accent cursor-pointer"
       }`}
       disabled={isDisabled}
-      onClick={onClick}
+      onClick={handleAddToCart}
     >
       {buttonText}
     </button>
