@@ -46,13 +46,33 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
     });
   };
 
-  const removeFromCart = (id: string) => {
-    setCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
+  const removeFromCart = (
+    id: string,
+    attributes: { [key: string]: string }
+  ) => {
+    setCartItems((prevItems) =>
+      prevItems.filter(
+        (item) =>
+          !(
+            item.id === id &&
+            JSON.stringify(item.attributes) === JSON.stringify(attributes)
+          )
+      )
+    );
   };
 
-  const updateQuantity = (id: string, quantity: number) => {
+  const updateQuantity = (
+    id: string,
+    attributes: { [key: string]: string },
+    quantity: number
+  ) => {
     setCartItems((prevItems) =>
-      prevItems.map((item) => (item.id === id ? { ...item, quantity } : item))
+      prevItems.map((item) =>
+        item.id === id &&
+        JSON.stringify(item.attributes) === JSON.stringify(attributes)
+          ? { ...item, quantity }
+          : item
+      )
     );
   };
 

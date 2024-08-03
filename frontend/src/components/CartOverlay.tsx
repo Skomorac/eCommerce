@@ -1,5 +1,7 @@
 import React from "react";
 import { useCart } from "../context/CartContext";
+import { useMutation } from "@apollo/client";
+import { PLACE_ORDER } from "../graphql/queries";
 
 interface CartOverlayProps {
   onClose: () => void;
@@ -14,11 +16,33 @@ const CartOverlay: React.FC<CartOverlayProps> = ({ onClose }) => {
     clearCart,
   } = useCart();
 
-  const handlePlaceOrder = () => {
-    console.log("Placing order");
-    clearCart();
-    onClose();
+  const [placeOrder] = useMutation(PLACE_ORDER);
+
+  const handlePlaceOrder = async () => {
+    try {
+      await placeOrder({
+        variables: {
+          OrderInput: {
+            items: cartItems.map((item) => ({
+              product_id: item.id,
+              quantity: item.quantity,
+              attributes: item.attributes,
+            })),
+          },
+        },
+      });
+      clearCart();
+      onClose();
+    } catch (error) {
+      console.error("Failed to place order", error);
+    }
   };
+
+  // Calculate the total number of items in the cart
+  const totalItemsCount = cartItems.reduce(
+    (total, item) => total + item.quantity,
+    0
+  );
 
   return (
     <section
@@ -26,12 +50,13 @@ const CartOverlay: React.FC<CartOverlayProps> = ({ onClose }) => {
       className="fixed z-50 bg-white shadow-lg top-0 right-0 w-full sm:w-96 sm:right-4 md:right-8 lg:right-12 py-6 px-4 overflow-y-auto"
       style={{
         top: "var(--header-height, 58px)",
-        height: "calc100vh - var(--header-height, 60px))",
+        height: "calc(100vh - var(--header-height, 60px))",
         maxHeight: "calc(100vh - var(--header-height, 60px))",
       }}
     >
       <h2 className="mb-6">
-        <span className="font-bold">My Bag</span>, {cartItems.length} items
+        <span className="font-bold">My Bag</span>, {totalItemsCount}{" "}
+        {totalItemsCount === 1 ? "Item" : "Items"}
       </h2>
       <div className="py-4 space-y-8 overflow-y-auto max-h-80">
         {cartItems.length === 0 ? (
@@ -47,20 +72,39 @@ const CartOverlay: React.FC<CartOverlayProps> = ({ onClose }) => {
                 <div className="w-3/6">
                   <h2 className="capitalize font-light text-lg">{item.name}</h2>
                   <div className="my-2 font-bold">${item.price.toFixed(2)}</div>
-                  {/* Placeholder for attributes */}
-                  <div
-                    className="mt-4"
-                    data-testid={`cart-item-attribute-${item.id}`}
-                  >
-                    {/* Add attribute rendering here */}
-                  </div>
+                  {/* Render attributes */}
+                  {Object.entries(item.attributes).map(
+                    ([attrName, attrValue]) => (
+                      <div
+                        key={attrName}
+                        data-testid={`cart-item-attribute-${attrName}`}
+                      >
+                        <span>{attrName}: </span>
+                        <span
+                          data-testid={`cart-item-attribute-${attrName}-${attrValue}${
+                            attrValue === item.attributes[attrName]
+                              ? "-selected"
+                              : ""
+                          }`}
+                        >
+                          {attrValue}
+                        </span>
+                      </div>
+                    )
+                  )}
                 </div>
                 <div className="flex flex-col items-center justify-between w-1/6">
                   <button
                     type="button"
                     className="flex items-center justify-center w-6 h-6 transition-colors border border-text hover:bg-text hover:text-white"
                     data-testid="cart-item-amount-increase"
-                    onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                    onClick={() =>
+                      updateQuantity(
+                        item.id,
+                        item.attributes,
+                        item.quantity + 1
+                      )
+                    }
                   >
                     +
                   </button>
@@ -69,7 +113,17 @@ const CartOverlay: React.FC<CartOverlayProps> = ({ onClose }) => {
                     type="button"
                     className="flex items-center justify-center w-6 h-6 transition-colors border border-text hover:bg-text hover:text-white"
                     data-testid="cart-item-amount-decrease"
-                    onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                    onClick={() => {
+                      if (item.quantity === 1) {
+                        removeFromCart(item.id, item.attributes);
+                      } else {
+                        updateQuantity(
+                          item.id,
+                          item.attributes,
+                          item.quantity - 1
+                        );
+                      }
+                    }}
                   >
                     -
                   </button>

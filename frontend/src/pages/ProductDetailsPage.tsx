@@ -1,4 +1,3 @@
-// src/pages/ProductDetailsPage.tsx
 import React, { useState, useEffect, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@apollo/client";
@@ -40,6 +39,7 @@ interface ProductDetails {
 interface ProductData {
   product: ProductDetails;
 }
+
 const ProductDetailsPage: React.FC = () => {
   const { productId } = useParams<{ productId: string }>();
   const { data, loading, error } = useQuery<ProductData>(GET_PRODUCT, {
