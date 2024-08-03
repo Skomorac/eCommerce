@@ -20,21 +20,40 @@ const CartOverlay: React.FC<CartOverlayProps> = ({ onClose }) => {
 
   const handlePlaceOrder = async () => {
     try {
-      await placeOrder({
-        variables: {
-          OrderInput: {
-            items: cartItems.map((item) => ({
-              product_id: item.id,
-              quantity: item.quantity,
-              attributes: item.attributes,
-            })),
-          },
-        },
+      const totalAmount = getTotalPrice();
+      const currency = "USD"; // Assuming USD, adjust if you have multiple currencies
+
+      const orderInput = {
+        items: cartItems.map((item) => ({
+          productId: item.id,
+          quantity: item.quantity,
+          attributeValues: Object.entries(item.attributes).map(
+            ([id, value]) => ({
+              id,
+              value,
+            })
+          ),
+        })),
+        totalAmount: totalAmount,
+      };
+
+      const result = await placeOrder({
+        variables: { OrderInput: orderInput },
       });
+
+      console.log("Order placed successfully:", result.data.placeOrder);
       clearCart();
       onClose();
     } catch (error) {
       console.error("Failed to place order", error);
+      if (error.graphQLErrors) {
+        error.graphQLErrors.forEach((graphQLError) => {
+          console.error("GraphQL error:", graphQLError);
+        });
+      }
+      if (error.networkError) {
+        console.error("Network error:", error.networkError);
+      }
     }
   };
 
@@ -84,7 +103,7 @@ const CartOverlay: React.FC<CartOverlayProps> = ({ onClose }) => {
       className="fixed z-50 bg-white shadow-lg top-0 right-0 w-full sm:w-96 sm:right-4 md:right-8 lg:right-12 py-6 px-4 flex flex-col"
       style={{
         top: "var(--header-height, 58px)",
-        height: "calc(60vh - var(--header-height, 60px))",
+        height: "calc(80vh - var(--header-height, 60px))",
       }}
     >
       <div className="flex-shrink-0 mb-6">
