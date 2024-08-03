@@ -85,7 +85,7 @@ const Header: React.FC<HeaderProps> = ({ toggleCart }) => {
         >
           <img src={cartIcon} alt="Cart" className="w-6 h-6" />
           {getTotalItems() > 0 && (
-            <span className="absolute -top-2 -right-2 bg-primary text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
+            <span className="absolute -top-2 -right-2 bg-text text-white  rounded-full w-5 h-5 flex items-center justify-center text-xs">
               {getTotalItems()}
             </span>
           )}

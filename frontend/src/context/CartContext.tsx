@@ -12,8 +12,12 @@ interface CartItem {
 interface CartContextType {
   cartItems: CartItem[];
   addToCart: (item: CartItem) => void;
-  removeFromCart: (id: string) => void;
-  updateQuantity: (id: string, quantity: number) => void;
+  removeFromCart: (id: string, attributes: { [key: string]: string }) => void;
+  updateQuantity: (
+    id: string,
+    attributes: { [key: string]: string },
+    quantity: number
+  ) => void;
   clearCart: () => void;
   getTotalItems: () => number;
   getTotalPrice: () => number;

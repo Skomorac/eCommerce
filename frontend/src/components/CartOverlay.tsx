@@ -47,22 +47,23 @@ const CartOverlay: React.FC<CartOverlayProps> = ({ onClose }) => {
   return (
     <section
       data-testid="cart-overlay"
-      className="fixed z-50 bg-white shadow-lg top-0 right-0 w-full sm:w-96 sm:right-4 md:right-8 lg:right-12 py-6 px-4 overflow-y-auto"
+      className="fixed z-50 bg-white shadow-lg top-0 right-0 w-full sm:w-96 sm:right-4 md:right-8 lg:right-12 py-6 px-4 flex flex-col"
       style={{
         top: "var(--header-height, 58px)",
-        height: "calc(100vh - var(--header-height, 60px))",
-        maxHeight: "calc(100vh - var(--header-height, 60px))",
+        height: "calc(60vh - var(--header-height, 60px))",
       }}
     >
-      <h2 className="mb-6">
-        <span className="font-bold">My Bag</span>, {totalItemsCount}{" "}
-        {totalItemsCount === 1 ? "Item" : "Items"}
-      </h2>
-      <div className="py-4 space-y-8 overflow-y-auto max-h-80">
+      <div className="flex-shrink-0 mb-6">
+        <h2>
+          <span className="font-bold">My Bag</span>, {totalItemsCount}{" "}
+          {totalItemsCount === 1 ? "Item" : "Items"}
+        </h2>
+      </div>
+      <div className="flex-grow overflow-y-auto">
         {cartItems.length === 0 ? (
           <p>Your cart is empty</p>
         ) : (
-          <>
+          <div className="space-y-8">
             {cartItems.map((item) => (
               <div
                 key={item.id}
@@ -77,9 +78,10 @@ const CartOverlay: React.FC<CartOverlayProps> = ({ onClose }) => {
                     ([attrName, attrValue]) => (
                       <div
                         key={attrName}
+                        className="mt-2"
                         data-testid={`cart-item-attribute-${attrName}`}
                       >
-                        <span>{attrName}: </span>
+                        <span className="font-semibold">{attrName}: </span>
                         <span
                           data-testid={`cart-item-attribute-${attrName}-${attrValue}${
                             attrValue === item.attributes[attrName]
@@ -96,7 +98,7 @@ const CartOverlay: React.FC<CartOverlayProps> = ({ onClose }) => {
                 <div className="flex flex-col items-center justify-between w-1/6">
                   <button
                     type="button"
-                    className="flex items-center justify-center w-6 h-6 transition-colors border border-text hover:bg-text hover:text-white"
+                    className="flex items-center justify-center w-6 h-6 transition-colors border border-gray-500 hover:bg-gray-500 hover:text-white"
                     data-testid="cart-item-amount-increase"
                     onClick={() =>
                       updateQuantity(
@@ -111,7 +113,7 @@ const CartOverlay: React.FC<CartOverlayProps> = ({ onClose }) => {
                   <span data-testid="cart-item-amount">{item.quantity}</span>
                   <button
                     type="button"
-                    className="flex items-center justify-center w-6 h-6 transition-colors border border-text hover:bg-text hover:text-white"
+                    className="flex items-center justify-center w-6 h-6 transition-colors border border-gray-500 hover:bg-gray-500 hover:text-white"
                     data-testid="cart-item-amount-decrease"
                     onClick={() => {
                       if (item.quantity === 1) {
@@ -137,24 +139,24 @@ const CartOverlay: React.FC<CartOverlayProps> = ({ onClose }) => {
                 </div>
               </div>
             ))}
-          </>
+          </div>
         )}
       </div>
-      <div className="pt-4 mt-4">
+      <div className="flex-shrink-0 pt-4 mt-4">
         <div className="flex items-center justify-between">
-          <h3 className="font-semibold font-roboto">Total</h3>
+          <h3 className="font-semibold">Total</h3>
           <div className="font-bold" data-testid="cart-total">
             ${getTotalPrice().toFixed(2)}
           </div>
         </div>
         <button
           type="button"
-          className="btn-cta flex items-center justify-center disabled:opacity-70 w-full mt-8"
+          className="bg-primary text-white hover:bg-accent flex items-center justify-center disabled:opacity-70 w-full mt-8 py-3"
           data-testid="place-order-btn"
           onClick={handlePlaceOrder}
           disabled={cartItems.length === 0}
         >
-          Place Order
+          PLACE ORDER
         </button>
       </div>
     </section>
