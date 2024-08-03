@@ -1,4 +1,3 @@
-// src/components/ProductAttributes.tsx
 import React from "react";
 
 interface Attribute {
@@ -66,7 +65,7 @@ const ProductAttributes: React.FC<ProductAttributesProps> = ({
                 <button
                   key={item.id}
                   data-testid={`product-attribute-${attributeId.toLowerCase()}-${
-                    item.value
+                    item.displayValue
                   }`}
                   className={getButtonStyle(
                     attributeId,

@@ -109,7 +109,7 @@ const CartOverlay: React.FC<CartOverlayProps> = ({ onClose }) => {
       <div className="flex-shrink-0 mb-6">
         <h2>
           <span className="font-bold">My Bag</span>, {totalItemsCount}{" "}
-          {totalItemsCount === 1 ? "Item" : "Items"}
+          {totalItemsCount === 1 ? "item" : "items"}
         </h2>
       </div>
       <div className="flex-grow overflow-y-auto">
