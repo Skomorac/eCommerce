@@ -59,7 +59,7 @@ const Header: React.FC<HeaderProps> = ({ toggleCart }) => {
           {uniqueCategories.map((category) => (
             <Link
               key={category}
-              to={`/${category === "all" ? "" : category}`}
+              to={`/${category}`} // This ensures "all" links to "/all"
               data-testid={
                 category === activeCategory
                   ? "active-category-link"
