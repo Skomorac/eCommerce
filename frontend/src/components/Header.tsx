@@ -1,10 +1,8 @@
-// src/components/Header.tsx
-import React, { useState } from "react";
+import React, { useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useQuery } from "@apollo/client";
 import { GET_CATEGORIES } from "../graphql/queries";
 import { useCart } from "../context/CartContext";
-import CartOverlay from "./CartOverlay";
 import cartIcon from "../assets/images/cart.svg";
 import logoIcon from "../assets/images/logo.svg";
 
@@ -19,11 +17,25 @@ interface CategoriesData {
   categories: Category[];
 }
 
-const Header: React.FC = () => {
+interface HeaderProps {
+  toggleCart: () => void;
+}
+
+const Header: React.FC<HeaderProps> = ({ toggleCart }) => {
   const { data, loading, error } = useQuery<CategoriesData>(GET_CATEGORIES);
   const location = useLocation();
   const { getTotalItems } = useCart();
-  const [isCartOpen, setIsCartOpen] = useState(false);
+  const headerRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    if (headerRef.current) {
+      const headerHeight = headerRef.current.offsetHeight;
+      document.documentElement.style.setProperty(
+        "--header-height",
+        `${headerHeight}px`
+      );
+    }
+  }, []);
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error loading categories</div>;
@@ -38,13 +50,16 @@ const Header: React.FC = () => {
     location.pathname === "/" ? "all" : location.pathname.slice(1);
 
   return (
-    <header className="w-full border-b border-[#E5E5E5]">
+    <header
+      ref={headerRef}
+      className="w-full border-b border-[#E5E5E5] z-50 relative bg-white"
+    >
       <div className="container mx-auto px-4 flex justify-between items-center py-4 font-raleway text-text">
         <nav className="flex items-center">
           {uniqueCategories.map((category) => (
             <Link
               key={category}
-              to={`/${category}`}
+              to={`/${category === "all" ? "" : category}`}
               data-testid={
                 category === activeCategory
                   ? "active-category-link"
@@ -66,7 +81,7 @@ const Header: React.FC = () => {
         <button
           data-testid="cart-btn"
           className="relative"
-          onClick={() => setIsCartOpen(true)}
+          onClick={toggleCart}
         >
           <img src={cartIcon} alt="Cart" className="w-6 h-6" />
           {getTotalItems() > 0 && (
@@ -76,7 +91,6 @@ const Header: React.FC = () => {
           )}
         </button>
       </div>
-      {isCartOpen && <CartOverlay onClose={() => setIsCartOpen(false)} />}
     </header>
   );
 };
