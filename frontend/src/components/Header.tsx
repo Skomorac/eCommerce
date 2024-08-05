@@ -55,17 +55,17 @@ const Header: React.FC<HeaderProps> = ({ toggleCart }) => {
       className="w-full border-b border-[#E5E5E5] z-50 relative bg-white"
     >
       <div className="container mx-auto px-4 flex justify-between items-center py-4 font-raleway text-text">
-        <nav className="flex items-center">
+        <nav className="flex items-center overflow-x-auto">
           {uniqueCategories.map((category) => (
             <Link
               key={category}
-              to={`/${category}`} // This ensures "all" links to "/all"
+              to={`/${category === "all" ? "" : category}`}
               data-testid={
                 category === activeCategory
                   ? "active-category-link"
                   : "category-link"
               }
-              className={`mr-6 uppercase text-base font-semibold leading-[19.2px] text-center ${
+              className={`mr-6 uppercase text-base font-semibold leading-[19.2px] text-center whitespace-nowrap ${
                 category === activeCategory
                   ? "text-primary border-b-2 border-primary"
                   : "text-text"
@@ -75,24 +75,29 @@ const Header: React.FC<HeaderProps> = ({ toggleCart }) => {
             </Link>
           ))}
         </nav>
-        <Link to="/" className="absolute left-1/2 transform -translate-x-1/2">
-          <img src={logoIcon} alt="Logo" className="w-8 h-8" />
-        </Link>
-        <button
-          data-testid="cart-btn"
-          className="relative"
-          onClick={toggleCart}
-        >
-          <img src={cartIcon} alt="Cart" className="w-6 h-6" />
-          {getTotalItems() > 0 && (
-            <span
-              data-testid="cart-count-bubble"
-              className="absolute -top-2 -right-2 bg-text text-white  rounded-full w-5 h-5 flex items-center justify-center text-xs"
-            >
-              {getTotalItems()}
-            </span>
-          )}
-        </button>
+        <div className="flex items-center">
+          <Link
+            to="/"
+            className="mr-4 lg:absolute lg:left-1/2 lg:transform lg:-translate-x-1/2"
+          >
+            <img src={logoIcon} alt="Logo" className="w-8 h-8" />
+          </Link>
+          <button
+            data-testid="cart-btn"
+            className="relative"
+            onClick={toggleCart}
+          >
+            <img src={cartIcon} alt="Cart" className="w-6 h-6" />
+            {getTotalItems() > 0 && (
+              <span
+                data-testid="cart-count-bubble"
+                className="absolute -top-2 -right-2 bg-text text-white rounded-full w-5 h-5 flex items-center justify-center text-xs"
+              >
+                {getTotalItems()}
+              </span>
+            )}
+          </button>
+        </div>
       </div>
     </header>
   );
