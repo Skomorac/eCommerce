@@ -1,10 +1,12 @@
 // src/components/CartOverlay.tsx
 
-import React from "react";
+import React, { useEffect } from "react";
 import { useCart } from "../context/CartContext";
 import { useMutation } from "@apollo/client";
 import { PLACE_ORDER } from "../graphql/queries";
 import CartItemAttributes from "./CartItemAttributes";
+import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 
 interface CartOverlayProps {
   onClose: () => void;
@@ -20,6 +22,19 @@ const CartOverlay: React.FC<CartOverlayProps> = ({ onClose }) => {
   } = useCart();
 
   const [placeOrder] = useMutation(PLACE_ORDER);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (cartItems.length === 0) {
+      Swal.fire({
+        icon: "info",
+        title: "Cart is Empty",
+        text: "You have removed all items from your cart.",
+        timer: 2000,
+        showConfirmButton: false,
+      });
+    }
+  }, [cartItems]);
 
   const handlePlaceOrder = async () => {
     try {
@@ -45,10 +60,31 @@ const CartOverlay: React.FC<CartOverlayProps> = ({ onClose }) => {
       });
 
       console.log("Order placed successfully:", result.data.placeOrder);
+      // Show success message with order details
+      Swal.fire({
+        icon: "success",
+        title: "Order Placed Successfully!",
+        html: `
+          <p>Total Amount: $${totalAmount.toFixed(2)}</p>
+          <p>Ordered Products:</p>
+          <ul>
+            ${cartItems
+              .map((item) => `<li>${item.name} (x${item.quantity})</li>`)
+              .join("")}
+          </ul>
+        `,
+        confirmButtonText: "OK",
+      });
       clearCart();
       onClose();
+      navigate("/");
     } catch (error: unknown) {
       console.error("Failed to place order", error);
+      Swal.fire({
+        icon: "error",
+        title: "Order Failed",
+        text: "There was an error placing your order. Please try again.",
+      });
       if (error instanceof Error) {
         if ("graphQLErrors" in error) {
           (error.graphQLErrors as any[]).forEach((graphQLError) => {
@@ -60,6 +96,13 @@ const CartOverlay: React.FC<CartOverlayProps> = ({ onClose }) => {
         }
       }
     }
+  };
+
+  const handleRemoveFromCart = (
+    itemId: string,
+    attributes: Record<string, { value: string; displayValue: string }>
+  ) => {
+    removeFromCart(itemId, attributes);
   };
 
   const totalItemsCount = cartItems.reduce(
@@ -129,7 +172,7 @@ const CartOverlay: React.FC<CartOverlayProps> = ({ onClose }) => {
                     data-testid="cart-item-amount-decrease"
                     onClick={() => {
                       if (item.quantity === 1) {
-                        removeFromCart(item.id, item.attributes);
+                        handleRemoveFromCart(item.id, item.attributes);
                       } else {
                         updateQuantity(
                           item.id,
