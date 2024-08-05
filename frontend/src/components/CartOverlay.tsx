@@ -24,7 +24,7 @@ const CartOverlay: React.FC<CartOverlayProps> = ({ onClose }) => {
   const handlePlaceOrder = async () => {
     try {
       const totalAmount = getTotalPrice();
-      const currency = "USD"; // Assuming USD, adjust if you have multiple currencies
+      const currency = "USD";
 
       const orderInput = {
         items: cartItems.map((item) => ({
@@ -67,7 +67,6 @@ const CartOverlay: React.FC<CartOverlayProps> = ({ onClose }) => {
     0
   );
 
-  // Helper function to create a unique key for each cart item
   const createItemKey = (item: any) => {
     return `${item.id}-${JSON.stringify(item.attributes)}`;
   };
@@ -100,7 +99,9 @@ const CartOverlay: React.FC<CartOverlayProps> = ({ onClose }) => {
               >
                 <div className="w-3/6">
                   <h2 className="capitalize font-light text-lg">{item.name}</h2>
-                  <div className="my-2 font-bold">${item.price.toFixed(2)}</div>
+                  <div className="my-2 font-bold">
+                    $ {item.price.toFixed(2)}
+                  </div>
                   <CartItemAttributes
                     attributes={item.allAttributes}
                     selectedAttributes={item.attributes}
@@ -157,7 +158,7 @@ const CartOverlay: React.FC<CartOverlayProps> = ({ onClose }) => {
         <div className="flex items-center justify-between">
           <h3 className="font-semibold">Total</h3>
           <div className="font-bold" data-testid="cart-total">
-            ${getTotalPrice().toFixed(2)}
+            $ {getTotalPrice().toFixed(2)}
           </div>
         </div>
         <button

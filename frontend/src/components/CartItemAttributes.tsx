@@ -61,14 +61,18 @@ const CartItemAttributes: React.FC<CartItemAttributesProps> = ({
   return (
     <div>
       {Object.entries(groupedAttributes).map(([attributeId, attribute]) => (
-        <div key={attributeId} className="mt-2">
+        <div
+          key={attributeId}
+          className="mt-2"
+          data-testid={`cart-item-attribute-${attributeId.toLowerCase()}`}
+        >
           <span className="font-semibold mb-1">{attributeId}:</span>
           <div className="flex flex-wrap">
             {attribute.items.map((item, index) => {
               const isSelected =
                 (selectedAttributes &&
                   selectedAttributes[attributeId]?.value === item.value) ||
-                (!selectedAttributes && index === 0); // Select first item if no selection
+                (!selectedAttributes && index === 0);
               return (
                 <div
                   key={item.id}
@@ -82,6 +86,9 @@ const CartItemAttributes: React.FC<CartItemAttributesProps> = ({
                       ? { backgroundColor: item.value }
                       : {}
                   }
+                  data-testid={`cart-item-attribute-${attributeId.toLowerCase()}-${
+                    item.displayValue
+                  }${isSelected ? "-selected" : ""}`}
                 >
                   {attributeId.toLowerCase() !== "color" && (
                     <span className="text-xs">{item.displayValue}</span>
