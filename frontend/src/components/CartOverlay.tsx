@@ -7,6 +7,11 @@ interface CartOverlayProps {
   onClose: () => void;
 }
 
+interface AttributeValue {
+  value: string;
+  displayValue: string;
+}
+
 const CartOverlay: React.FC<CartOverlayProps> = ({ onClose }) => {
   const {
     cartItems,
@@ -28,9 +33,9 @@ const CartOverlay: React.FC<CartOverlayProps> = ({ onClose }) => {
           productId: item.id,
           quantity: item.quantity,
           attributeValues: Object.entries(item.attributes).map(
-            ([id, value]) => ({
+            ([id, attrValue]) => ({
               id,
-              value,
+              value: attrValue.value,
             })
           ),
         })),
@@ -44,15 +49,17 @@ const CartOverlay: React.FC<CartOverlayProps> = ({ onClose }) => {
       console.log("Order placed successfully:", result.data.placeOrder);
       clearCart();
       onClose();
-    } catch (error) {
+    } catch (error: unknown) {
       console.error("Failed to place order", error);
-      if (error.graphQLErrors) {
-        error.graphQLErrors.forEach((graphQLError) => {
-          console.error("GraphQL error:", graphQLError);
-        });
-      }
-      if (error.networkError) {
-        console.error("Network error:", error.networkError);
+      if (error instanceof Error) {
+        if ("graphQLErrors" in error) {
+          (error.graphQLErrors as any[]).forEach((graphQLError) => {
+            console.error("GraphQL error:", graphQLError);
+          });
+        }
+        if ("networkError" in error) {
+          console.error("Network error:", error.networkError);
+        }
       }
     }
   };
@@ -62,8 +69,8 @@ const CartOverlay: React.FC<CartOverlayProps> = ({ onClose }) => {
     0
   );
 
-  const renderAttributes = (attributes: Record<string, string>) => {
-    return Object.entries(attributes).map(([attributeId, value]) => (
+  const renderAttributes = (attributes: Record<string, AttributeValue>) => {
+    return Object.entries(attributes).map(([attributeId, attrValue]) => (
       <div
         key={attributeId}
         className="mt-2 flex flex-col"
@@ -74,17 +81,21 @@ const CartOverlay: React.FC<CartOverlayProps> = ({ onClose }) => {
           {attributeId.toLowerCase() === "color" ? (
             <div
               className="w-6 h-6 rounded-full border-2 border-gray-300"
-              style={{ backgroundColor: value }}
-              data-testid={`cart-item-attribute-${attributeId.toLowerCase()}-${value}-selected`}
+              style={{ backgroundColor: attrValue.value }}
+              data-testid={`cart-item-attribute-${attributeId.toLowerCase()}-${
+                attrValue.displayValue
+              }-selected`}
             >
               <div className="w-full h-full rounded-full border-2 border-white"></div>
             </div>
           ) : (
             <div
               className="inline-block px-2 py-1 text-sm text-white bg-black"
-              data-testid={`cart-item-attribute-${attributeId.toLowerCase()}-${value}-selected`}
+              data-testid={`cart-item-attribute-${attributeId.toLowerCase()}-${
+                attrValue.displayValue
+              }-selected`}
             >
-              {value}
+              {attrValue.displayValue}
             </div>
           )}
         </div>

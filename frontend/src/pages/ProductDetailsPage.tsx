@@ -40,21 +40,26 @@ interface ProductData {
   product: ProductDetails;
 }
 
+interface AttributeValue {
+  value: string;
+  displayValue: string;
+}
+
 const ProductDetailsPage: React.FC = () => {
   const { productId } = useParams<{ productId: string }>();
   const { data, loading, error } = useQuery<ProductData>(GET_PRODUCT, {
     variables: { id: productId },
   });
   const [selectedAttributes, setSelectedAttributes] = useState<
-    Record<string, string>
+    Record<string, AttributeValue>
   >({});
   const { addToCart } = useCart();
 
   useEffect(() => {
     if (data?.product) {
-      const initialAttributes: Record<string, string> = {};
+      const initialAttributes: Record<string, AttributeValue> = {};
       data.product.attributes.forEach((attr) => {
-        initialAttributes[attr.attribute_id] = "";
+        initialAttributes[attr.attribute_id] = { value: "", displayValue: "" };
       });
       setSelectedAttributes(initialAttributes);
     }
@@ -63,7 +68,7 @@ const ProductDetailsPage: React.FC = () => {
   const isAllAttributesSelected = useMemo(() => {
     if (!data?.product) return false;
     return data.product.attributes.every(
-      (attr) => selectedAttributes[attr.attribute_id] !== ""
+      (attr) => selectedAttributes[attr.attribute_id]?.value !== ""
     );
   }, [data, selectedAttributes]);
 
@@ -73,8 +78,15 @@ const ProductDetailsPage: React.FC = () => {
 
   const product = data.product;
 
-  const handleAttributeSelect = (attributeId: string, value: string) => {
-    setSelectedAttributes((prev) => ({ ...prev, [attributeId]: value }));
+  const handleAttributeSelect = (
+    attributeId: string,
+    value: string,
+    displayValue: string
+  ) => {
+    setSelectedAttributes((prev) => ({
+      ...prev,
+      [attributeId]: { value, displayValue },
+    }));
   };
 
   const formatPrice = (amount: string, symbol: string) => {

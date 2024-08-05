@@ -1,21 +1,29 @@
 import React, { createContext, useState, useContext } from "react";
 
+interface AttributeValue {
+  value: string;
+  displayValue: string;
+}
+
 interface CartItem {
   id: string;
   name: string;
   price: number;
   quantity: number;
-  attributes: { [key: string]: string };
+  attributes: { [key: string]: AttributeValue };
   image: string;
 }
 
 interface CartContextType {
   cartItems: CartItem[];
   addToCart: (item: CartItem) => void;
-  removeFromCart: (id: string, attributes: { [key: string]: string }) => void;
+  removeFromCart: (
+    id: string,
+    attributes: { [key: string]: AttributeValue }
+  ) => void;
   updateQuantity: (
     id: string,
-    attributes: { [key: string]: string },
+    attributes: { [key: string]: AttributeValue },
     quantity: number
   ) => void;
   clearCart: () => void;
@@ -41,18 +49,18 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
       if (existingItemIndex > -1) {
         return prevItems.map((item, index) =>
           index === existingItemIndex
-            ? { ...item, quantity: item.quantity + 1 }
+            ? { ...item, quantity: item.quantity + newItem.quantity }
             : item
         );
       } else {
-        return [...prevItems, { ...newItem, quantity: 1 }];
+        return [...prevItems, newItem];
       }
     });
   };
 
   const removeFromCart = (
     id: string,
-    attributes: { [key: string]: string }
+    attributes: { [key: string]: AttributeValue }
   ) => {
     setCartItems((prevItems) =>
       prevItems.filter(
@@ -67,7 +75,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const updateQuantity = (
     id: string,
-    attributes: { [key: string]: string },
+    attributes: { [key: string]: AttributeValue },
     quantity: number
   ) => {
     setCartItems((prevItems) =>

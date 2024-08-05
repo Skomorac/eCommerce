@@ -7,10 +7,15 @@ interface Attribute {
   displayValue: string;
 }
 
+interface AttributeValue {
+  value: string;
+  displayValue: string;
+}
+
 interface ProductAttributesProps {
   attributes: Attribute[];
-  selectedAttributes: Record<string, string>;
-  onSelect: (attributeId: string, value: string) => void;
+  selectedAttributes: Record<string, AttributeValue>;
+  onSelect: (attributeId: string, value: string, displayValue: string) => void;
 }
 
 const ProductAttributes: React.FC<ProductAttributesProps> = ({
@@ -60,7 +65,8 @@ const ProductAttributes: React.FC<ProductAttributesProps> = ({
           <h3 className="text-lg font-semibold mb-2">{attributeId}:</h3>
           <div className="flex flex-wrap">
             {attribute.items.map((item) => {
-              const isSelected = selectedAttributes[attributeId] === item.value;
+              const isSelected =
+                selectedAttributes[attributeId]?.value === item.value;
               return (
                 <button
                   key={item.id}
@@ -77,7 +83,9 @@ const ProductAttributes: React.FC<ProductAttributesProps> = ({
                       ? { backgroundColor: item.value }
                       : {}
                   }
-                  onClick={() => onSelect(attributeId, item.value)}
+                  onClick={() =>
+                    onSelect(attributeId, item.value, item.displayValue)
+                  }
                 >
                   {attributeId.toLowerCase() !== "color" && item.displayValue}
                 </button>

@@ -42,12 +42,21 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       : `${symbol}${numericAmount.toFixed(2)}`;
   };
 
-  const getDefaultAttributes = (): Record<string, string> => {
-    const defaultAttrs: Record<string, string> = {};
+  const getDefaultAttributes = (): Record<
+    string,
+    { value: string; displayValue: string }
+  > => {
+    const defaultAttrs: Record<
+      string,
+      { value: string; displayValue: string }
+    > = {};
     if (product.attributes) {
       product.attributes.forEach((attr) => {
         if (!defaultAttrs[attr.attribute_id]) {
-          defaultAttrs[attr.attribute_id] = attr.value;
+          defaultAttrs[attr.attribute_id] = {
+            value: attr.value,
+            displayValue: attr.displayValue,
+          };
         }
       });
     }

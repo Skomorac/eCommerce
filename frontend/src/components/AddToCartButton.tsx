@@ -1,6 +1,11 @@
 import React from "react";
 import { useCart } from "../context/CartContext";
 
+interface AttributeValue {
+  value: string;
+  displayValue: string;
+}
+
 interface AddToCartButtonProps {
   product: {
     id: string;
@@ -8,7 +13,7 @@ interface AddToCartButtonProps {
     price: number;
     gallery: string[];
   };
-  selectedAttributes: Record<string, string>;
+  selectedAttributes: Record<string, AttributeValue>;
   inStock: boolean;
   allAttributesSelected: boolean;
 }
