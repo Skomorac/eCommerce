@@ -1,5 +1,6 @@
 import React from "react";
 import { useCart } from "../context/CartContext";
+import Swal from "sweetalert2";
 
 interface AttributeValue {
   value: string;
@@ -21,7 +22,7 @@ interface AddToCartButtonProps {
     gallery: string[];
   };
   selectedAttributes: Record<string, AttributeValue>;
-  allAttributes: Attribute[]; // Add this line
+  allAttributes: Attribute[];
   inStock: boolean;
   allAttributesSelected: boolean;
 }
@@ -29,7 +30,7 @@ interface AddToCartButtonProps {
 const AddToCartButton: React.FC<AddToCartButtonProps> = ({
   product,
   selectedAttributes,
-  allAttributes, // Add this line
+  allAttributes,
   inStock,
   allAttributesSelected,
 }) => {
@@ -46,8 +47,19 @@ const AddToCartButton: React.FC<AddToCartButtonProps> = ({
         price: product.price,
         quantity: 1,
         attributes: selectedAttributes,
-        allAttributes: allAttributes, // Add this line
+        allAttributes: allAttributes,
         image: product.gallery[0],
+      });
+
+      // Show SweetAlert2 notification
+      Swal.fire({
+        icon: "success",
+        title: "Added to Cart!",
+        text: `${product.name} has been added to your cart.`,
+        showConfirmButton: false,
+        timer: 1500,
+        position: "top-end",
+        toast: true,
       });
     }
   };

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import cartIcon from "../assets/images/cart.svg";
 import { useCart } from "../context/CartContext";
+import Swal from "sweetalert2";
 
 interface Attribute {
   id: string;
@@ -73,9 +74,21 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         price: parseFloat(product.prices[0].amount),
         quantity: 1,
         attributes: defaultAttributes,
-        allAttributes: product.attributes || [], // Add this line
+        allAttributes: product.attributes || [],
         image: product.gallery[0],
       });
+
+      // Show SweetAlert2 notification
+      Swal.fire({
+        icon: "success",
+        title: "Added to Cart!",
+        text: `${product.name} has been added to your cart.`,
+        showConfirmButton: false,
+        timer: 1500,
+        position: "top-end",
+        toast: true,
+      });
+
       console.log(
         `Quick shop: Added ${product.name} to cart with attributes:`,
         defaultAttributes
