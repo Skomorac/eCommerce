@@ -130,6 +130,7 @@ const ProductDetailsPage: React.FC = () => {
               gallery: product.gallery,
             }}
             selectedAttributes={selectedAttributes}
+            allAttributes={product.attributes}
             inStock={product.inStock}
             allAttributesSelected={isAllAttributesSelected}
           />

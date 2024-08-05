@@ -73,6 +73,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         price: parseFloat(product.prices[0].amount),
         quantity: 1,
         attributes: defaultAttributes,
+        allAttributes: product.attributes || [], // Add this line
         image: product.gallery[0],
       });
       console.log(

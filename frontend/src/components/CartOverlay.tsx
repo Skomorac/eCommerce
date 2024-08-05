@@ -1,15 +1,13 @@
+// src/components/CartOverlay.tsx
+
 import React from "react";
 import { useCart } from "../context/CartContext";
 import { useMutation } from "@apollo/client";
 import { PLACE_ORDER } from "../graphql/queries";
+import CartItemAttributes from "./CartItemAttributes";
 
 interface CartOverlayProps {
   onClose: () => void;
-}
-
-interface AttributeValue {
-  value: string;
-  displayValue: string;
 }
 
 const CartOverlay: React.FC<CartOverlayProps> = ({ onClose }) => {
@@ -69,40 +67,6 @@ const CartOverlay: React.FC<CartOverlayProps> = ({ onClose }) => {
     0
   );
 
-  const renderAttributes = (attributes: Record<string, AttributeValue>) => {
-    return Object.entries(attributes).map(([attributeId, attrValue]) => (
-      <div
-        key={attributeId}
-        className="mt-2 flex flex-col"
-        data-testid={`cart-item-attribute-${attributeId.toLowerCase()}`}
-      >
-        <span className="font-semibold mb-1">{attributeId}:</span>
-        <div className="flex items-center">
-          {attributeId.toLowerCase() === "color" ? (
-            <div
-              className="w-6 h-6 rounded-full border-2 border-gray-300"
-              style={{ backgroundColor: attrValue.value }}
-              data-testid={`cart-item-attribute-${attributeId.toLowerCase()}-${
-                attrValue.displayValue
-              }-selected`}
-            >
-              <div className="w-full h-full rounded-full border-2 border-white"></div>
-            </div>
-          ) : (
-            <div
-              className="inline-block px-2 py-1 text-sm text-white bg-black"
-              data-testid={`cart-item-attribute-${attributeId.toLowerCase()}-${
-                attrValue.displayValue
-              }-selected`}
-            >
-              {attrValue.displayValue}
-            </div>
-          )}
-        </div>
-      </div>
-    ));
-  };
-
   // Helper function to create a unique key for each cart item
   const createItemKey = (item: any) => {
     return `${item.id}-${JSON.stringify(item.attributes)}`;
@@ -137,7 +101,10 @@ const CartOverlay: React.FC<CartOverlayProps> = ({ onClose }) => {
                 <div className="w-3/6">
                   <h2 className="capitalize font-light text-lg">{item.name}</h2>
                   <div className="my-2 font-bold">${item.price.toFixed(2)}</div>
-                  {renderAttributes(item.attributes)}
+                  <CartItemAttributes
+                    attributes={item.allAttributes}
+                    selectedAttributes={item.attributes}
+                  />
                 </div>
                 <div className="flex flex-col items-center justify-between w-1/6">
                   <button

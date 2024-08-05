@@ -6,6 +6,13 @@ interface AttributeValue {
   displayValue: string;
 }
 
+interface Attribute {
+  id: string;
+  attribute_id: string;
+  value: string;
+  displayValue: string;
+}
+
 interface AddToCartButtonProps {
   product: {
     id: string;
@@ -14,6 +21,7 @@ interface AddToCartButtonProps {
     gallery: string[];
   };
   selectedAttributes: Record<string, AttributeValue>;
+  allAttributes: Attribute[]; // Add this line
   inStock: boolean;
   allAttributesSelected: boolean;
 }
@@ -21,6 +29,7 @@ interface AddToCartButtonProps {
 const AddToCartButton: React.FC<AddToCartButtonProps> = ({
   product,
   selectedAttributes,
+  allAttributes, // Add this line
   inStock,
   allAttributesSelected,
 }) => {
@@ -37,6 +46,7 @@ const AddToCartButton: React.FC<AddToCartButtonProps> = ({
         price: product.price,
         quantity: 1,
         attributes: selectedAttributes,
+        allAttributes: allAttributes, // Add this line
         image: product.gallery[0],
       });
     }

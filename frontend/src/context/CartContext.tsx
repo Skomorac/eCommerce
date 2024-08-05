@@ -1,6 +1,15 @@
+// src/context/CartContext.tsx
+
 import React, { createContext, useState, useContext } from "react";
 
 interface AttributeValue {
+  value: string;
+  displayValue: string;
+}
+
+interface Attribute {
+  id: string;
+  attribute_id: string;
   value: string;
   displayValue: string;
 }
@@ -11,6 +20,7 @@ interface CartItem {
   price: number;
   quantity: number;
   attributes: { [key: string]: AttributeValue };
+  allAttributes: Attribute[];
   image: string;
 }
 
