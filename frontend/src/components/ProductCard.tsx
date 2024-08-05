@@ -95,7 +95,11 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       data-testid={`product-${product.name.toLowerCase().replace(/\s+/g, "-")}`}
     >
       <Link to={`/product/${product.id}`}>
-        <div className={`relative ${!product.inStock ? "opacity-50" : ""}`}>
+        <div
+          className={`relative pb-20 mb-5 ${
+            !product.inStock ? "opacity-50" : ""
+          }`}
+        >
           <img
             src={mainImage}
             alt={product.name}
@@ -109,11 +113,11 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             </div>
           )}
         </div>
-        <div className="p-4">
+        <div className="absolute bottom-0 left-0 p-4 w-full">
           <h3 className="mt-2 font-raleway text-lg font-medium">
             {product.name}
           </h3>
-          <p className="font-raleway text-lg font-bold text-primary">
+          <p className="font-raleway text-lg">
             {price && price.currency
               ? formatPrice(price.amount, price.currency.symbol)
               : "Price not available"}
