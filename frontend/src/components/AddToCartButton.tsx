@@ -1,5 +1,5 @@
 import React from "react";
-import { useCart } from "../context/CartContext";
+import { CartContext, CartContextType } from "../context/CartContext";
 import Swal from "sweetalert2";
 
 interface AttributeValue {
@@ -27,20 +27,15 @@ interface AddToCartButtonProps {
   allAttributesSelected: boolean;
 }
 
-const AddToCartButton: React.FC<AddToCartButtonProps> = ({
-  product,
-  selectedAttributes,
-  allAttributes,
-  inStock,
-  allAttributesSelected,
-}) => {
-  const { addToCart } = useCart();
+class AddToCartButton extends React.Component<AddToCartButtonProps> {
+  static contextType = CartContext;
+  declare context: React.ContextType<typeof CartContext>;
 
-  const isDisabled = !inStock || !allAttributesSelected;
-  const buttonText = inStock ? "ADD TO CART" : "OUT OF STOCK";
+  handleAddToCart = () => {
+    const { product, selectedAttributes, allAttributes } = this.props;
+    const { addToCart } = this.context as CartContextType;
 
-  const handleAddToCart = () => {
-    if (!isDisabled) {
+    if (!this.isDisabled()) {
       addToCart({
         id: product.id,
         name: product.name,
@@ -64,20 +59,34 @@ const AddToCartButton: React.FC<AddToCartButtonProps> = ({
     }
   };
 
-  return (
-    <button
-      data-testid="add-to-cart"
-      className={`px-4 py-2 text-white font-medium transition-colors duration-200 ${
-        isDisabled
-          ? "bg-gray-300 cursor-not-allowed"
-          : "bg-primary hover:bg-accent cursor-pointer"
-      }`}
-      disabled={isDisabled}
-      onClick={handleAddToCart}
-    >
-      {buttonText}
-    </button>
-  );
-};
+  isDisabled = () => {
+    const { inStock, allAttributesSelected } = this.props;
+    return !inStock || !allAttributesSelected;
+  };
+
+  getButtonText = () => {
+    return this.props.inStock ? "ADD TO CART" : "OUT OF STOCK";
+  };
+
+  render() {
+    const isDisabled = this.isDisabled();
+    const buttonText = this.getButtonText();
+
+    return (
+      <button
+        data-testid="add-to-cart"
+        className={`px-4 py-2 text-white font-medium transition-colors duration-200 ${
+          isDisabled
+            ? "bg-gray-300 cursor-not-allowed"
+            : "bg-primary hover:bg-accent cursor-pointer"
+        }`}
+        disabled={isDisabled}
+        onClick={this.handleAddToCart}
+      >
+        {buttonText}
+      </button>
+    );
+  }
+}
 
 export default AddToCartButton;

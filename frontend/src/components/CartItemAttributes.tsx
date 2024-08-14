@@ -1,5 +1,3 @@
-// src/components/CartItemAttributes.tsx
-
 import React from "react";
 
 interface Attribute {
@@ -19,26 +17,21 @@ interface CartItemAttributesProps {
   selectedAttributes: Record<string, AttributeValue> | undefined;
 }
 
-const CartItemAttributes: React.FC<CartItemAttributesProps> = ({
-  attributes,
-  selectedAttributes,
-}) => {
-  if (!attributes || attributes.length === 0) {
-    return null;
-  }
+class CartItemAttributes extends React.Component<CartItemAttributesProps> {
+  groupAttributes = (attributes: Attribute[]) => {
+    return attributes.reduce((acc, attr) => {
+      if (!acc[attr.attribute_id]) {
+        acc[attr.attribute_id] = {
+          id: attr.attribute_id,
+          items: [],
+        };
+      }
+      acc[attr.attribute_id].items.push(attr);
+      return acc;
+    }, {} as Record<string, { id: string; items: Attribute[] }>);
+  };
 
-  const groupedAttributes = attributes.reduce((acc, attr) => {
-    if (!acc[attr.attribute_id]) {
-      acc[attr.attribute_id] = {
-        id: attr.attribute_id,
-        items: [],
-      };
-    }
-    acc[attr.attribute_id].items.push(attr);
-    return acc;
-  }, {} as Record<string, { id: string; items: Attribute[] }>);
-
-  const getAttributeStyle = (
+  getAttributeStyle = (
     attributeId: string,
     isSelected: boolean,
     value: string
@@ -58,49 +51,59 @@ const CartItemAttributes: React.FC<CartItemAttributesProps> = ({
     }
   };
 
-  return (
-    <div>
-      {Object.entries(groupedAttributes).map(([attributeId, attribute]) => (
-        <div
-          key={attributeId}
-          className="mt-2"
-          data-testid={`cart-item-attribute-${attributeId.toLowerCase()}`}
-        >
-          <span className="font-semibold mb-1">{attributeId}:</span>
-          <div className="flex flex-wrap">
-            {attribute.items.map((item, index) => {
-              const isSelected =
-                (selectedAttributes &&
-                  selectedAttributes[attributeId]?.value === item.value) ||
-                (!selectedAttributes && index === 0);
-              return (
-                <div
-                  key={item.id}
-                  className={getAttributeStyle(
-                    attributeId,
-                    isSelected,
-                    item.value
-                  )}
-                  style={
-                    attributeId.toLowerCase() === "color"
-                      ? { backgroundColor: item.value }
-                      : {}
-                  }
-                  data-testid={`cart-item-attribute-${attributeId.toLowerCase()}-${
-                    item.displayValue
-                  }${isSelected ? "-selected" : ""}`}
-                >
-                  {attributeId.toLowerCase() !== "color" && (
-                    <span className="text-xs">{item.displayValue}</span>
-                  )}
-                </div>
-              );
-            })}
+  render() {
+    const { attributes, selectedAttributes } = this.props;
+
+    if (!attributes || attributes.length === 0) {
+      return null;
+    }
+
+    const groupedAttributes = this.groupAttributes(attributes);
+
+    return (
+      <div>
+        {Object.entries(groupedAttributes).map(([attributeId, attribute]) => (
+          <div
+            key={attributeId}
+            className="mt-2"
+            data-testid={`cart-item-attribute-${attributeId.toLowerCase()}`}
+          >
+            <span className="font-semibold mb-1">{attributeId}:</span>
+            <div className="flex flex-wrap">
+              {attribute.items.map((item, index) => {
+                const isSelected =
+                  (selectedAttributes &&
+                    selectedAttributes[attributeId]?.value === item.value) ||
+                  (!selectedAttributes && index === 0);
+                return (
+                  <div
+                    key={item.id}
+                    className={this.getAttributeStyle(
+                      attributeId,
+                      isSelected,
+                      item.value
+                    )}
+                    style={
+                      attributeId.toLowerCase() === "color"
+                        ? { backgroundColor: item.value }
+                        : {}
+                    }
+                    data-testid={`cart-item-attribute-${attributeId.toLowerCase()}-${
+                      item.displayValue
+                    }${isSelected ? "-selected" : ""}`}
+                  >
+                    {attributeId.toLowerCase() !== "color" && (
+                      <span className="text-xs">{item.displayValue}</span>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
           </div>
-        </div>
-      ))}
-    </div>
-  );
-};
+        ))}
+      </div>
+    );
+  }
+}
 
 export default CartItemAttributes;

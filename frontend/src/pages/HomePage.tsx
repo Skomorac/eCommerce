@@ -1,6 +1,5 @@
 import React from "react";
-import { useParams, useLocation } from "react-router-dom";
-import { useQuery } from "@apollo/client";
+import { Query } from "@apollo/client/react/components";
 import { GET_PRODUCTS } from "../graphql/queries";
 import ProductCard from "../components/ProductCard";
 
@@ -32,42 +31,85 @@ interface ProductsData {
   products: Product[];
 }
 
-const HomePage: React.FC = () => {
-  const { category } = useParams<{ category?: string }>();
-  const location = useLocation();
-  const activeCategory = category || (location.pathname === "/" ? "all" : "");
+interface HomePageState {
+  category: string;
+  pathname: string;
+}
 
-  const { data, loading, error } = useQuery<ProductsData>(GET_PRODUCTS, {
-    variables: { category: activeCategory === "all" ? null : activeCategory },
-  });
+class HomePage extends React.Component<{}, HomePageState> {
+  constructor(props: {}) {
+    super(props);
+    this.state = this.getStateFromURL();
+  }
 
-  const title =
-    activeCategory.charAt(0).toUpperCase() + activeCategory.slice(1);
+  componentDidMount() {
+    window.addEventListener("popstate", this.handleLocationChange);
+  }
 
-  if (loading) return <div>Loading products...</div>;
-  if (error) return <div>Error loading products: {error.message}</div>;
+  componentWillUnmount() {
+    window.removeEventListener("popstate", this.handleLocationChange);
+  }
 
-  return (
-    <div className="container mx-auto px-4">
-      <h1 className="font-raleway text-[42px] font-normal leading-[67.2px] text-left text-text mt-8 mb-6">
-        {title}
-      </h1>
-      <div className="grid grid-cols-auto-fill-350 gap-8">
-        {data?.products.map((product) => (
-          <ProductCard
-            key={product.id}
-            product={{
-              ...product,
-              prices: product.prices.map((price) => ({
-                ...price,
-                amount: price.amount.toString(),
-              })),
-            }}
-          />
-        ))}
-      </div>
-    </div>
-  );
-};
+  componentDidUpdate(prevProps: {}, prevState: HomePageState) {
+    const newState = this.getStateFromURL();
+    if (this.state.category !== newState.category) {
+      this.setState(newState);
+    }
+  }
+
+  getStateFromURL = () => {
+    const pathname = window.location.pathname;
+    const category = pathname.split("/")[1] || "all";
+    return { category, pathname };
+  };
+
+  handleLocationChange = () => {
+    this.setState(this.getStateFromURL());
+  };
+
+  render() {
+    const { category } = this.state;
+    const activeCategory = category || "all";
+    const title =
+      activeCategory.charAt(0).toUpperCase() + activeCategory.slice(1);
+
+    return (
+      <Query<ProductsData>
+        query={GET_PRODUCTS}
+        variables={{
+          category: activeCategory === "all" ? null : activeCategory,
+        }}
+        key={activeCategory} // This ensures the query is retriggered on category change
+      >
+        {({ data, loading, error }) => {
+          if (loading) return <div>Loading products...</div>;
+          if (error) return <div>Error loading products: {error.message}</div>;
+
+          return (
+            <div className="container mx-auto px-4">
+              <h1 className="font-raleway text-[42px] font-normal leading-[67.2px] text-left text-text mt-8 mb-6">
+                {title}
+              </h1>
+              <div className="grid grid-cols-auto-fill-350 gap-8">
+                {data?.products.map((product) => (
+                  <ProductCard
+                    key={product.id}
+                    product={{
+                      ...product,
+                      prices: product.prices.map((price) => ({
+                        ...price,
+                        amount: price.amount.toString(),
+                      })),
+                    }}
+                  />
+                ))}
+              </div>
+            </div>
+          );
+        }}
+      </Query>
+    );
+  }
+}
 
 export default HomePage;
