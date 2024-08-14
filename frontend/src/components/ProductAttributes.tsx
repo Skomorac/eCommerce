@@ -18,24 +18,21 @@ interface ProductAttributesProps {
   onSelect: (attributeId: string, value: string, displayValue: string) => void;
 }
 
-const ProductAttributes: React.FC<ProductAttributesProps> = ({
-  attributes,
-  selectedAttributes,
-  onSelect,
-}) => {
-  // Group attributes by attribute_id
-  const groupedAttributes = attributes.reduce((acc, attr) => {
-    if (!acc[attr.attribute_id]) {
-      acc[attr.attribute_id] = {
-        id: attr.attribute_id,
-        items: [],
-      };
-    }
-    acc[attr.attribute_id].items.push(attr);
-    return acc;
-  }, {} as Record<string, { id: string; items: Attribute[] }>);
+class ProductAttributes extends React.Component<ProductAttributesProps> {
+  groupAttributes = (attributes: Attribute[]) => {
+    return attributes.reduce((acc, attr) => {
+      if (!acc[attr.attribute_id]) {
+        acc[attr.attribute_id] = {
+          id: attr.attribute_id,
+          items: [],
+        };
+      }
+      acc[attr.attribute_id].items.push(attr);
+      return acc;
+    }, {} as Record<string, { id: string; items: Attribute[] }>);
+  };
 
-  const getButtonStyle = (
+  getButtonStyle = (
     attributeId: string,
     isSelected: boolean,
     value: string
@@ -55,47 +52,52 @@ const ProductAttributes: React.FC<ProductAttributesProps> = ({
     }
   };
 
-  return (
-    <div>
-      {Object.entries(groupedAttributes).map(([attributeId, attribute]) => (
-        <div
-          key={attributeId}
-          data-testid={`product-attribute-${attributeId.toLowerCase()}`}
-        >
-          <h3 className="text-lg font-semibold mb-2">{attributeId}:</h3>
-          <div className="flex flex-wrap">
-            {attribute.items.map((item) => {
-              const isSelected =
-                selectedAttributes[attributeId]?.value === item.value;
-              return (
-                <button
-                  key={item.id}
-                  data-testid={`product-attribute-${attributeId.toLowerCase()}-${
-                    item.displayValue
-                  }`}
-                  className={getButtonStyle(
-                    attributeId,
-                    isSelected,
-                    item.value
-                  )}
-                  style={
-                    attributeId.toLowerCase() === "color"
-                      ? { backgroundColor: item.value }
-                      : {}
-                  }
-                  onClick={() =>
-                    onSelect(attributeId, item.value, item.displayValue)
-                  }
-                >
-                  {attributeId.toLowerCase() !== "color" && item.displayValue}
-                </button>
-              );
-            })}
+  render() {
+    const { attributes, selectedAttributes, onSelect } = this.props;
+    const groupedAttributes = this.groupAttributes(attributes);
+
+    return (
+      <div>
+        {Object.entries(groupedAttributes).map(([attributeId, attribute]) => (
+          <div
+            key={attributeId}
+            data-testid={`product-attribute-${attributeId.toLowerCase()}`}
+          >
+            <h3 className="text-lg font-semibold mb-2">{attributeId}:</h3>
+            <div className="flex flex-wrap">
+              {attribute.items.map((item) => {
+                const isSelected =
+                  selectedAttributes[attributeId]?.value === item.value;
+                return (
+                  <button
+                    key={item.id}
+                    data-testid={`product-attribute-${attributeId.toLowerCase()}-${
+                      item.displayValue
+                    }`}
+                    className={this.getButtonStyle(
+                      attributeId,
+                      isSelected,
+                      item.value
+                    )}
+                    style={
+                      attributeId.toLowerCase() === "color"
+                        ? { backgroundColor: item.value }
+                        : {}
+                    }
+                    onClick={() =>
+                      onSelect(attributeId, item.value, item.displayValue)
+                    }
+                  >
+                    {attributeId.toLowerCase() !== "color" && item.displayValue}
+                  </button>
+                );
+              })}
+            </div>
           </div>
-        </div>
-      ))}
-    </div>
-  );
-};
+        ))}
+      </div>
+    );
+  }
+}
 
 export default ProductAttributes;
