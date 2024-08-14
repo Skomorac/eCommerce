@@ -57,7 +57,7 @@ class Header extends React.Component<HeaderProps, HeaderState> {
   };
 
   handleCategoryChange = (category: string) => {
-    const pathname = `/${category === "all" ? "" : category}`;
+    const pathname = `/${category === "all" ? "all" : category}`;
     this.setState({ pathname });
     window.history.pushState(null, "", pathname);
     window.dispatchEvent(new PopStateEvent("popstate")); // Notify HomePage to update
@@ -68,7 +68,7 @@ class Header extends React.Component<HeaderProps, HeaderState> {
     const { getTotalItems } = this.context as CartContextType;
 
     const activeCategory =
-      this.state.pathname === "/" ? "all" : this.state.pathname.slice(1);
+      this.state.pathname === "/all" ? "all" : this.state.pathname.slice(1);
 
     return (
       <Query<CategoriesData> query={GET_CATEGORIES}>
@@ -92,7 +92,7 @@ class Header extends React.Component<HeaderProps, HeaderState> {
                   {uniqueCategories.map((category) => (
                     <Link
                       key={category}
-                      to={`/${category === "all" ? "" : category}`}
+                      to={`/${category === "all" ? "all" : category}`}
                       data-testid={
                         category === activeCategory
                           ? "active-category-link"
