@@ -1,5 +1,4 @@
 import React from "react";
-import { useParams, useLocation } from "react-router-dom";
 import { Query } from "@apollo/client/react/components";
 import { GET_PRODUCTS } from "../graphql/queries";
 import ProductCard from "../components/ProductCard";
@@ -32,15 +31,45 @@ interface ProductsData {
   products: Product[];
 }
 
-interface HomePageProps {
-  category?: string;
+interface HomePageState {
+  category: string;
   pathname: string;
 }
 
-class HomePage extends React.Component<HomePageProps> {
+class HomePage extends React.Component<{}, HomePageState> {
+  constructor(props: {}) {
+    super(props);
+    this.state = this.getStateFromURL();
+  }
+
+  componentDidMount() {
+    window.addEventListener("popstate", this.handleLocationChange);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("popstate", this.handleLocationChange);
+  }
+
+  componentDidUpdate(prevProps: {}, prevState: HomePageState) {
+    const newState = this.getStateFromURL();
+    if (this.state.category !== newState.category) {
+      this.setState(newState);
+    }
+  }
+
+  getStateFromURL = () => {
+    const pathname = window.location.pathname;
+    const category = pathname.split("/")[1] || "all";
+    return { category, pathname };
+  };
+
+  handleLocationChange = () => {
+    this.setState(this.getStateFromURL());
+  };
+
   render() {
-    const { category, pathname } = this.props;
-    const activeCategory = category || (pathname === "/" ? "all" : "");
+    const { category } = this.state;
+    const activeCategory = category || "all";
     const title =
       activeCategory.charAt(0).toUpperCase() + activeCategory.slice(1);
 
@@ -50,6 +79,7 @@ class HomePage extends React.Component<HomePageProps> {
         variables={{
           category: activeCategory === "all" ? null : activeCategory,
         }}
+        key={activeCategory} // This ensures the query is retriggered on category change
       >
         {({ data, loading, error }) => {
           if (loading) return <div>Loading products...</div>;
@@ -82,12 +112,4 @@ class HomePage extends React.Component<HomePageProps> {
   }
 }
 
-// Wrapper function to use hooks and pass data to the class component
-const HomePageWrapper: React.FC = () => {
-  const { category } = useParams<{ category?: string }>();
-  const location = useLocation();
-
-  return <HomePage category={category} pathname={location.pathname} />;
-};
-
-export default HomePageWrapper;
+export default HomePage;

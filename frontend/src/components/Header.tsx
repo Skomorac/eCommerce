@@ -56,6 +56,13 @@ class Header extends React.Component<HeaderProps, HeaderState> {
     this.setState({ pathname: window.location.pathname });
   };
 
+  handleCategoryChange = (category: string) => {
+    const pathname = `/${category === "all" ? "" : category}`;
+    this.setState({ pathname });
+    window.history.pushState(null, "", pathname);
+    window.dispatchEvent(new PopStateEvent("popstate")); // Notify HomePage to update
+  };
+
   render() {
     const { toggleCart } = this.props;
     const { getTotalItems } = this.context as CartContextType;
@@ -96,11 +103,7 @@ class Header extends React.Component<HeaderProps, HeaderState> {
                           ? "text-primary border-b-2 border-primary"
                           : "text-text"
                       }`}
-                      onClick={() =>
-                        this.setState({
-                          pathname: `/${category === "all" ? "" : category}`,
-                        })
-                      }
+                      onClick={() => this.handleCategoryChange(category)}
                     >
                       {category}
                     </Link>
