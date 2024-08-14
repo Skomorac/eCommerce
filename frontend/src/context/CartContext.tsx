@@ -1,6 +1,4 @@
-// src/context/CartContext.tsx
-
-import React, { createContext, useState, useContext } from "react";
+import React, { createContext, useState, useContext, useEffect } from "react";
 
 interface AttributeValue {
   value: string;
@@ -43,10 +41,21 @@ interface CartContextType {
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
+const CART_STORAGE_KEY = "scandiwebCart";
+
 export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [cartItems, setCartItems] = useState<CartItem[]>(() => {
+    // Initialize cart from localStorage
+    const savedCart = localStorage.getItem(CART_STORAGE_KEY);
+    return savedCart ? JSON.parse(savedCart) : [];
+  });
+
+  // Save cart to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cartItems));
+  }, [cartItems]);
 
   const addToCart = (newItem: CartItem) => {
     setCartItems((prevItems) => {
