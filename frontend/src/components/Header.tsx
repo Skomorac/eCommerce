@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Query } from "@apollo/client/react/components";
 import { GET_CATEGORIES } from "../graphql/queries";
 import { CartContext, CartContextType } from "../context/CartContext";
@@ -23,26 +23,17 @@ interface HeaderState {
   pathname: string;
 }
 
-// This wrapper will pass the location as a prop to our class component
-const HeaderWithRouter: React.FC<HeaderProps> = (props) => {
-  const location = useLocation();
-  return <Header {...props} pathname={location.pathname} />;
-};
-
-class Header extends React.Component<
-  HeaderProps & { pathname: string },
-  HeaderState
-> {
+class Header extends React.Component<HeaderProps, HeaderState> {
   static contextType = CartContext;
   declare context: React.ContextType<typeof CartContext>;
 
   headerRef: React.RefObject<HTMLElement>;
 
-  constructor(props: HeaderProps & { pathname: string }) {
+  constructor(props: HeaderProps) {
     super(props);
     this.headerRef = React.createRef();
     this.state = {
-      pathname: props.pathname,
+      pathname: window.location.pathname,
     };
   }
 
@@ -54,13 +45,16 @@ class Header extends React.Component<
         `${headerHeight}px`
       );
     }
+    window.addEventListener("popstate", this.handleLocationChange);
   }
 
-  componentDidUpdate(prevProps: HeaderProps & { pathname: string }) {
-    if (this.props.pathname !== prevProps.pathname) {
-      this.setState({ pathname: this.props.pathname });
-    }
+  componentWillUnmount() {
+    window.removeEventListener("popstate", this.handleLocationChange);
   }
+
+  handleLocationChange = () => {
+    this.setState({ pathname: window.location.pathname });
+  };
 
   render() {
     const { toggleCart } = this.props;
@@ -102,6 +96,11 @@ class Header extends React.Component<
                           ? "text-primary border-b-2 border-primary"
                           : "text-text"
                       }`}
+                      onClick={() =>
+                        this.setState({
+                          pathname: `/${category === "all" ? "" : category}`,
+                        })
+                      }
                     >
                       {category}
                     </Link>
@@ -111,6 +110,7 @@ class Header extends React.Component<
                   <Link
                     to="/"
                     className="mr-4 lg:absolute lg:left-1/2 lg:transform lg:-translate-x-1/2"
+                    onClick={() => this.setState({ pathname: "/" })}
                   >
                     <img src={logoIcon} alt="Logo" className="w-8 h-8" />
                   </Link>
@@ -139,4 +139,4 @@ class Header extends React.Component<
   }
 }
 
-export default HeaderWithRouter;
+export default Header;

@@ -1,5 +1,6 @@
 import React from "react";
 
+// Interfaces
 interface AttributeValue {
   value: string;
   displayValue: string;
@@ -39,9 +40,12 @@ interface CartContextType {
   getTotalPrice: () => number;
 }
 
+// Create the context
 export const CartContext = React.createContext<CartContextType | undefined>(
   undefined
 );
+
+// Export the CartContextType for use in other components
 export type { CartContextType };
 
 const CART_STORAGE_KEY = "scandiwebCart";
@@ -162,10 +166,34 @@ export class CartProvider extends React.Component<
   }
 }
 
-export function useCart() {
-  const context = React.useContext(CartContext);
-  if (context === undefined) {
-    throw new Error("useCart must be used within a CartProvider");
+// Usage instructions for class components
+/*
+To use this context in a class component:
+
+1. Import CartContext and CartContextType
+2. Add a static contextType to your class:
+   static contextType = CartContext;
+
+3. Declare the context type:
+   declare context: React.ContextType<typeof CartContext>;
+
+4. You can then access the context in your methods using:
+   const { addToCart, removeFromCart, etc. } = this.context;
+
+Example:
+
+class MyComponent extends React.Component {
+  static contextType = CartContext;
+  declare context: React.ContextType<typeof CartContext>;
+
+  handleAddToCart = () => {
+    const { addToCart } = this.context;
+    // Use addToCart here
   }
-  return context;
+
+  render() {
+    const { cartItems } = this.context;
+    // Render using cartItems
+  }
 }
+*/

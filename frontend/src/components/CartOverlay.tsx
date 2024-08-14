@@ -4,7 +4,6 @@ import { Mutation } from "@apollo/client/react/components";
 import { PLACE_ORDER } from "../graphql/queries";
 import CartItemAttributes from "./CartItemAttributes";
 import Swal from "sweetalert2";
-import { useNavigate } from "react-router-dom";
 
 interface CartOverlayProps {
   onClose: () => void;
@@ -20,9 +19,7 @@ interface CartItem {
   image: string;
 }
 
-class CartOverlay extends React.Component<
-  CartOverlayProps & { navigate: (path: string) => void }
-> {
+class CartOverlay extends React.Component<CartOverlayProps> {
   static contextType = CartContext;
   declare context: React.ContextType<typeof CartContext>;
 
@@ -46,7 +43,7 @@ class CartOverlay extends React.Component<
   handlePlaceOrder = async (placeOrderMutation: any) => {
     const { cartItems, getTotalPrice, clearCart } = this
       .context as CartContextType;
-    const { onClose, navigate } = this.props;
+    const { onClose } = this.props;
 
     try {
       const totalAmount = getTotalPrice();
@@ -87,7 +84,8 @@ class CartOverlay extends React.Component<
       });
       clearCart();
       onClose();
-      navigate("/");
+      window.history.pushState(null, "", "/");
+      window.dispatchEvent(new PopStateEvent("popstate"));
     } catch (error: unknown) {
       console.error("Failed to place order", error);
       Swal.fire({
@@ -240,10 +238,4 @@ class CartOverlay extends React.Component<
   }
 }
 
-// Wrapper function to use hooks and pass data to the class component
-const CartOverlayWrapper: React.FC<CartOverlayProps> = (props) => {
-  const navigate = useNavigate();
-  return <CartOverlay {...props} navigate={navigate} />;
-};
-
-export default CartOverlayWrapper;
+export default CartOverlay;
