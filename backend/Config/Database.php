@@ -68,15 +68,6 @@ class Database {
         return $this->statement->fetch();
     }
 
-    // public function fetchOrFail() {
-    //     $result = $this->fetch();
-
-    //     if (!$result) {
-    //         abort(404, 'Record not found');
-    //     }
-
-    //     return $result;
-    // }
 
     public function fetchColumn() {
         return $this->statement->fetchColumn();
