@@ -1,11 +1,7 @@
 import { ApolloClient, InMemoryCache } from "@apollo/client";
 
-const isProd = process.env.NODE_ENV === "production";
-
 const client = new ApolloClient({
-  uri: isProd
-    ? "https://shop.skomorac.dev/graphql"
-    : "http://localhost:8000/graphql",
+  uri: import.meta.env.VITE_API_URL || "http://localhost:8000/graphql",
   cache: new InMemoryCache(),
 });
 
